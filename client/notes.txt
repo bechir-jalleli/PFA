@@ -1,0 +1,15 @@
+axios
+redux >slice 
+https://www.bezkoder.com/react-hooks-redux-login-registration-example/
+
+slice render same component 
+
+
+admin
+chefProject
+membreEquipe
+Organisation
+chefProject
+responsable
+sousOrganisation
+

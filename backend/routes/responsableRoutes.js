@@ -8,11 +8,11 @@ router.post('/login', responsableController.login);
 router.get('/refresh', responsableController.refresh);
 router.post('/logout', responsableController.logout);
 
-router.use(verifyToken);
+//router.use(verifyToken);
 
-router.get('/', checkRole('admin', 'responsable'), responsableController.getAllResponsables);
-router.get('/:id', checkRole('admin', 'responsable'), responsableController.getResponsableById);
-router.put('/:id', checkRole('admin', 'responsable'), responsableController.updateResponsable);
-router.delete('/:id', checkRole('admin', 'responsable'), responsableController.deleteResponsable);
+router.get('/', /*checkRole('admin', 'responsable'),*/ responsableController.getAllResponsables);
+router.get('/:id',/* checkRole('admin', 'responsable'),*/ responsableController.getResponsableById);
+router.put('/:id', /*checkRole('admin', 'responsable'),*/ responsableController.updateResponsable);
+router.delete('/:id',/* checkRole('admin', 'responsable'),*/ responsableController.deleteResponsable);
 
 module.exports = router;

@@ -48,21 +48,14 @@ exports.register = async (req, res) => {
         const admin = new Admin({ nom, prenom, email, phone, mdp: hashedPassword });
         const createdAdmin = await admin.save();
 
-        const accessToken = generateAccessToken(createdAdmin);
-        const refreshToken = generateRefreshToken(createdAdmin);
-
-        res.cookie('jwt', refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'None',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
 
         res.status(201).json({
             id: createdAdmin._id,
-            accessToken,
+            nom: createdAdmin.nom,
+            prenom:createdAdmin.prenom,
             email: createdAdmin.email,
-            nom: createdAdmin.nom
+            phone: createdAdmin.phone,
+            mdp: createdAdmin.mdp,
         });
 
     } catch (error) {
@@ -74,13 +67,13 @@ exports.login = async (req, res) => {
     const { email, mdp } = req.body;
 
     if (!email || !mdp) {
-        return handleError(res, 400, 'Email and password are required');
+        return handleError(res, 400, 'Email and password are required should be not empty');
     }
 
     try {
         const foundAdmin = await Admin.findOne({ email }).exec();
         if (!foundAdmin) {
-            return handleError(res, 401, 'Admin does not exist');
+            return handleError(res, 401, 'Wrong email');
         }
 
         const match = await bcrypt.compare(mdp, foundAdmin.mdp);
@@ -112,7 +105,7 @@ exports.refresh = async (req, res) => {
     const cookies = req.cookies;
 
     if (!cookies?.jwt) {
-        return handleError(res, 401, 'Unauthorized');
+        return handleError(res, 401, 'you should loggin to refresh token');
     }
 
     const refreshToken = cookies.jwt;
@@ -121,14 +114,14 @@ exports.refresh = async (req, res) => {
 
         const foundAdmin = await Admin.findById(decoded.UserInfo.id).exec();
         if (!foundAdmin) {
-            return handleError(res, 401, 'Unauthorized');
+            return handleError(res, 401, 'this Amin (ID) doesnt exist');
         }
 
         const accessToken = generateAccessToken(foundAdmin);
 
         res.json({ accessToken });
     } catch (error) {
-        handleError(res, 403, 'Forbidden: ' + error.message);
+        handleError(res, 403, 'you dont have access: ' + error.message);
     }
 };
 
@@ -139,7 +132,7 @@ exports.logout = (req, res) => {
         secure: true
     });
 
-    res.json({ message: 'Cookie cleared' });
+    res.json({ message: 'logout success & Cookie cleared' });
 };
 
 exports.getAllAdmins = async (req, res) => {

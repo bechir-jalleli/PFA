@@ -9,8 +9,7 @@ const responsableSchema = new Schema({
     mdp: { type: String, required: true },
     organisation: { type: Schema.Types.ObjectId, ref: 'Organisation' },
     sousOrganisation: { type: Schema.Types.ObjectId, ref: 'SousOrganisation' },
-    chefProjects: [{ type: Schema.Types.ObjectId, ref: 'ChefProject' }],
-    timestamp: { type: Date, default: Date.now }
+    chefProjects: [{ type: Schema.Types.ObjectId, ref: 'ChefProject' }]
 }, { timestamps: true });
 
 responsableSchema.path('organisation').validate(function(value) {

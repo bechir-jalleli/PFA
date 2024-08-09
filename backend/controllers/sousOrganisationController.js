@@ -5,14 +5,14 @@ const handleError = (res, status, message) => {
 };
 
 exports.createSousOrganisation = async (req, res) => {
-    const { nom, details, organisation } = req.body;
+    const { nom, description, organisation } = req.body;
 
     if (!nom || !organisation) {
         return handleError(res, 400, 'Name and organisation are required');
     }
 
     try {
-        const sousOrganisation = new SousOrganisation({ nom, details, organisation });
+        const sousOrganisation = new SousOrganisation({ nom, description, organisation });
         const createdSousOrganisation = await sousOrganisation.save();
         res.status(201).json(createdSousOrganisation);
     } catch (error) {

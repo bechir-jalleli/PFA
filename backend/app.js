@@ -8,6 +8,8 @@ const connectDB = require('./config/dbConnect');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const path = require('path');
+const bodyParser = require('body-parser')
+
 
 dotenv.config();
 const PORT = process.env.PORT || 5000;
@@ -15,7 +17,7 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 const app = express();
-
+app.use(bodyParser.json());
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());

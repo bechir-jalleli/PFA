@@ -22,7 +22,7 @@ exports.createTache = async (req, res) => {
 
 exports.getAllTaches = async (req, res) => {
     try {
-        const taches = await Tache.find({}).populate('chefProject');
+        const taches = await Tache.find({})
         res.status(200).json(taches);
     } catch (error) {
         handleError(res, 400, 'Error fetching tasks: ' + error.message);
@@ -74,3 +74,4 @@ exports.deleteTache = async (req, res) => {
         handleError(res, 400, 'Error deleting task: ' + error.message);
     }
 };
+

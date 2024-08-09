@@ -7,8 +7,7 @@ const membreEquipeSchema = new Schema({
     email: { type: String, required: true, unique: true },
     phone: { type: String },
     role: { type: String },
-    mdp: { type: String, required: true },
-    timestamp: { type: Date, default: Date.now }
+    mdp: { type: String, required: true }
 }, { timestamps: true });
 
 const MembreEquipe = mongoose.model('MembreEquipe', membreEquipeSchema);

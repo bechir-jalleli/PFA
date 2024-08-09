@@ -48,25 +48,17 @@ exports.register = async (req, res) => {
         const membreEquipe = new MembreEquipe({ nom, prenom, email, phone, mdp: hashedPassword });
         const createdMembreEquipe = await membreEquipe.save();
 
-        const accessToken = generateAccessToken(createdMembreEquipe);
-        const refreshToken = generateRefreshToken(createdMembreEquipe);
-
-        res.cookie('jwt', refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'None',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
-
         res.status(201).json({
             id: createdMembreEquipe._id,
-            accessToken,
+            nom: createdMembreEquipe.nom,
+            prenom: createdMembreEquipe.prenom,
             email: createdMembreEquipe.email,
-            nom: createdMembreEquipe.nom
+            phone: createdMembreEquipe.phone,
+            mdp: createdMembreEquipe.mdp,
         });
 
     } catch (error) {
-        res.status(500).json({ error: 'Error registering membre equipe: ' + error.message });
+        res.status(500).json({ error: 'Error registering membre equipe:s ' + error.message });
     }
 };
 

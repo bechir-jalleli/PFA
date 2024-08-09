@@ -5,14 +5,14 @@ const handleError = (res, status, message) => {
 };
 
 exports.createOrganisation = async (req, res) => {
-    const { nom, details } = req.body;
+    const { nom, description } = req.body;
 
     if (!nom) {
         return handleError(res, 400, 'Name is required');
     }
 
     try {
-        const organisation = new Organisation({ nom, details });
+        const organisation = new Organisation({ nom, description });
         const createdOrganisation = await organisation.save();
         res.status(201).json(createdOrganisation);
     } catch (error) {

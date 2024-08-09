@@ -2,9 +2,8 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const organisationSchema = new Schema({
-    name: { type: String, required: true },
-    description: { type: String },
-    timestamp: { type: Date, default: Date.now }
+    nom: { type: String, required: true },
+    description: { type: String }
 }, { timestamps: true });
 
 const Organisation = mongoose.model('Organisation', organisationSchema);

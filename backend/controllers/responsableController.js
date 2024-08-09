@@ -31,7 +31,7 @@ const verifyToken = (token, secret) => {
     });
 };
 
-exports.register = async (req, res) =>  {
+exports.register = async (req, res) => {
     const { nom, prenom, email, phone, mdp } = req.body;
 
     if (!nom || !email || !mdp) {
@@ -48,21 +48,13 @@ exports.register = async (req, res) =>  {
         const responsable = new Responsable({ nom, prenom, email, phone, mdp: hashedPassword });
         const createdResponsable = await responsable.save();
 
-        const accessToken = generateAccessToken(createdResponsable);
-        const refreshToken = generateRefreshToken(createdResponsable);
-
-        res.cookie('jwt', refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'None',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
-
         res.status(201).json({
             id: createdResponsable._id,
-            accessToken,
+            nom: createdResponsable.nom,
+            prenom: createdResponsable.prenom,
             email: createdResponsable.email,
-            nom: createdResponsable.nom
+            phone: createdResponsable.phone,
+            mdp: createdResponsable.mdp,
         });
 
     } catch (error) {

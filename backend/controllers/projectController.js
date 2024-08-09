@@ -1,18 +1,25 @@
-const Project = require('../models/project');
+const Project = require('../models/Project');
 
-const handleError = (res, status, message) => {
-    res.status(status).json({ error: message });
-};
-
+// Create a new project
 exports.createProject = async (req, res) => {
-    const { nom, description, responsable } = req.body;
+    const { name, description, organisation, sousOrganisation, chefProject, startDate, endDate, budget } = req.body;
 
-    if (!nom || !responsable) {
-        return handleError(res, 400, 'Name and responsable are required');
+    if (!name || (!organisation && !sousOrganisation) || !chefProject) {
+        return handleError(res, 400, 'Name, one of Organisation or SousOrganisation, and ChefProject are required');
     }
 
     try {
-        const project = new Project({ nom, description, responsable });
+        const project = new Project({
+            name,
+            description,
+            organisation: organisation || null,
+            sousOrganisation: sousOrganisation || null,
+            chefProject,
+            startDate,
+            endDate,
+            budget
+        });
+
         const createdProject = await project.save();
         res.status(201).json(createdProject);
     } catch (error) {
@@ -20,57 +27,73 @@ exports.createProject = async (req, res) => {
     }
 };
 
+// Get all projects
 exports.getAllProjects = async (req, res) => {
     try {
-        const projects = await Project.find({}).populate('responsable');
+        const projects = await Project.find()
+            .populate('organisation', 'name')
+            .populate('sousOrganisation', 'name')
+            .populate('chefProject', 'nom prenom');
         res.status(200).json(projects);
     } catch (error) {
-        handleError(res, 400, 'Error fetching projects: ' + error.message);
+        handleError(res, 500, 'Error fetching projects: ' + error.message);
     }
 };
 
+// Get a project by ID
 exports.getProjectById = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const project = await Project.findById(id).populate('responsable');
-        if (project) {
-            res.status(200).json(project);
-        } else {
-            handleError(res, 404, 'Project not found');
+        const project = await Project.findById(id)
+            .populate('organisation', 'name')
+            .populate('sousOrganisation', 'name')
+            .populate('chefProject', 'nom prenom');
+
+        if (!project) {
+            return handleError(res, 404, 'Project not found');
         }
+
+        res.status(200).json(project);
     } catch (error) {
-        handleError(res, 400, 'Error fetching project: ' + error.message);
+        handleError(res, 500, 'Error fetching project: ' + error.message);
     }
 };
 
+// Update a project
 exports.updateProject = async (req, res) => {
     const { id } = req.params;
-    const updates = req.body;
+    const updateFields = req.body;
 
     try {
-        const updatedProject = await Project.findByIdAndUpdate(id, updates, { new: true }).populate('responsable');
-        if (updatedProject) {
-            res.status(200).json(updatedProject);
-        } else {
-            handleError(res, 404, 'Project not found');
+        const project = await Project.findByIdAndUpdate(id, updateFields, { new: true })
+            .populate('organisation', 'name')
+            .populate('sousOrganisation', 'name')
+            .populate('chefProject', 'nom prenom');
+
+        if (!project) {
+            return handleError(res, 404, 'Project not found');
         }
+
+        res.status(200).json(project);
     } catch (error) {
         handleError(res, 400, 'Error updating project: ' + error.message);
     }
 };
 
+// Delete a project
 exports.deleteProject = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const result = await Project.findByIdAndDelete(id);
-        if (result) {
-            res.status(200).json({ message: 'Project deleted successfully' });
-        } else {
-            handleError(res, 404, 'Project not found');
+        const project = await Project.findByIdAndDelete(id);
+
+        if (!project) {
+            return handleError(res, 404, 'Project not found');
         }
+
+        res.status(200).json({ message: 'Project deleted successfully' });
     } catch (error) {
-        handleError(res, 400, 'Error deleting project: ' + error.message);
+        handleError(res, 500, 'Error deleting project: ' + error.message);
     }
 };

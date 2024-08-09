@@ -1,6 +1,7 @@
 const ChefProject = require('../models/chefProject');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { getResponsableById } = require('./responsableController');  // Correctly import the function
 
 const handleError = (res, status, message) => {
     res.status(status).json({ error: message });
@@ -32,43 +33,39 @@ const verifyToken = (token, secret) => {
 };
 
 exports.register = async (req, res) => {
-    const { nom, prenom, email, phone, mdp, responsable } = req.body;
+    const { nom, prenom, email, phone, mdp } = req.body;
 
-    if (!nom || !email || !mdp || !responsable) {
-        return res.status(400).json({ error: 'Name, email, password, and responsable are required' });
+    if (!nom || !email || !mdp) {
+        return res.status(400).json({ error: 'Name, email, and password are required' });
     }
 
     try {
+        // Check if the email is already in use
         const foundChefProject = await ChefProject.findOne({ email }).exec();
         if (foundChefProject) {
             return res.status(409).json({ error: 'ChefProject already exists' });
         }
 
+        // Hash the password
         const hashedPassword = await bcrypt.hash(mdp, 10);
-        const chefProject = new ChefProject({ nom, prenom, email, phone, mdp: hashedPassword, responsable });
+
+        // Create and save the new ChefProject
+        const chefProject = new ChefProject({ nom, prenom, email, phone, mdp: hashedPassword });
         const createdChefProject = await chefProject.save();
 
-        const accessToken = generateAccessToken(createdChefProject);
-        const refreshToken = generateRefreshToken(createdChefProject);
-
-        res.cookie('jwt', refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'None',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
-
+        // Send a success response
         res.status(201).json({
             id: createdChefProject._id,
-            accessToken,
+            nom: createdChefProject.nom,
+            prenom: createdChefProject.prenom,
             email: createdChefProject.email,
-            nom: createdChefProject.nom
+            phone: createdChefProject.phone,
         });
-
     } catch (error) {
         res.status(500).json({ error: 'Error registering chef project: ' + error.message });
     }
 };
+    
 exports.login = async (req, res) => {
     const { email, mdp } = req.body;
 
@@ -79,7 +76,7 @@ exports.login = async (req, res) => {
     try {
         const foundChefProject = await ChefProject.findOne({ email }).exec();
         if (!foundChefProject) {
-            return handleError(res, 401, 'ChefProject does not exist');
+            return handleError(res, 401, 'Wrong email');
         }
 
         const match = await bcrypt.compare(mdp, foundChefProject.mdp);
@@ -111,7 +108,7 @@ exports.refresh = async (req, res) => {
     const cookies = req.cookies;
 
     if (!cookies?.jwt) {
-        return handleError(res, 401, 'Unauthorized');
+        return handleError(res, 401, 'You need to be logged in to refresh the token');
     }
 
     const refreshToken = cookies.jwt;
@@ -120,7 +117,7 @@ exports.refresh = async (req, res) => {
 
         const foundChefProject = await ChefProject.findById(decoded.UserInfo.id).exec();
         if (!foundChefProject) {
-            return handleError(res, 401, 'Unauthorized');
+            return handleError(res, 401, 'ChefProject not found');
         }
 
         const accessToken = generateAccessToken(foundChefProject);
