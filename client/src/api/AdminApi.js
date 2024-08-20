@@ -1,33 +1,35 @@
 import axios from 'axios';
 
+const API_BASE_URL = 'http://localhost:5000/admin';
 
-
-const URL = 'http://localhost:5000'; // Replace with your API base URL
-
-export const getAdmin = async (id) => {
+// Fetch all admins
+export const fetchAdmins = async () => {
   try {
-    const response = await axios.get(`${URL}/admin/${id}`);
+    const response = await axios.get(API_BASE_URL);
     return response.data;
   } catch (error) {
-    throw new Error(error.message);
+    console.error('Error fetching admins:', error);
+    throw error;
   }
 };
 
-export const getَAllAdmin = async (id) => {
+// Fetch a single admin by ID
+export const fetchAdminById = async (id) => {
   try {
-    const response = await axios.get(`${URL}/admin`);
+    const response = await axios.get(`${API_BASE_URL}/${id}`);
     return response.data;
   } catch (error) {
-    throw new Error(error.message);
+    console.error('Error fetching admin:', error);
+    throw error;
   }
 };
 
-
-export const createAdmin = async (id) => {
+// Update an admin
+export const updateAdmin = async (id, adminData) => {
   try {
-    const response = await axios.post(`${URL}/admin`);
-    return response.data;
+    await axios.put(`${API_BASE_URL}/${id}`, adminData);
   } catch (error) {
-    throw new Error(error.message);
+    console.error('Error updating admin:', error);
+    throw error;
   }
 };

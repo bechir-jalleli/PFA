@@ -1,11 +1,12 @@
+// src/index.js
 import React from 'react';
-import ReactDOM from 'react-dom/client'; // Use 'react-dom/client'
+import ReactDOM from 'react-dom/client';
 import App from './App';
-import 'antd/dist/reset.css'; // For Ant Design v5
+import './index.css'; // Import global CSS styles
+import 'antd/dist/reset.css'; // Import Ant Design's reset CSS for v5
 
+const root = ReactDOM.createRoot(document.getElementById('root'));
 
-
-const root = ReactDOM.createRoot(document.getElementById('root')); // Create a root
 root.render(
   <React.StrictMode>
     <App />

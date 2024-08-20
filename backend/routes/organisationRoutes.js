@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const organisationController = require('../controllers/organisationController');
 const { verifyToken, checkRole } = require('../middleware/authorizationMiddleware');
-
-//router.use(verifyToken);
-
-router.post('/',/* checkRole('admin'),*/ organisationController.createOrganisation);
-router.get('/',/* checkRole('admin', 'responsable'),*/ organisationController.getAllOrganisations);
-router.get('/:id',/* checkRole('admin', 'responsable'),*/ organisationController.getOrganisationById);
-router.put('/:id',/* checkRole('admin'),*/ organisationController.updateOrganisation);
-router.delete('/:id',/* checkRole('admin'),*/ organisationController.deleteOrganisation);
+/*
+router.use(verifyToken);
+router.use(checkRole('admin'));
+*/ 
+router.post('/', organisationController.createOrganisation);
+router.get('/', organisationController.getAllOrganisations);
+router.get('/:id', organisationController.getOrganisationById);
+router.put('/:id', organisationController.updateOrganisation);
+router.delete('/:id', organisationController.deleteOrganisation);
 
 module.exports = router;

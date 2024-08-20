@@ -24,5 +24,4 @@ const DeleteResponsable = ({ id, onDeleteSuccess }) => {
   <Button type="primary" danger ghost onClick={handleDelete}>Delete</Button>
 </div>
 };
-
 export default DeleteResponsable;

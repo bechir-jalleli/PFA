@@ -1,131 +1,109 @@
-import React from 'react'
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
-import { Menu } from 'antd';
-const items = [
-    {
-      key: 'sub1',
-      label: 'Navigation One',
-      icon: <MailOutlined />,
-      children: [
-        {
-          key: 'g1',
-          label: 'Item 1',
-          type: 'group',
-          children: [
-            {
-              key: '1',
-              label: 'Option 1',
-            },
-            {
-              key: '2',
-              label: 'Option 2',
-            },
-          ],
-        },
-        {
-          key: 'g2',
-          label: 'Item 2',
-          type: 'group',
-          children: [
-            {
-              key: '3',
-              label: 'Option 3',
-            },
-            {
-              key: '4',
-              label: 'Option 4',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      key: 'sub2',
-      label: 'Navigation Two',
-      icon: <AppstoreOutlined />,
-      children: [
-        {
-          key: '5',
-          label: 'Option 5',
-        },
-        {
-          key: '6',
-          label: 'Option 6',
-        },
-        {
-          key: 'sub3',
-          label: 'Submenu',
-          children: [
-            {
-              key: '7',
-              label: 'Option 7',
-            },
-            {
-              key: '8',
-              label: 'Option 8',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      type: 'divider',
-    },
-    {
-      key: 'sub4',
-      label: 'Navigation Three',
-      icon: <SettingOutlined />,
-      children: [
-        {
-          key: '9',
-          label: 'Option 9',
-        },
-        {
-          key: '10',
-          label: 'Option 10',
-        },
-        {
-          key: '11',
-          label: 'Option 11',
-        },
-        {
-          key: '12',
-          label: 'Option 12',
-        },
-      ],
-    },
-    {
-      key: 'grp',
-      label: 'Group',
-      type: 'group',
-      children: [
-        {
-          key: '13',
-          label: 'Option 13',
-        },
-        {
-          key: '14',
-          label: 'Option 14',
-        },
-      ],
-    },
-  ];
-function SideBar() {
-    const onClick = (e) => {
-        console.log('click ', e);
-      };
-      return (
-        <Menu
-          onClick={onClick}
-          style={{
-            width: 256,
-          }}
-          defaultSelectedKeys={['1']}
-          defaultOpenKeys={['sub1']}
-          mode="inline"
-          items={items}
-        />
-      );
-    }
+// src/components/Sidebar.js
+import React, { useState } from 'react';
+import { Button, Menu } from 'antd';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
+import {
+  UserOutlined,
+  TeamOutlined,
+  AppstoreOutlined,
+  CarryOutFilled,
+  AppstoreFilled,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined
+} from '@ant-design/icons';
+import '../styles/Sidebar.css';
 
-export default SideBar
+const items = [
+  {
+    label: 'Admin',
+    key: 'admin',
+    icon: <UserOutlined />,
+    path: '/admin',
+  },
+  {
+    label: 'Responsables',
+    key: 'responsables',
+    icon: <UserOutlined />,
+    path: '/responsables',
+  },
+  {
+    label: 'Chefs Project',
+    key: 'chef-projects',
+    icon: <UserOutlined />,
+    path: '/chef-projects',
+  },
+  {
+    label: 'Membres equipe',
+    key: 'membres-equipe',
+    icon: <TeamOutlined />,
+    path: '/membre-equipes',
+  },
+  {
+    label: 'Organisations',
+    key: 'organisations',
+    icon: <AppstoreOutlined />,
+    path: '/organisations',
+  },
+  {
+    label: 'Sous Organisation',
+    key: 'sous-organisation',
+    icon: <AppstoreOutlined />,
+    path: '/sous-organisation',
+  },
+  {
+    label: 'Project',
+    key: 'project',
+    icon: <AppstoreFilled />,
+    path: '/project',
+  },
+  {
+    label: 'Taches',
+    key: 'taches',
+    icon: <CarryOutFilled />,
+    path: '/taches',
+  },
+];
+const Sidebar = () => {
+  const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate(); // Initialize navigate
+
+  const toggleCollapsed = () => {
+    setCollapsed(prev => !prev);
+  };
+
+  const handleMenuClick = (path) => {
+    navigate(path); // Use navigate to programmatically navigate
+  };
+
+  return (
+<div className={`sidebar ${collapsed ? 'collapsed' : ''}`} style={{ marginTop: '64px' }}>
+<Button
+        type="primary"
+        onClick={toggleCollapsed}
+        className="toggle-btn"
+        style={{ marginBottom: 16 }}
+        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+      >
+        {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+      </Button>
+      <Menu
+        mode="inline"
+        theme="dark"
+        inlineCollapsed={collapsed}
+        className="sidebar-menu"
+      >
+        {items.map(item => (
+          <Menu.Item
+            key={item.key}
+            icon={item.icon}
+            onClick={() => handleMenuClick(item.path)} // Handle menu item click
+          >
+            {item.label}
+          </Menu.Item>
+        ))}
+      </Menu>
+    </div>
+  );
+};
+
+export default Sidebar;

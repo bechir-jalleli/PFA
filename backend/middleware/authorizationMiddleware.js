@@ -4,11 +4,11 @@ const handleError = require('../utils/handleError');
 
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers.authorization || req.cookies.jwt;
-    if (!authHeader) return handleError(createError(401, 'you should login'), res);
+    if (!authHeader) return handleError(createError(401, 'You should login'), res);
 
     const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-        if (err) return handleError(createError(403, 'you not have the access'), res);
+        if (err) return handleError(createError(403, 'You do not have access'), res);
         req.user = decoded.UserInfo;
         next();
     });

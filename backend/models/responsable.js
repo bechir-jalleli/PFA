@@ -12,6 +12,7 @@ const responsableSchema = new Schema({
     chefProjects: [{ type: Schema.Types.ObjectId, ref: 'ChefProject' }]
 }, { timestamps: true });
 
+// Custom validation for organisation and sousOrganisation
 responsableSchema.path('organisation').validate(function(value) {
   if (value && this.sousOrganisation) {
     return false;
@@ -22,5 +23,6 @@ responsableSchema.path('organisation').validate(function(value) {
   return true;
 }, 'Either organisation or sousOrganisation must be provided, but not both.');
 
-const Responsable = mongoose.model('Responsable', responsableSchema);
+const Responsable = mongoose.models.Responsable || mongoose.model('Responsable', responsableSchema);
+
 module.exports = Responsable;

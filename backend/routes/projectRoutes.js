@@ -5,10 +5,11 @@ const { verifyToken, checkRole } = require('../middleware/authorizationMiddlewar
 
 //router.use(verifyToken);
 
-router.post('/',/* checkRole( 'responsable'),*/ projectController.createProject);
-router.get('/',/* checkRole('admin', 'responsable', 'chefProject'),*/ projectController.getAllProjects);
-router.get('/:id',/* checkRole('admin', 'responsable', 'chefProject'),*/ projectController.getProjectById);
-router.put('/:id',/* checkRole( 'responsable'),*/ projectController.updateProject);
-router.delete('/:id',/* checkRole( 'responsable'),*/ projectController.deleteProject);
+router.get('/',/*checkRole('responsable','admin'), */projectController.getAllProjects);
+router.get('/:id',/*checkRole('responsable','admin'), */projectController.getProjectById);
+
+router.post('/', /*checkRole('responsable'),*/projectController.createProject);
+router.put('/:id',/* checkRole('responsable'),*/projectController.updateProject);
+router.delete('/:id',/* checkRole('responsable'),*/projectController.deleteProject);
 
 module.exports = router;

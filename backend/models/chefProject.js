@@ -7,10 +7,12 @@ const chefProjectSchema = new Schema({
     email: { type: String, required: true, unique: true },
     phone: { type: String },
     mdp: { type: String, required: true },
-    responsable: { type: Schema.Types.ObjectId, ref: 'Responsable',  },
+    responsable: { type: Schema.Types.ObjectId, ref: 'Responsable' },
     membresEquipe: [{ type: Schema.Types.ObjectId, ref: 'MembreEquipe' }],
     taches: [{ type: Schema.Types.ObjectId, ref: 'Tache' }]
 }, { timestamps: true });
 
-const ChefProject = mongoose.model('ChefProject', chefProjectSchema);
+// Use this to avoid overwriting the model
+const ChefProject = mongoose.models.ChefProject || mongoose.model('ChefProject', chefProjectSchema);
+
 module.exports = ChefProject;

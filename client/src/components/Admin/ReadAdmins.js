@@ -1,17 +1,15 @@
-// src/components/ReadAdmins.js
+// src/components/Admin/ReadAdmins.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal } from 'antd';
+import { Table, Button, Space } from 'antd';
 import UpdateAdmin from './UpdateAdmin';
-
 
 const ReadAdmins = () => {
   const [admins, setAdmins] = useState([]);
-  const [visible, setVisible] = useState(false);
 
   const fetchAdmins = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/admin/');
+      const response = await axios.get('http://localhost:5000/admin');
       setAdmins(response.data);
     } catch (error) {
       console.error('Error fetching admins:', error);
@@ -22,24 +20,15 @@ const ReadAdmins = () => {
     fetchAdmins();
   }, []);
 
- 
-
   const handleUpdateSuccess = () => {
-    fetchAdmins(); // Refresh the admin list after update
+    fetchAdmins();
   };
-
-
 
   const columns = [
     {
       title: 'Name',
-      dataIndex: 'nom',
-      key: 'nom',
-    },
-    {
-      title: 'Surname',
-      dataIndex: 'prenom',
-      key: 'prenom',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: 'Email',
@@ -47,39 +36,20 @@ const ReadAdmins = () => {
       key: 'email',
     },
     {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
-    },
-    {
       title: 'Actions',
       key: 'actions',
       render: (text, record) => (
-        <span>
+        <Space>
           <UpdateAdmin id={record._id} onUpdateSuccess={handleUpdateSuccess} />
-        </span>
+        </Space>
       ),
     },
   ];
 
   return (
-    <>
-      <Button
-        type="primary"
-        onClick={() => setVisible(true)}
-        style={{ marginBottom: 16 }}
-      >
-        Create Admin
-      </Button>
+    <div style={{ padding: '20px', marginLeft: '20px' }}>
       <Table dataSource={admins} columns={columns} rowKey="_id" />
-      <Modal
-        title="Create Admin"
-        visible={visible}
-        footer={null}
-        onCancel={() => setVisible(false)}
-      >
-      </Modal>
-    </>
+    </div>
   );
 };
 

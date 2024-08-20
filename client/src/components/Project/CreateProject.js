@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Form, Input, DatePicker, Button, notification } from 'antd';
+import { Form, Input, DatePicker, Select, Button, notification } from 'antd';
 
 const { TextArea } = Input;
+const { Option } = Select;
 
 // Function to convert date to ISO string format
 const formatDate = (date) => {
@@ -12,10 +13,36 @@ const formatDate = (date) => {
 
 const CreateProject = ({ onClose, onCreateSuccess }) => {
   const [form] = Form.useForm();
+  const [organisations, setOrganisations] = useState([]);
+  const [sousOrganisations, setSousOrganisations] = useState([]);
+  const [chefProjects, setChefProjects] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [projectResponse, organisationsResponse, sousOrganisationsResponse, chefProjectsResponse] = await Promise.all([
+          axios.get('http://localhost:5000/projects'),
+          axios.get('http://localhost:5000/organisations'),
+          axios.get('http://localhost:5000/sous-organisations'),
+          axios.get('http://localhost:5000/chef-projects'),
+        ]);
+
+        setOrganisations(organisationsResponse.data);
+        setSousOrganisations(sousOrganisationsResponse.data);
+        setChefProjects(chefProjectsResponse.data);
+      } catch (error) {
+        notification.error({
+          message: 'Error',
+          description: 'Failed to fetch data',
+        });
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const onFinish = async (values) => {
     try {
-      // Convert dates to ISO string format
       const formattedValues = {
         ...values,
         startDate: formatDate(values.startDate),
@@ -56,21 +83,40 @@ const CreateProject = ({ onClose, onCreateSuccess }) => {
       <Form.Item
         name="organisation"
         label="Organisation"
+        rules={[{ required: true, message: 'Please select an Organisation!' }]}
       >
-        <Input />
+        <Select placeholder="Select an Organisation">
+          {organisations.map(org => (
+            <Option key={org._id} value={org._id}>
+              {org.nom}
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
       <Form.Item
         name="sousOrganisation"
         label="Sous-Organisation"
       >
-        <Input />
+        <Select placeholder="Select a Sous-Organisation">
+          {sousOrganisations.map(sousOrg => (
+            <Option key={sousOrg._id} value={sousOrg._id}>
+              {sousOrg.nom}
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
       <Form.Item
         name="chefProject"
         label="Chef Project"
-        rules={[{ required: true, message: 'Please select the Chef Project!' }]}
+        rules={[{ required: true, message: 'Please select a Chef Project!' }]}
       >
-        <Input />
+        <Select placeholder="Select a Chef Project">
+          {chefProjects.map(chefProject => (
+            <Option key={chefProject._id} value={chefProject._id}>
+              {chefProject.nom}
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
       <Form.Item
         name="startDate"

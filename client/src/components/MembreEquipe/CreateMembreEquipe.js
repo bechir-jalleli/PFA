@@ -21,7 +21,8 @@ const CreateMembreEquipe = ({ onClose, onCreateSuccess }) => {
 
   const onFinish = async (values) => {
     try {
-      await axios.post('http://localhost:5000/membre-equipes/register/', values);
+      const response = await axios.post('http://localhost:5000/membre-equipes', values);
+      console.log('Create response:', response); // Log the response for debugging
       notification.success({
         message: 'Success',
         description: 'Membre equipe created successfully',
@@ -30,6 +31,7 @@ const CreateMembreEquipe = ({ onClose, onCreateSuccess }) => {
       if (onCreateSuccess) onCreateSuccess(); // Call the success function passed from the parent
       if (onClose) onClose(); // Close modal on success
     } catch (error) {
+      console.error('Create error:', error); // Log the error details
       notification.error({
         message: 'Error',
         description: 'Failed to create membre equipe',

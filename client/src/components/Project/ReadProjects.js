@@ -110,7 +110,7 @@ const ReadProjects = () => {
       title: 'Actions',
       key: 'actions',
       render: (text, record) => (
-        <span>
+        <span style={{ padding: '20px', marginLeft: '20px' }}>
           <Button
             onClick={() => {
               setSelectedProjectId(record._id);
@@ -130,7 +130,7 @@ const ReadProjects = () => {
   ];
 
   return (
-    <>
+    <div style={{ padding: '20px', marginLeft: '20px' }}>
       <Button
         type="primary"
         onClick={() => setVisible(true)}
@@ -162,7 +162,7 @@ const ReadProjects = () => {
           onCancel={() => setVisible(false)}
         />
       </Modal>
-    </>
+    </div>
   );
 };
 

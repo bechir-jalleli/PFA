@@ -1,42 +1,65 @@
 // src/components/ReadChefProject.js
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal } from 'antd';
-import CreateChefProject from './CreateChefProject';
+import { Table, Typography, Button, Space, notification, Modal } from 'antd';
 import UpdateChefProject from './UpdateChefProject';
 import DeleteChefProject from './DeleteChefProject';
+import CreateChefProject from './CreateChefProject';
+
+const { Title } = Typography;
 
 const ReadChefProject = () => {
-  const [chefProjects, setChefProjects] = useState([]);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
 
-  const fetchChefProjects = async () => {
+  // Define the fetchData function
+  const fetchData = async () => {
     try {
       const response = await axios.get('http://localhost:5000/chef-projects');
-      setChefProjects(response.data);
+      setData(response.data);
     } catch (error) {
-      console.error('Error fetching ChefProjects:', error);
+      notification.error({
+        message: 'Error',
+        description: 'Failed to fetch Chef Projects',
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Call fetchData when component mounts
   useEffect(() => {
-    fetchChefProjects();
+    fetchData();
   }, []);
 
   const handleCreateSuccess = () => {
-    fetchChefProjects(); 
+    fetchData(); // Refresh the list after creation
+  };
+
+  const handleUpdateSuccess = () => {
+    fetchData(); // Refresh the list after update
+  };
+
+  const handleDeleteSuccess = () => {
+    fetchData(); // Refresh the list after deletion
   };
 
   const columns = [
     {
+      title: 'ID',
+      dataIndex: '_id',
+      key: 'id',
+    },
+    {
       title: 'Name',
       dataIndex: 'nom',
-      key: 'nom',
+      key: 'name',
     },
     {
       title: 'Surname',
       dataIndex: 'prenom',
-      key: 'prenom',
+      key: 'surname',
     },
     {
       title: 'Email',
@@ -49,36 +72,57 @@ const ReadChefProject = () => {
       key: 'phone',
     },
     {
+      title: 'Created At',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (text) => new Date(text).toLocaleDateString(),
+    },
+    {
+      title: 'Updated At',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      render: (text) => new Date(text).toLocaleDateString(),
+    },
+    {
       title: 'Actions',
       key: 'actions',
-      render: (text, record) => (
-        <span>
-          <UpdateChefProject id={record._id} onUpdateSuccess={fetchChefProjects} />
-          <DeleteChefProject id={record._id} onDeleteSuccess={fetchChefProjects} />
-        </span>
+      render: (_, record) => (
+        <Space size="middle">
+          <UpdateChefProject id={record._id} onUpdateSuccess={handleUpdateSuccess} />
+          <DeleteChefProject id={record._id} onDeleteSuccess={handleDeleteSuccess} />
+        </Space>
       ),
     },
   ];
 
   return (
-    <>
+    <div style={{ padding: '20px', marginLeft: '20px' }}>
+      <Title level={2}>Chef Projects</Title>
       <Button
         type="primary"
         onClick={() => setVisible(true)}
         style={{ marginBottom: 16 }}
       >
-        Create ChefProject
+        Create Chef Project
       </Button>
-      <Table dataSource={chefProjects} columns={columns} rowKey="_id" />
+      <Table
+        columns={columns}
+        dataSource={data}
+        rowKey="_id"
+        loading={loading}
+      />
       <Modal
-        title="Create ChefProject"
+        title="Create Chef Project"
         visible={visible}
         footer={null}
         onCancel={() => setVisible(false)}
       >
-        <CreateChefProject onClose={() => setVisible(false)} onCreateSuccess={handleCreateSuccess} />
+        <CreateChefProject 
+          onClose={() => setVisible(false)} 
+          onCreateSuccess={handleCreateSuccess} 
+        />
       </Modal>
-    </>
+    </div>
   );
 };
 

@@ -1,0 +1,22 @@
+/* src/pages/Login.css */
+
+.login-page {
+    background-color: inherit; /* Inherit background color from body */
+    color: inherit; /* Inherit text color from body */
+  }
+  
+  .login-card {
+    background-color: inherit;
+    color: inherit;
+    box-shadow: none;
+    border-radius: 8px;
+  }
+  
+  .login-card .ant-form-item-label > label {
+    color: inherit;
+  }
+  
+  .login-card .ant-btn {
+    border-radius: 8px;
+  }
+  

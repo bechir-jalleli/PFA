@@ -1,56 +1,33 @@
-// src/App.js
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { AuthProvider } from './Context/AuthContext';
+import { ThemeProvider, useTheme } from './Context/ThemeContext';
+import Header from './layouts/Header';
+import AppRoutes from './routes/AppRoutes'; // Import the AppRoutes component
+import Sidebar from './layouts/SideBar';
 import NavBar from './layouts/NavBar';
-import ReadAdmins from './components/Admin/ReadAdmins';
-import ReadResponsables from './components/Responsable/ReadResponsable';
-import ReadChefProject from './components/ChefProject/ReadChefProject';
-import ReadMembreEquipe from './components/MembreEquipe/ReadMembreEquipe';
-import ReadTache from './components/Tache/ReadTache';
-import ReadOrganisations from './components/Organisation/ReadOrganisations';
-import ReadSousOrganisations from './components/SousOrganisation/ReadSousOrganisations'; // Import the new component
-import UpdateTache from './components/Tache/UpdateTache';
-import ReadProjects from './components/Project/ReadProjects';
-
 
 function App() {
-  const [selectedComponent, setSelectedComponent] = useState('admin');
+  const { isDarkMode } = useTheme();
 
-  const renderComponent = () => {
-    switch (selectedComponent) {
-      case 'admin':
-        return <ReadAdmins />;
-      case 'responsables':
-        return <ReadResponsables />;
-      case 'chefs-project':
-        return <ReadChefProject />;
-      case 'membres-equipe':
-        return <ReadMembreEquipe />;
-      case 'taches':
-        return <ReadTache />;
-      case 'organisations':
-        return <ReadOrganisations />;
-      case 'sous-organisation': 
-        return <ReadSousOrganisations />;
-        case 'project': 
-        return <ReadProjects />;
-      default:
-        return <div>Select an option from the menu</div>;
-    }
-  };
+  useEffect(() => {
+    document.body.className = isDarkMode ? 'dark' : ''; // Toggle dark class
+  }, [isDarkMode]);
 
   return (
-    <div>
-      <NavBar onSelect={setSelectedComponent} />
-      <div style={{ padding: '20px' }}>
-        {renderComponent()}
-      </div>
-    
-      <br />
-      <br /><br /><br /><br />
-    
-      
-    </div>
+    <Router>
+      <Header />
+      <NavBar /> 
+      <Sidebar />
+      <AppRoutes /> {/* Use the AppRoutes component */}
+    </Router>
   );
 }
 
-export default App;
+export default () => (
+  <AuthProvider>
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
+  </AuthProvider>
+);

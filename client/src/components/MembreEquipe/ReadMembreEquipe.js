@@ -1,6 +1,7 @@
+// src/components/ReadMembreEquipe.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal } from 'antd';
+import { Table, Button, Modal, Space } from 'antd';
 import UpdateMembreEquipe from './UpdateMembreEquipe';
 import DeleteMembreEquipe from './DeleteMembreEquipe';
 import CreateMembreEquipe from './CreateMembreEquipe';
@@ -36,6 +37,11 @@ const ReadMembreEquipe = () => {
 
   const columns = [
     {
+      title: 'ID',
+      dataIndex: '_id',
+      key: '_id',
+    },
+    {
       title: 'Name',
       dataIndex: 'nom',
       key: 'nom',
@@ -56,25 +62,31 @@ const ReadMembreEquipe = () => {
       key: 'phone',
     },
     {
+      title: 'Created At',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (text) => new Date(text).toLocaleDateString(),
+    },
+    {
+      title: 'Updated At',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      render: (text) => new Date(text).toLocaleDateString(),
+    },
+    {
       title: 'Actions',
       key: 'actions',
       render: (text, record) => (
-        <span>
-          <UpdateMembreEquipe 
-            id={record._id} 
-            onUpdateSuccess={handleUpdateSuccess} 
-          />
-          <DeleteMembreEquipe 
-            id={record._id} 
-            onDeleteSuccess={handleDeleteSuccess} 
-          />
-        </span>
+        <Space>
+          <UpdateMembreEquipe id={record._id} onUpdateSuccess={handleUpdateSuccess} />
+          <DeleteMembreEquipe id={record._id} onDeleteSuccess={handleDeleteSuccess} />
+        </Space>
       ),
     },
   ];
 
   return (
-    <>
+    <div style={{ padding: '20px', marginLeft: '20px' }}>
       <Button
         type="primary"
         onClick={() => setVisible(true)}
@@ -94,7 +106,7 @@ const ReadMembreEquipe = () => {
           onCreateSuccess={handleCreateSuccess} 
         />
       </Modal>
-    </>
+    </div>
   );
 };
 

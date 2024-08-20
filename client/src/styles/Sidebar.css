@@ -1,0 +1,57 @@
+/* src/styles/Sidebar.css */
+.sidebar {
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #001529;
+    padding: 16px;
+    transition: width 0.2s ease;
+    overflow: auto;
+    z-index: 1000;
+}
+
+.sidebar.collapsed {
+    width: 80px; /* Adjust this value based on icon size */
+}
+
+.sidebar .toggle-btn {
+    font-size: 16px;
+    width: 100%;
+    border: none;
+    background: #001529;
+    color: #fff;
+}
+
+.sidebar-menu {
+    width: 200px; /* Full width when expanded */
+}
+
+.sidebar-menu .ant-menu-item {
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-menu .ant-menu-item a {
+    color: #fff;
+}
+
+.sidebar-menu .ant-menu-item:hover {
+    background-color: #1890ff;
+    color: #fff;
+}
+
+.sidebar-menu .ant-menu-item-selected {
+    background-color: #1890ff !important;
+    color: #fff !important;
+}
+
+.sidebar-menu .ant-menu-item-selected a {
+    color: #fff !important;
+}
+
+.sidebar-menu .ant-menu-item:focus {
+    background-color: #1890ff;
+}

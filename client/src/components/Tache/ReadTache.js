@@ -69,7 +69,7 @@ const ReadTaches = () => {
   ];
 
   return (
-    <>
+    <div style={{ padding: '20px', marginLeft: '20px' }}>
       <Button
         type="primary"
         onClick={() => setVisible(true)}
@@ -86,7 +86,7 @@ const ReadTaches = () => {
       >
         <CreateTache onCreateSuccess={handleCreateSuccess} />
       </Modal>
-    </>
+    </div>
   );
 };
 

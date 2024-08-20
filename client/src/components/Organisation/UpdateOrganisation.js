@@ -1,24 +1,25 @@
-import React, { useState, useEffect } from 'react';
+// src/components/UpdateOrganisation.js
+import React, { useEffect } from 'react';
 import axios from 'axios';
-import { Form, Input, Button, notification } from 'antd';
+import { Form, Input, Button, Modal, notification } from 'antd';
 
-const UpdateOrganisation = ({ id, onClose, onUpdateSuccess }) => {
+const UpdateOrganisation = ({ id, visible, onUpdateSuccess, onClose }) => {
   const [form] = Form.useForm();
-  const [organisation, setOrganisation] = useState(null);
 
   useEffect(() => {
     const fetchOrganisation = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/organisations/${id}`);
-        setOrganisation(response.data);
         form.setFieldsValue(response.data);
       } catch (error) {
         console.error('Error fetching organisation:', error);
       }
     };
 
-    fetchOrganisation();
-  }, [id, form]);
+    if (visible) {
+      fetchOrganisation();
+    }
+  }, [id, visible, form]);
 
   const handleOk = async () => {
     try {
@@ -28,8 +29,8 @@ const UpdateOrganisation = ({ id, onClose, onUpdateSuccess }) => {
         message: 'Success',
         description: 'Organisation updated successfully',
       });
-      if (onUpdateSuccess) onUpdateSuccess(); // Notify parent to refresh data
-      if (onClose) onClose(); // Close modal on success
+      onClose(); // Close the modal
+      if (onUpdateSuccess) onUpdateSuccess(); // Refresh data after update
     } catch (error) {
       notification.error({
         message: 'Error',
@@ -39,23 +40,22 @@ const UpdateOrganisation = ({ id, onClose, onUpdateSuccess }) => {
   };
 
   return (
-    <>
-      {organisation && (
-        <Form form={form} layout="vertical" onFinish={handleOk}>
-          <Form.Item name="nom" label="Name">
-            <Input />
-          </Form.Item>
-          <Form.Item name="description" label="Details">
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Update Organisation
-            </Button>
-          </Form.Item>
-        </Form>
-      )}
-    </>
+    <Modal
+      title="Update Organisation"
+      visible={visible}
+      onOk={handleOk}
+      onCancel={onClose}
+      width={600} // Adjust the width as needed
+    >
+      <Form form={form} layout="vertical">
+        <Form.Item name="nom" label="Name" rules={[{ required: true, message: 'Please input the name!' }]}>
+          <Input />
+        </Form.Item>
+        <Form.Item name="description" label="Description">
+          <Input.TextArea rows={4} />
+        </Form.Item>
+      </Form>
+    </Modal>
   );
 };
 

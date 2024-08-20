@@ -10,5 +10,7 @@ const membreEquipeSchema = new Schema({
     mdp: { type: String, required: true }
 }, { timestamps: true });
 
-const MembreEquipe = mongoose.model('MembreEquipe', membreEquipeSchema);
+// Check if the model already exists
+const MembreEquipe = mongoose.models.MembreEquipe || mongoose.model('MembreEquipe', membreEquipeSchema);
+
 module.exports = MembreEquipe;

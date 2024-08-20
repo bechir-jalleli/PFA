@@ -82,7 +82,7 @@ const ReadSousOrganisations = () => {
   ];
 
   return (
-    <>
+    <div style={{ padding: '20px', marginLeft: '20px' }}>
       <Button
         type="primary"
         onClick={() => setVisible(true)}
@@ -106,7 +106,7 @@ const ReadSousOrganisations = () => {
           organisationOptions={organisationOptions}
         />
       </Modal>
-    </>
+    </div>
   );
 };
 

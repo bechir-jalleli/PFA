@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Form, Input, Button, Modal, notification, Select, DatePicker } from 'antd';
+import { Form, Input, Modal, notification, Select, DatePicker } from 'antd';
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 
 function UpdateProject({ id, onUpdateSuccess }) {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
   const [form] = Form.useForm();
   const [project, setProject] = useState(null);
   const [organisations, setOrganisations] = useState([]);
@@ -30,15 +31,19 @@ function UpdateProject({ id, onUpdateSuccess }) {
         // Set form fields with project data
         form.setFieldsValue({
           ...projectResponse.data,
-          startDate: projectResponse.data.startDate ? new Date(projectResponse.data.startDate) : null,
-          endDate: projectResponse.data.endDate ? new Date(projectResponse.data.endDate) : null,
+          startDate: projectResponse.data.startDate ? dayjs(projectResponse.data.startDate) : null,
+          endDate: projectResponse.data.endDate ? dayjs(projectResponse.data.endDate) : null,
         });
+        // Open modal when project data is fetched
+        setVisible(true);
       } catch (error) {
         console.error('Error fetching project:', error);
       }
     };
 
-    fetchProject();
+    if (id) {
+      fetchProject();
+    }
   }, [id, form]);
 
   const handleOk = async () => {
@@ -69,14 +74,13 @@ function UpdateProject({ id, onUpdateSuccess }) {
 
   return (
     <>
-      <Button onClick={() => setVisible(true)}>Update Project</Button>
       <Modal
         title="Update Project"
         visible={visible}
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        {!project && (
+        {project && (
           <Form form={form} layout="vertical">
             <Form.Item name="name" label="Project Name" rules={[{ required: true, message: 'Please enter the project name.' }]}>
               <Input />
@@ -85,10 +89,18 @@ function UpdateProject({ id, onUpdateSuccess }) {
               <Input.TextArea />
             </Form.Item>
             <Form.Item name="startDate" label="Start Date">
-              <DatePicker format="YYYY-MM-DD" />
+              <DatePicker
+                format="YYYY-MM-DD"
+                value={form.getFieldValue('startDate') ? dayjs(form.getFieldValue('startDate')) : null}
+                onChange={(date) => form.setFieldsValue({ startDate: date })}
+              />
             </Form.Item>
             <Form.Item name="endDate" label="End Date">
-              <DatePicker format="YYYY-MM-DD" />
+              <DatePicker
+                format="YYYY-MM-DD"
+                value={form.getFieldValue('endDate') ? dayjs(form.getFieldValue('endDate')) : null}
+                onChange={(date) => form.setFieldsValue({ endDate: date })}
+              />
             </Form.Item>
             <Form.Item name="budget" label="Budget" rules={[{ required: true, message: 'Please enter the budget.' }]}>
               <Input type="number" />
@@ -119,6 +131,6 @@ function UpdateProject({ id, onUpdateSuccess }) {
       </Modal>
     </>
   );
-};
+}
 
 export default UpdateProject;

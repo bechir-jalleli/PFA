@@ -31,38 +31,6 @@ const verifyToken = (token, secret) => {
     });
 };
 
-exports.register = async (req, res) => {
-    const { nom, prenom, email, phone, mdp } = req.body;
-
-    if (!nom || !email || !mdp) {
-        return res.status(400).json({ error: 'Name, email, and password are required' });
-    }
-
-    try {
-        const foundAdmin = await Admin.findOne({ email }).exec();
-        if (foundAdmin) {
-            return res.status(409).json({ error: 'Admin already exists' });
-        }
-
-        const hashedPassword = await bcrypt.hash(mdp, 10);
-        const admin = new Admin({ nom, prenom, email, phone, mdp: hashedPassword });
-        const createdAdmin = await admin.save();
-
-
-        res.status(201).json({
-            id: createdAdmin._id,
-            nom: createdAdmin.nom,
-            prenom:createdAdmin.prenom,
-            email: createdAdmin.email,
-            phone: createdAdmin.phone,
-            mdp: createdAdmin.mdp,
-        });
-
-    } catch (error) {
-        res.status(500).json({ error: 'Error registering admin: ' + error.message });
-    }
-};
-
 exports.login = async (req, res) => {
     const { email, mdp } = req.body;
 
@@ -98,6 +66,39 @@ exports.login = async (req, res) => {
 
     } catch (error) {
         handleError(res, 500, 'Error logging in: ' + error.message);
+    }
+};
+
+
+exports.register = async (req, res) => {
+    const { nom, prenom, email, phone, mdp } = req.body;
+
+    if (!nom || !email || !mdp) {
+        return res.status(400).json({ error: 'Name, email, and password are required' });
+    }
+
+    try {
+        const foundAdmin = await Admin.findOne({ email }).exec();
+        if (foundAdmin) {
+            return res.status(409).json({ error: 'Admin already exists' });
+        }
+
+        const hashedPassword = await bcrypt.hash(mdp, 10);
+        const admin = new Admin({ nom, prenom, email, phone, mdp: hashedPassword });
+        const createdAdmin = await admin.save();
+
+
+        res.status(201).json({
+            id: createdAdmin._id,
+            nom: createdAdmin.nom,
+            prenom:createdAdmin.prenom,
+            email: createdAdmin.email,
+            phone: createdAdmin.phone,
+            mdp: createdAdmin.mdp,
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: 'Error registering admin: ' + error.message });
     }
 };
 
@@ -139,6 +140,7 @@ exports.getAllAdmins = async (req, res) => {
     try {
         const admins = await Admin.find({});
         res.status(200).json(admins);
+
     } catch (error) {
         handleError(res, 400, 'Error fetching admins: ' + error.message);
     }

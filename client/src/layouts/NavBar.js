@@ -46,7 +46,7 @@ const items = [
   },
 ];
 
-function NavBar({ onSelect }) {
+const NavBar = ({ onSelect }) => {
   const [current, setCurrent] = React.useState('admin');
 
   const handleClick = (e) => {
@@ -54,7 +54,15 @@ function NavBar({ onSelect }) {
     if (onSelect) onSelect(e.key);
   };
 
-  return <Menu onClick={handleClick} selectedKeys={[current]} mode="horizontal" items={items} />;
-}
+  return (
+    <Menu
+      onClick={handleClick}
+      selectedKeys={[current]}
+      mode="horizontal"
+      items={items}
+      style={{ lineHeight: '64px', backgroundColor: '#001529' }}
+    />
+  );
+};
 
 export default NavBar;
