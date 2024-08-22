@@ -1,0 +1,16 @@
+/* src/styles/themes/dark.css */
+:root {
+    --background-color: #141414;
+    --text-color: #ffffff;
+    --card-background: #1f1f1f;
+    --border-color: #434343;
+    --button-background: #177ddc;
+    --button-border: #177ddc;
+    --button-text: #ffffff;
+    --input-background: #1f1f1f;
+    --input-border: #434343;
+    --input-text: #ffffff;
+    --header-background: #1f1f1f;
+    --header-text: #ffffff;
+  }
+  

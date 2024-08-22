@@ -1,0 +1,16 @@
+/* src/styles/themes/light.css */
+:root {
+    --background-color: #f0f2f5;
+    --text-color: #000000;
+    --card-background: #ffffff;
+    --border-color: #d9d9d9;
+    --button-background: #1890ff;
+    --button-border: #1890ff;
+    --button-text: #ffffff;
+    --input-background: #ffffff;
+    --input-border: #d9d9d9;
+    --input-text: #000000;
+    --header-background: #ffffff;
+    --header-text: #000000;
+  }
+  

@@ -1,31 +1,38 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from '../pages/Login';
-import AdminPage from '../pages/AdminPage';
-import ResponsablePage from '../pages/ResponsablePage';
-import ChefProjectPage from '../pages/ChefProjectPage';
-import MembreEquipePage from '../pages/MembreEquipePage';
-import OrganisationsPage from '../pages/OrganisationsPage';
-import SousOrganisationPage from '../pages/SousOrganisationPage';
-import ProjectPage from '../pages/ProjectPage';
-import TachesPage from '../pages/TachesPage';
-import HomePage from '../pages/HomePage';
+// src/routes/AppRoutes.js
+import React, { Suspense, lazy } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import LoadingSpinner from '../components/LoadingSpinner';
+import NotFoundPage from '../pages/NotFoundPage';
+import PrivateRoute from './PrivateRoute';
+
+const HomePage = lazy(() => import('../pages/HomePage'));
+const LoginPage = lazy(() => import('../pages/LoginPage'));
+const AdminPage = lazy(() => import('../pages/AdminPage'));
+const ResponsablePage = lazy(() => import('../pages/ResponsablePage'));
+const ChefProjectPage = lazy(() => import('../pages/ChefProjectPage'));
+const MembreEquipePage = lazy(() => import('../pages/MembreEquipePage'));
+const OrganisationsPage = lazy(() => import('../pages/OrganisationsPage'));
+const SousOrganisationPage = lazy(() => import('../pages/SousOrganisationPage'));
+const ProjectPage = lazy(() => import('../pages/ProjectPage'));
+const TachesPage = lazy(() => import('../pages/TachesPage'));
 
 const AppRoutes = () => {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/admin" element={<AdminPage />} />
-      <Route path="/responsables" element={<ResponsablePage />} />
-      <Route path="/chef-projects" element={<ChefProjectPage />} />
-      <Route path="/membre-equipes" element={<MembreEquipePage />} />
-      <Route path="/organisations" element={<OrganisationsPage />} />
-      <Route path="/sous-organisation" element={<SousOrganisationPage />} />
-      <Route path="/project" element={<ProjectPage />} />
-      <Route path="/taches" element={<TachesPage />} />
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+    <Suspense fallback={<LoadingSpinner />}>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/admin" element={<PrivateRoute element={AdminPage} />} />
+        <Route path="/responsables" element={<PrivateRoute element={ResponsablePage} />} />
+        <Route path="/chef-projects" element={<PrivateRoute element={ChefProjectPage} />} />
+        <Route path="/membre-equipes" element={<PrivateRoute element={MembreEquipePage} />} />
+        <Route path="/organisations" element={<PrivateRoute element={OrganisationsPage} />} />
+        <Route path="/sous-organisation" element={<PrivateRoute element={SousOrganisationPage} />} />
+        <Route path="/project" element={<PrivateRoute element={ProjectPage} />} />
+        <Route path="/taches" element={<PrivateRoute element={TachesPage} />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </Suspense>
   );
 };
 

@@ -1,0 +1,38 @@
+/* src/styles/themes/base.css */
+:root {
+    --font-family: 'Roboto', sans-serif;
+    --transition-speed: 0.3s;
+  }
+  
+  body {
+    font-family: var(--font-family);
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+  }
+  
+  .ant-layout {
+    background: var(--background-color);
+  }
+  
+  .ant-card {
+    background: var(--card-background);
+    border-color: var(--border-color);
+  }
+  
+  .ant-typography {
+    color: var(--text-color);
+  }
+  
+  .ant-btn {
+    background: var(--button-background);
+    border-color: var(--button-border);
+    color: var(--button-text);
+  }
+  
+  .ant-input {
+    background: var(--input-background);
+    border-color: var(--input-border);
+    color: var(--input-text);
+  }
+  
+  /* Add more component styles as needed */
+  

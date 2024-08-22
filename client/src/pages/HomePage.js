@@ -1,31 +1,35 @@
-// src/pages/HomePage.js
 import React from 'react';
-import { Layout } from 'antd';
-import Sidebar from '../layouts/SideBar';
-import ReadAdmins from '../components/Admin/ReadAdmins';
-import ReadMembreEquipe from '../components/MembreEquipe/ReadMembreEquipe';
+import { Layout, Typography, Card } from 'antd';
+import MainLayout from '../layouts/MainLayout';
+import { useTheme } from '../Context/ThemeContext';
+import '../styles/pages/HomePage.css';  // Import the CSS file
 
 const { Content } = Layout;
+const { Title, Paragraph } = Typography;
 
 const HomePage = () => {
+  const { theme } = useTheme();
+
+  // Default shadow if theme.shadows is undefined
+  const cardShadow = theme?.shadows?.[1] || '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)';
+
   return (
-    <div>
-      <Layout style={{ minHeight: '100vh' }}>
-      <Sidebar />
-      <Layout style={{ marginLeft: 200 }}> {/* Adjust marginLeft based on sidebar width */}
-        <Content style={{ padding: '24px', minHeight: '100vh' }}>
-          <div style={{ padding: 24, borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
-            <h2>Welcome to GRCWebsite</h2>
-            <p>Your platform for Governance, Risk, and Compliance management.</p>
-          </div>
-          <div style={{ marginTop: '24px' }}>
-            <ReadAdmins />
-          </div>
-        </Content>
-      </Layout>
-    </Layout>
-    </div>
-    
+    <MainLayout>
+      <Content className="home-content">
+        <Card className="home-card" style={{ boxShadow: cardShadow }}>
+          <Title level={2}>Welcome to GRCWebsite from home page </Title>
+          <Paragraph>
+            Your platform for Governance, Risk, and Compliance management. 
+            GRCWebsite provides a comprehensive solution to streamline your 
+            organization's GRC processes, ensuring efficiency and compliance.
+          </Paragraph>
+          <Paragraph>
+            Explore our features and tools designed to help you manage risks, 
+            maintain compliance, and improve overall governance.
+          </Paragraph>
+        </Card>
+      </Content>
+    </MainLayout>
   );
 };
 

@@ -1,0 +1,30 @@
+.footer {
+    background-color: var(--footer-bg);
+    color: var(--footer-text);
+    padding: 24px 50px;
+  }
+  
+  .footer-links {
+    text-align: right;
+  }
+  
+  .footer-link {
+    color: var(--footer-link);
+    font-size: 24px;
+  }
+  
+  .footer-link:hover {
+    color: var(--primary-color);
+  }
+  
+  @media (max-width: 768px) {
+    .footer {
+      padding: 24px 20px;
+    }
+  
+    .footer-links {
+      text-align: left;
+      margin-top: 16px;
+    }
+  }
+  

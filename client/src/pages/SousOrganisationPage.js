@@ -2,8 +2,7 @@
 import React from 'react';
 import { Layout } from 'antd';
 import Sidebar from '../layouts/SideBar';
-import ReadAdmins from '../components/Admin/ReadAdmins';
-import ReadMembreEquipe from '../components/MembreEquipe/ReadMembreEquipe';
+import ReadSousOrganisation from '../components/SousOrganisation/ReadSousOrganisations'
 
 const { Content } = Layout;
 
@@ -19,7 +18,7 @@ const ResponsablePage = () => {
             <p>Your platform for Governance, Risk, and Compliance management.</p>
           </div>
           <div style={{ marginTop: '24px' }}>
-            <ReadAdmins />
+            <ReadSousOrganisation />
           </div>
         </Content>
       </Layout>

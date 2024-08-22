@@ -1,7 +1,7 @@
 // src/components/Admin/ReadAdmins.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Space } from 'antd';
+import { Table, Space } from 'antd';
 import UpdateAdmin from './UpdateAdmin';
 
 const ReadAdmins = () => {
@@ -47,9 +47,7 @@ const ReadAdmins = () => {
   ];
 
   return (
-    <div style={{ padding: '20px', marginLeft: '20px' }}>
-      <Table dataSource={admins} columns={columns} rowKey="_id" />
-    </div>
+    <Table dataSource={admins} columns={columns} rowKey="_id" />
   );
 };
 

@@ -13,3 +13,23 @@ chefProject
 responsable
 sousOrganisation
 
+import BrowserROuter
+routes
+BrowserROuter
+app
+BrowserROuter
+
+
+link to="/"     nav component without refresh the page
+routes
+    <route path="/" element ={<component />} />
+    <route path="book"> nestet route
+        <route index element ={<component />} /> origin path "/book"
+        <route path=":id" element ={<component />} />
+        <route path="new" element ={<component />} />
+    </route>
+    <route path="/" element ={<component />} /> the rest of paths
+
+routes
+
+const {id} =useParams()   

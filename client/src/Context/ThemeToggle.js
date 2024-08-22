@@ -1,24 +1,43 @@
-// src/Context/ThemeToggle.js
-import React, { useContext } from 'react';
-import { Switch } from 'antd'; // Import the Switch component from Ant Design
-import { ThemeContext } from './ThemeContext'; // Ensure this path is correct
+import React from 'react';
+import { Switch } from 'antd';
+import { useTheme } from '../Context/ThemeContext';
+import styled from 'styled-components';
+import { Brightness4, Brightness7 } from '@mui/icons-material';
+
+const ToggleContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const ThemeLabel = styled.span`
+  margin-right: 8px;
+  color: ${({ theme }) => theme.text.primary};
+  transition: color 0.3s ease;
+`;
+
+const StyledSwitch = styled(Switch)`
+  &.ant-switch-checked {
+    background-color: ${({ theme }) => theme.primary};
+  }
+`;
 
 const ThemeToggle = ({ style }) => {
-  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { isDarkMode, toggleTheme, theme } = useTheme();
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', ...style }}>
-      <span style={{ marginRight: '15px' }}>
+    <ToggleContainer style={style}>
+      <ThemeLabel theme={theme}>
         {isDarkMode ? 'Dark' : 'Light'}
-      </span>
-      <Switch
+      </ThemeLabel>
+      <StyledSwitch
         checked={isDarkMode}
         onChange={toggleTheme}
-        checkedChildren="🌙"
-        unCheckedChildren="☀️"
+        checkedChildren={<Brightness4 style={{ fontSize: 16 }} />}
+        unCheckedChildren={<Brightness7 style={{ fontSize: 16 }} />}
+        theme={theme}
       />
-    </div>
+    </ToggleContainer>
   );
 };
 
-export default ThemeToggle;
+export default React.memo(ThemeToggle);

@@ -1,0 +1,47 @@
+/* src/styles/pages/LoginPage.css */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .login-page.light {
+    background-color: #f0f2f5;
+    color: #000000;
+  }
+  
+  .login-page.dark {
+    background-color: #141414;
+    color: #ffffff;
+  }
+  
+  .login-box {
+    width: 100%;
+    max-width: 400px;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .login-page.light .login-box {
+    background-color: #ffffff;
+  }
+  
+  .login-page.dark .login-box {
+    background-color: #1f1f1f;
+  }
+  
+  .login-box h2 {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  
+  .login-form-button {
+    width: 100%;
+  }
+  
+  /* Add more styles as needed */
+  

@@ -1,14 +1,17 @@
-// src/index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import CssBaseline from '@mui/material/CssBaseline';
 import App from './App';
-import './index.css'; // Import global CSS styles
-import 'antd/dist/reset.css'; // Import Ant Design's reset CSS for v5
+import 'antd/dist/reset.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <CssBaseline />
+      <App />
+    </BrowserRouter>
   </React.StrictMode>
 );

@@ -1,0 +1,21 @@
+/* src/styles/pages/AdminPage.css */
+
+.admin-card {
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+  }
+  
+  .admin-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .icon-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .admin-title {
+    margin-left: 8px !important;
+  }
+  

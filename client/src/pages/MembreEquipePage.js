@@ -18,7 +18,7 @@ const MembreEquipePage = () => {
             <p>Your platform for Governance, Risk, and Compliance management.</p>
           </div>
           <div style={{ marginTop: '24px' }}>
-            <ReadMembreEquipe />
+            <div>hello</div>
           </div>
         </Content>
       </Layout>
