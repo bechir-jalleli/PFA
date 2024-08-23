@@ -1,30 +1,76 @@
-// src/pages/HomePage.js
 import React from 'react';
-import { Layout } from 'antd';
-import Sidebar from '../layouts/SideBar';
+import { Typography, Space, Card, Row, Col, Avatar, List, Button, theme } from 'antd';
+import { TeamOutlined, UserOutlined, ProjectOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import MainLayout from '../layouts/MainLayout';
 import ReadMembreEquipe from '../components/MembreEquipe/ReadMembreEquipe';
+import { useTheme } from '../styles/Context/ThemeContext';
 
-const { Content } = Layout;
+const { Title, Paragraph } = Typography;
 
 const MembreEquipePage = () => {
+  const { isDarkMode } = useTheme();
+  const { token } = theme.useToken();
+
+  const pageStyle = {
+    padding: token.padding,
+    minHeight: '100vh',
+    backgroundColor: token.colorBgContainer,
+    color: token.colorText,
+  };
+
+  const iconStyle = {
+    fontSize: 48,
+    color: token.colorPrimary,
+  };
+
+  const cardStyle = {
+    marginBottom: token.marginMD,
+    boxShadow: token.boxShadow,
+    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
+  };
+
+  const dummyTasks = [
+    'Complete project documentation',
+    'Review code changes',
+    'Attend team meeting',
+    'Update task board',
+  ];
+
   return (
-    <div>
-      <Layout style={{ minHeight: '100vh' }}>
-      <Sidebar />
-      <Layout style={{ marginLeft: 200 }}> {/* Adjust marginLeft based on sidebar width */}
-        <Content style={{ padding: '24px', minHeight: '100vh' }}>
-          <div style={{ padding: 24, borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
-            <h2>Welcome to GRCWebsite</h2>
-            <p>Your platform for Governance, Risk, and Compliance management.</p>
-          </div>
-          <div style={{ marginTop: '24px' }}>
-            <div>hello</div>
-          </div>
-        </Content>
-      </Layout>
-    </Layout>
-    </div>
-    
+    <MainLayout>
+      <div style={pageStyle}>
+        <Space align="center" style={{ marginBottom: token.marginLG }}>
+          <TeamOutlined style={iconStyle} />
+          <Title level={2} style={{ margin: 0, color: token.colorText }}>
+            Membre Equipe Dashboard
+          </Title>
+        </Space>
+
+        <Row gutter={[16, 16]}>
+          <Col xs={24} md={16}>
+            <Card style={cardStyle} title="Team Members">
+              <ReadMembreEquipe />
+            </Card>
+          </Col>
+          <Col xs={24} md={8}>
+            <Card style={cardStyle} title="My Tasks">
+              <List
+                itemLayout="horizontal"
+                dataSource={dummyTasks}
+                renderItem={(item) => (
+                  <List.Item>
+                    <List.Item.Meta
+                      avatar={<CheckCircleOutlined />}
+                      title={item}
+                    />
+                  </List.Item>
+                )}
+              />
+            </Card>
+          </Col>
+        </Row>
+      </div>
+    </MainLayout>
   );
 };
 

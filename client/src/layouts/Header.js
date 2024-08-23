@@ -1,26 +1,27 @@
 import React from 'react';
-import { Layout, Menu, Button, Avatar, Dropdown, Switch } from 'antd';
+import { Layout, Dropdown, Switch, Menu, Typography, Space, theme } from 'antd';
 import { 
   UserOutlined, 
   LogoutOutlined, 
   SettingOutlined,
-  MenuOutlined,
   BulbOutlined,
   LoginOutlined
 } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../Context/AuthContext';
+import { useAuth } from '../styles/Context/AuthContext';
 import LogoWhite from '../assets/image/logo-white.jpg';
 import LogoBlack from '../assets/image/logo-black.jpg';
-import '../styles/layouts/Header.css';
-import { useTheme } from '../Context/ThemeContext';
+import ProfileImage from '../assets/image/profile.png';
+import { useTheme } from '../styles/Context/ThemeContext';
 
 const { Header: AntHeader } = Layout;
+const { Text } = Typography;
 
 const Header = ({ toggleSidebar }) => {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const { toggleTheme, isDarkMode } = useTheme();
+  const { token } = theme.useToken();
 
   const handleLogout = () => {
     logout();
@@ -30,10 +31,10 @@ const Header = ({ toggleSidebar }) => {
   const userMenu = (
     <Menu>
       <Menu.Item key="profile" icon={<UserOutlined />}>
-        <Link to="/profile">Profile</Link>
+        <Link to="/">Profile</Link>
       </Menu.Item>
       <Menu.Item key="settings" icon={<SettingOutlined />}>
-        <Link to="/settings">Settings</Link>
+        <Link to="/">Settings</Link>
       </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout}>
@@ -43,45 +44,76 @@ const Header = ({ toggleSidebar }) => {
   );
 
   return (
-    <AntHeader className={`header ${isDarkMode ? 'dark' : 'light'}`}>
-      <div className="logo-container">
-        <Button 
-          type="text" 
-          icon={<MenuOutlined />} 
-          onClick={toggleSidebar} 
-          className="sidebar-toggle"
-        />
-        <Link to="/" className="logo-link">
-          <img className="logo" src={isDarkMode ? LogoWhite : LogoBlack} alt="Logo" />
+    <AntHeader style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '0 20px',
+      width: '100%',
+      height: '64px',
+      backgroundColor: token.colorBgContainer,
+      color: token.colorText,
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+      zIndex: 1000,
+    }}>
+      <Space align="center">
+        <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
+          <img 
+            src={isDarkMode ? LogoWhite : LogoBlack} 
+            alt="Logo" 
+            style={{
+              height: '32px',
+              width: '50px',
+              marginRight: '8px',
+              borderRadius: '30%',
+              objectFit: 'cover',
+            }}
+          />
         </Link>
-        <span className="grc-title">GRC</span>
-      </div>
+        <Text strong style={{ 
+          fontSize: '20px', 
+          color: token.colorText,
+          '@media screen and (max-width: 768px)': {
+            display: 'none',
+          },
+        }}>
+          GRC
+        </Text>
+      </Space>
       
-      <div className="right-container">
+      <Space align="center">
         <Switch
           checkedChildren={<BulbOutlined />}
           unCheckedChildren={<BulbOutlined />}
           checked={isDarkMode}
           onChange={toggleTheme}
-          className="theme-switch"
+          style={{ marginRight: '16px' }}
         />
         {user ? (
-          <>
-            <span className="user-info">Welcome, {user.name}</span>
-            <Dropdown overlay={userMenu} placement="bottomRight" arrow>
-              <Avatar icon={<UserOutlined />} className="user-avatar" />
-            </Dropdown>
-          </>
+          <Dropdown overlay={userMenu} placement="bottomRight" arrow>
+            <img 
+              src={ProfileImage} 
+              alt="Profile" 
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                cursor: 'pointer',
+                objectFit: 'cover',
+              }}
+            />
+          </Dropdown>
         ) : (
-          <Button 
-            type="primary" 
-            icon={<LoginOutlined />} 
+          <LoginOutlined 
+            style={{
+              fontSize: '24px',
+              cursor: 'pointer',
+              color: token.colorPrimary,
+            }}
             onClick={() => navigate('/login')}
-          >
-            Login
-          </Button>
+          />
         )}
-      </div>
+      </Space>
     </AntHeader>
   );
 };

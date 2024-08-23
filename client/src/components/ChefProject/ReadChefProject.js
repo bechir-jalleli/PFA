@@ -1,10 +1,10 @@
-// src/components/ReadChefProject.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Table, Typography, Button, Space, notification, Modal } from 'antd';
 import UpdateChefProject from './UpdateChefProject';
 import DeleteChefProject from './DeleteChefProject';
 import CreateChefProject from './CreateChefProject';
+import '../../styles/components/ChefProject.css';
 
 const { Title } = Typography;
 
@@ -13,7 +13,6 @@ const ReadChefProject = () => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
 
-  // Define the fetchData function
   const fetchData = async () => {
     try {
       const response = await axios.get('http://localhost:5000/chef-projects');
@@ -28,21 +27,20 @@ const ReadChefProject = () => {
     }
   };
 
-  // Call fetchData when component mounts
   useEffect(() => {
     fetchData();
   }, []);
 
   const handleCreateSuccess = () => {
-    fetchData(); // Refresh the list after creation
+    fetchData();
   };
 
   const handleUpdateSuccess = () => {
-    fetchData(); // Refresh the list after update
+    fetchData();
   };
 
   const handleDeleteSuccess = () => {
-    fetchData(); // Refresh the list after deletion
+    fetchData();
   };
 
   const columns = [
@@ -89,39 +87,43 @@ const ReadChefProject = () => {
       render: (_, record) => (
         <Space size="middle">
           <UpdateChefProject id={record._id} onUpdateSuccess={handleUpdateSuccess} />
-          <DeleteChefProject id={record._id} onDeleteSuccess={handleDeleteSuccess} />
+          <DeleteChefProject id={record._id} onDeleteSuccess={handleDeleteSuccess}>
+            Delete
+          </DeleteChefProject>
         </Space>
       ),
     },
   ];
 
   return (
-    <div style={{ padding: '20px', marginLeft: '20px' }}>
-      <Title level={2}>Chef Projects</Title>
-      <Button
-        type="primary"
-        onClick={() => setVisible(true)}
-        style={{ marginBottom: 16 }}
-      >
-        Create Chef Project
-      </Button>
-      <Table
-        columns={columns}
-        dataSource={data}
-        rowKey="_id"
-        loading={loading}
-      />
-      <Modal
-        title="Create Chef Project"
-        visible={visible}
-        footer={null}
-        onCancel={() => setVisible(false)}
-      >
-        <CreateChefProject 
-          onClose={() => setVisible(false)} 
-          onCreateSuccess={handleCreateSuccess} 
+    <div className="table-container">
+      <div style={{ padding: '20px', marginLeft: '20px' }}>
+        <Title level={2}>Chef Projects</Title>
+        <Button
+          type="primary"
+          onClick={() => setVisible(true)}
+          style={{ marginBottom: 16 }}
+        >
+          Create Chef Project
+        </Button>
+        <Table
+          columns={columns}
+          dataSource={data}
+          rowKey="_id"
+          loading={loading}
         />
-      </Modal>
+        <Modal
+          title="Create Chef Project"
+          visible={visible}
+          footer={null}
+          onCancel={() => setVisible(false)}
+        >
+          <CreateChefProject 
+            onClose={() => setVisible(false)} 
+            onCreateSuccess={handleCreateSuccess} 
+          />
+        </Modal>
+      </div>
     </div>
   );
 };

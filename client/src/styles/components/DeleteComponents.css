@@ -1,0 +1,46 @@
+/* DeleteComponents.css */
+
+.delete-button {
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+    color: #fff;
+    margin-right: 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .delete-button:hover,
+  .delete-button:focus {
+    background-color: #ff7875;
+    border-color: #ff7875;
+  }
+  
+  .delete-popconfirm .ant-popover-inner-content {
+    padding: 12px 16px;
+  }
+  
+  .delete-popconfirm .ant-popover-message {
+    padding-left: 22px;
+  }
+  
+  .delete-popconfirm .ant-popover-buttons {
+    margin-top: 8px;
+  }
+  
+  @media (max-width: 768px) {
+    .delete-button {
+      font-size: 14px;
+      padding: 4px 8px;
+    }
+  }
+  
+  .dark-mode .delete-popconfirm .ant-popover-inner-content {
+    background-color: #1f1f1f;
+    color: #ffffff;
+  }
+  
+  .dark-mode .delete-popconfirm .ant-popover-arrow-content::before {
+    background-color: #1f1f1f;
+  }
+  

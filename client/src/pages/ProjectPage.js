@@ -1,32 +1,79 @@
-// src/pages/HomePage.js
 import React from 'react';
-import { Layout } from 'antd';
-import Sidebar from '../layouts/SideBar';
-import ReadProjects from '../components/Project/ReadProjects';
+import { Typography, Card, Space, Button, Row, Col, Progress, List, Avatar, theme } from 'antd';
+import { ProjectOutlined, PlusCircleOutlined, SettingOutlined, FileTextOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import MainLayout from '../layouts/MainLayout';
+import ReadProject from '../components/Project/ReadProjects';
+import { useTheme } from '../styles/Context/ThemeContext';
 
-const { Content } = Layout;
+const { Title, Paragraph } = Typography;
 
-const ProjectPage = () => {
+const ProjectPage = React.memo(() => {
+  const { isDarkMode } = useTheme();
+  const { token } = theme.useToken();
+
+  const pageStyle = {
+    padding: token.padding,
+    minHeight: '100vh',
+    backgroundColor: token.colorBgContainer,
+    color: token.colorText,
+  };
+
+  const iconStyle = {
+    fontSize: 48,
+    color: token.colorPrimary,
+  };
+
+  const cardStyle = {
+    marginBottom: token.marginMD,
+    boxShadow: token.boxShadow,
+    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
+  };
+
+  const dummyProjects = [
+    { name: 'Website Redesign', progress: 75 },
+    { name: 'Mobile App Development', progress: 30 },
+    { name: 'Database Migration', progress: 90 },
+  ];
+
   return (
-    <div>
-      <Layout style={{ minHeight: '100vh' }}>
-      <Sidebar />
-      <Layout style={{ marginLeft: 200 }}> {/* Adjust marginLeft based on sidebar width */}
-        <Content style={{ padding: '24px', minHeight: '100vh' }}>
-          <div style={{ padding: 24, borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
-            <h2>Welcome to GRCWebsite</h2>
-            <p>Your platform for Governance, Risk, and Compliance management.</p>
-          </div>
-          <div style={{ marginTop: '24px' }}>
-            <ReadProjects />
-          </div>
-        </Content>
-      </Layout>
-    </Layout>
-    </div>
-    
-  );
-};
+    <MainLayout>
+      <div style={pageStyle}>
+        <Space align="center" style={{ marginBottom: token.marginLG }}>
+          <ProjectOutlined style={iconStyle} />
+          <Title level={2} style={{ margin: 0, color: token.colorText }}>
+            Project Dashboard
+          </Title>
+        </Space>
 
+        <Row gutter={[16, 16]}>
+          <Col xs={24} lg={16}>
+            <Card title="Project List" style={cardStyle}>
+              <ReadProject />
+            </Card>
+          </Col>
+          <Col xs={24} lg={8}>
+            <Card title="Project Progress" style={cardStyle}>
+              {dummyProjects.map((project, index) => (
+                <div key={index} style={{ marginBottom: token.marginMD }}>
+                  <Paragraph>{project.name}</Paragraph>
+                  <Progress percent={project.progress} status="active" />
+                </div>
+              ))}
+            </Card>
+          </Col>
+          <Col xs={24}>
+            <Card title="Quick Actions" style={cardStyle}>
+              <Space wrap>
+                <Button type="primary" icon={<PlusCircleOutlined />}>Add New Project</Button>
+                <Button icon={<FileTextOutlined />}>Generate Report</Button>
+                <Button icon={<SettingOutlined />}>Project Settings</Button>
+              </Space>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+    </MainLayout>
+  );
+});
 
 export default ProjectPage;

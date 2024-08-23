@@ -5,6 +5,7 @@ import { Table, Button, Modal, Space } from 'antd';
 import UpdateMembreEquipe from './UpdateMembreEquipe';
 import DeleteMembreEquipe from './DeleteMembreEquipe';
 import CreateMembreEquipe from './CreateMembreEquipe';
+import '../../styles/components/TableComponents.css';  // Adjust the path as necessary
 
 const ReadMembreEquipe = () => {
   const [membres, setMembres] = useState([]);
@@ -86,7 +87,9 @@ const ReadMembreEquipe = () => {
   ];
 
   return (
-    <div style={{ padding: '20px', marginLeft: '20px' }}>
+   
+    <div className="table-container">
+ <div style={{ padding: '20px', marginLeft: '20px' }}>
       <Button
         type="primary"
         onClick={() => setVisible(true)}
@@ -106,6 +109,7 @@ const ReadMembreEquipe = () => {
           onCreateSuccess={handleCreateSuccess} 
         />
       </Modal>
+    </div>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Input, Button, Modal, notification } from 'antd';
+import '../../styles/components/UpdateComponents.css';
 
 const UpdateAdmin = ({ id, onUpdateSuccess }) => {
   const [visible, setVisible] = useState(false);
@@ -45,8 +46,17 @@ const UpdateAdmin = ({ id, onUpdateSuccess }) => {
 
   return (
     <>
-      <Button onClick={() => setVisible(true)}>Update</Button>
-      <Modal title="Update Admin" visible={visible} onOk={handleOk} onCancel={handleCancel}>
+ <Button className="update-button" onClick={() => setVisible(true)}>
+  Update
+</Button>
+
+<Modal
+  className="update-modal"
+  title="Update Task"
+  visible={visible}
+  onOk={handleOk}
+  onCancel={handleCancel}
+>
         {admin && (
           <Form form={form} layout="vertical">
             <Form.Item name="name" label="Name">
@@ -61,6 +71,7 @@ const UpdateAdmin = ({ id, onUpdateSuccess }) => {
           </Form>
         )}
       </Modal>
+
     </>
   );
 };

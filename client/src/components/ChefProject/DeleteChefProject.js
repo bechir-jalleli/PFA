@@ -1,7 +1,7 @@
-// src/components/DeleteChefProject.js
 import React from 'react';
 import axios from 'axios';
 import { Button, notification } from 'antd';
+import '../../styles/components/ChefProject.css';
 
 const DeleteChefProject = ({ id, onDeleteSuccess }) => {
   const handleDelete = async () => {
@@ -9,18 +9,22 @@ const DeleteChefProject = ({ id, onDeleteSuccess }) => {
       await axios.delete(`http://localhost:5000/chef-projects/${id}`);
       notification.success({
         message: 'Success',
-        description: 'ChefProject deleted successfully',
+        description: 'Chef Project deleted successfully',
       });
-      if (onDeleteSuccess) onDeleteSuccess(); // Notify parent to refresh data
+      if (onDeleteSuccess) onDeleteSuccess(); 
     } catch (error) {
       notification.error({
         message: 'Error',
-        description: 'Failed to delete ChefProject',
+        description: 'Failed to delete Chef Project',
       });
     }
   };
 
-  return <Button onClick={handleDelete} danger>Delete</Button>;
+  return (
+    <Button onClick={handleDelete} danger className="delete-button">
+      Delete
+    </Button>
+  );
 };
 
 export default DeleteChefProject;

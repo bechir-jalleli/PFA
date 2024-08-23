@@ -1,31 +1,110 @@
-// src/pages/HomePage.js
 import React from 'react';
-import { Layout } from 'antd';
-import Sidebar from '../layouts/SideBar';
-import ReadTache from '../components/Tache/ReadTache'
-const { Content } = Layout;
+import { Typography, Card, Space, Button, Row, Col, Statistic, List, Tag, theme } from 'antd';
+import { CheckSquareOutlined, PlusOutlined, ClockCircleOutlined, UserOutlined, FileDoneOutlined } from '@ant-design/icons';
+import MainLayout from '../layouts/MainLayout';
+import ReadTache from '../components/Tache/ReadTache';
+import { useTheme } from '../styles/Context/ThemeContext';
+
+const { Title, Paragraph } = Typography;
 
 const TachesPage = () => {
+  const { isDarkMode } = useTheme();
+  const { token } = theme.useToken();
+
+  const pageStyle = {
+    padding: token.padding,
+    minHeight: '100vh',
+    backgroundColor: token.colorBgContainer,
+    color: token.colorText,
+  };
+
+  const iconStyle = {
+    fontSize: 48,
+    color: token.colorPrimary,
+  };
+
+  const cardStyle = {
+    marginBottom: token.marginMD,
+    boxShadow: token.boxShadow,
+    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
+  };
+
+  const recentTasks = [
+    { title: 'Update documentation', status: 'In Progress', assignee: 'John Doe' },
+    { title: 'Fix bug in login page', status: 'Pending', assignee: 'Jane Smith' },
+    { title: 'Design new logo', status: 'Completed', assignee: 'Bob Johnson' },
+  ];
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'In Progress': return 'blue';
+      case 'Pending': return 'orange';
+      case 'Completed': return 'green';
+      default: return 'default';
+    }
+  };
+
   return (
-    <div>
-      <Layout style={{ minHeight: '100vh' }}>
-      <Sidebar />
-      <Layout style={{ marginLeft: 200 }}> {/* Adjust marginLeft based on sidebar width */}
-        <Content style={{ padding: '24px', minHeight: '100vh' }}>
-          <div style={{ padding: 24, borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
-            <h2>Welcome to GRCWebsite</h2>
-            <p>Your platform for Governance, Risk, and Compliance management.</p>
-          </div>
-          <div style={{ marginTop: '24px' }}>
-            <ReadTache />
-          </div>
-        </Content>
-      </Layout>
-    </Layout>
-    </div>
-    
+    <MainLayout>
+      <div style={pageStyle}>
+        <Space align="center" style={{ marginBottom: token.marginLG }}>
+          <CheckSquareOutlined style={iconStyle} />
+          <Title level={2} style={{ margin: 0, color: token.colorText }}>
+            Taches Dashboard
+          </Title>
+        </Space>
+
+        <Row gutter={[16, 16]}>
+          <Col xs={24} sm={8}>
+            <Card style={cardStyle}>
+              <Statistic title="Total Tasks" value={50} prefix={<CheckSquareOutlined />} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={8}>
+            <Card style={cardStyle}>
+              <Statistic title="Completed Tasks" value={30} prefix={<FileDoneOutlined />} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={8}>
+            <Card style={cardStyle}>
+              <Statistic title="Pending Tasks" value={20} prefix={<ClockCircleOutlined />} />
+            </Card>
+          </Col>
+          <Col xs={24} lg={16}>
+            <Card 
+              title="Task List" 
+              style={cardStyle}
+              extra={<Button type="primary" icon={<PlusOutlined />}>Add New Task</Button>}
+            >
+              <ReadTache />
+            </Card>
+          </Col>
+          <Col xs={24} lg={8}>
+            <Card title="Recent Tasks" style={cardStyle}>
+              <List
+                itemLayout="horizontal"
+                dataSource={recentTasks}
+                renderItem={(item) => (
+                  <List.Item>
+                    <List.Item.Meta
+                      avatar={<UserOutlined />}
+                      title={item.title}
+                      description={
+                        <Space>
+                          <Tag color={getStatusColor(item.status)}>{item.status}</Tag>
+                          <span>{item.assignee}</span>
+                        </Space>
+                      }
+                    />
+                  </List.Item>
+                )}
+              />
+            </Card>
+          </Col>
+        </Row>
+      </div>
+    </MainLayout>
   );
 };
-
 
 export default TachesPage;

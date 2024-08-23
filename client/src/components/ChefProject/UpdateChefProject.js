@@ -1,7 +1,7 @@
-// src/components/UpdateChefProject.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Input, Button, Modal, notification } from 'antd';
+import '../../styles/components/ChefProject.css';
 
 const UpdateChefProject = ({ id, onUpdateSuccess }) => {
   const [visible, setVisible] = useState(false);
@@ -15,60 +15,66 @@ const UpdateChefProject = ({ id, onUpdateSuccess }) => {
         setChefProject(response.data);
         form.setFieldsValue(response.data);
       } catch (error) {
-        console.error('Error fetching ChefProject:', error);
+        notification.error({
+          message: 'Error',
+          description: 'Failed to fetch Chef Project details',
+        });
       }
     };
 
     fetchChefProject();
   }, [id, form]);
 
-  const modifyChef = async () => {
+  const handleOk = async () => {
     try {
       await form.validateFields();
       await axios.put(`http://localhost:5000/chef-projects/${id}`, form.getFieldsValue());
       notification.success({
         message: 'Success',
-        description: 'ChefProject updated successfully',
+        description: 'Chef Project updated successfully',
       });
       setVisible(false);
-      if (onUpdateSuccess) onUpdateSuccess(); // Notify parent to refresh data
+      if (onUpdateSuccess) onUpdateSuccess(); 
     } catch (error) {
       notification.error({
         message: 'Error',
-        description: 'Failed to update ChefProject',
+        description: 'Failed to update Chef Project',
       });
     }
   };
 
-  const Cancel = () => {
+  const handleCancel = () => {
     setVisible(false);
   };
 
   return (
     <>
-      <Button onClick={() => setVisible(true)}>Update</Button>
+      <Button className="update-button" onClick={() => setVisible(true)}>
+        Update
+      </Button>
       <Modal
-        title="Update ChefProject"
+        className="update-modal"
+        title="Update Chef Project"
         visible={visible}
-        onOk={modifyChef}
-        onCancel={Cancel}
+        onOk={handleOk}
+        onCancel={handleCancel}
       >
         {chefProject && (
-          <Form form={form} layout="vertical">
+          <Form form={form} layout="vertical" className="chef-project-form">
             <Form.Item name="nom" label="Name">
-              <Input />
+              <Input className="input-field" />
             </Form.Item>
             <Form.Item name="prenom" label="Surname">
-              <Input />
+              <Input className="input-field" />
             </Form.Item>
             <Form.Item name="email" label="Email">
-              <Input />
+              <Input className="input-field" />
             </Form.Item>
             <Form.Item name="phone" label="Phone">
-              <Input />
+              <Input className="input-field" />
             </Form.Item>
             <Form.Item name="mdp" label="Password">
-              <Input.Password />
+              <Input.Password className="input-field" />
             </Form.Item>
           </Form>
         )}

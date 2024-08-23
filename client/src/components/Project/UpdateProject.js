@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Form, Input, Modal, notification, Select, DatePicker } from 'antd';
+import {Button, Form, Input, Modal, notification, Select, DatePicker } from 'antd';
 import dayjs from 'dayjs';
+import '../../styles/components/UpdateComponents.css';
 
 const { Option } = Select;
 
@@ -74,12 +75,18 @@ function UpdateProject({ id, onUpdateSuccess }) {
 
   return (
     <>
-      <Modal
-        title="Update Project"
-        visible={visible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
+      <Button className="update-button" onClick={() => setVisible(true)}>
+  Update
+</Button>
+
+<Modal
+  className="update-modal"
+  title="Update Task"
+  visible={visible}
+  onOk={handleOk}
+  onCancel={handleCancel}
+>
+
         {project && (
           <Form form={form} layout="vertical">
             <Form.Item name="name" label="Project Name" rules={[{ required: true, message: 'Please enter the project name.' }]}>

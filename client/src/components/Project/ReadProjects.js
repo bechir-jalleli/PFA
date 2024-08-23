@@ -4,6 +4,7 @@ import { Table, Button, Modal, notification } from 'antd';
 import UpdateProject from './UpdateProject';
 import DeleteProject from './DeleteProject';
 import CreateProject from './CreateProject';
+import '../../styles/components/TableComponents.css';  // Adjust the path as necessary
 
 const ReadProjects = () => {
   const [projects, setProjects] = useState([]);
@@ -130,7 +131,9 @@ const ReadProjects = () => {
   ];
 
   return (
-    <div style={{ padding: '20px', marginLeft: '20px' }}>
+   
+    <div className="table-container">
+ <div style={{ padding: '20px', marginLeft: '20px' }}>
       <Button
         type="primary"
         onClick={() => setVisible(true)}
@@ -162,6 +165,7 @@ const ReadProjects = () => {
           onCancel={() => setVisible(false)}
         />
       </Modal>
+    </div>
     </div>
   );
 };

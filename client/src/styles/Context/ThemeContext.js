@@ -1,5 +1,6 @@
 // src/Context/ThemeContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { ConfigProvider, theme } from 'antd';
 
 const ThemeContext = createContext();
 
@@ -15,28 +16,19 @@ export const ThemeProvider = ({ children }) => {
     return () => darkModeMediaQuery.removeListener(handler);
   }, []);
 
-  useEffect(() => {
-    if (isDarkMode) {
-      document.body.classList.add('dark-mode');
-      document.body.classList.remove('light-mode');
-    } else {
-      document.body.classList.add('light-mode');
-      document.body.classList.remove('dark-mode');
-    }
-  }, [isDarkMode]);
-
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
   };
 
-  const theme = {
-    isDarkMode,
-    toggleTheme,
+  const themeConfig = {
+    algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
   };
 
   return (
-    <ThemeContext.Provider value={theme}>
-      {children}
+    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+      <ConfigProvider theme={themeConfig}>
+        {children}
+      </ConfigProvider>
     </ThemeContext.Provider>
   );
 };

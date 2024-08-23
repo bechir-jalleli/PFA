@@ -1,32 +1,101 @@
-// src/pages/HomePage.js
 import React from 'react';
-import { Layout } from 'antd';
-import Sidebar from '../layouts/SideBar';
-import ReadSousOrganisation from '../components/SousOrganisation/ReadSousOrganisations'
+import { Typography, Card, Space, Button, Row, Col, Statistic, Tree, theme } from 'antd';
+import { ApartmentOutlined, PlusOutlined, BranchesOutlined, TeamOutlined } from '@ant-design/icons';
+import MainLayout from '../layouts/MainLayout';
+import ReadSousOrganisation from '../components/SousOrganisation/ReadSousOrganisations';
+import { useTheme } from '../styles/Context/ThemeContext';
 
-const { Content } = Layout;
+const { Title, Paragraph } = Typography;
 
-const ResponsablePage = () => {
+const SousOrganisationPage = () => {
+  const { isDarkMode } = useTheme();
+  const { token } = theme.useToken();
+
+  const pageStyle = {
+    padding: token.padding,
+    minHeight: '100vh',
+    backgroundColor: token.colorBgContainer,
+    color: token.colorText,
+  };
+
+  const iconStyle = {
+    fontSize: 48,
+    color: token.colorPrimary,
+  };
+
+  const cardStyle = {
+    marginBottom: token.marginMD,
+    boxShadow: token.boxShadow,
+    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
+  };
+
+  const treeData = [
+    {
+      title: 'Main Organization',
+      key: '0-0',
+      children: [
+        { title: 'Sub-Org 1', key: '0-0-0' },
+        { title: 'Sub-Org 2', key: '0-0-1' },
+        {
+          title: 'Sub-Org 3',
+          key: '0-0-2',
+          children: [
+            { title: 'Department 1', key: '0-0-2-0' },
+            { title: 'Department 2', key: '0-0-2-1' },
+          ],
+        },
+      ],
+    },
+  ];
+
   return (
-    <div>
-      <Layout style={{ minHeight: '100vh' }}>
-      <Sidebar />
-      <Layout style={{ marginLeft: 200 }}> {/* Adjust marginLeft based on sidebar width */}
-        <Content style={{ padding: '24px', minHeight: '100vh' }}>
-          <div style={{ padding: 24, borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
-            <h2>Welcome to GRCWebsite</h2>
-            <p>Your platform for Governance, Risk, and Compliance management.</p>
-          </div>
-          <div style={{ marginTop: '24px' }}>
-            <ReadSousOrganisation />
-          </div>
-        </Content>
-      </Layout>
-    </Layout>
-    </div>
-    
+    <MainLayout>
+      <div style={pageStyle}>
+        <Space align="center" style={{ marginBottom: token.marginLG }}>
+          <ApartmentOutlined style={iconStyle} />
+          <Title level={2} style={{ margin: 0, color: token.colorText }}>
+            Sous-Organisation Dashboard
+          </Title>
+        </Space>
+
+        <Row gutter={[16, 16]}>
+          <Col xs={24} sm={8}>
+            <Card style={cardStyle}>
+              <Statistic title="Total Sub-Organizations" value={15} prefix={<BranchesOutlined />} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={8}>
+            <Card style={cardStyle}>
+              <Statistic title="Departments" value={30} prefix={<ApartmentOutlined />} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={8}>
+            <Card style={cardStyle}>
+              <Statistic title="Employees" value={500} prefix={<TeamOutlined />} />
+            </Card>
+          </Col>
+          <Col xs={24} lg={16}>
+            <Card 
+              title="Sous-Organisation List" 
+              style={cardStyle}
+              extra={<Button type="primary" icon={<PlusOutlined />}>Add Sub-Organization</Button>}
+            >
+              <ReadSousOrganisation />
+            </Card>
+          </Col>
+          <Col xs={24} lg={8}>
+            <Card title="Organization Structure" style={cardStyle}>
+              <Tree
+                showLine
+                defaultExpandedKeys={['0-0-0']}
+                treeData={treeData}
+              />
+            </Card>
+          </Col>
+        </Row>
+      </div>
+    </MainLayout>
   );
 };
 
-
-export default ResponsablePage;
+export default SousOrganisationPage;

@@ -46,13 +46,18 @@ const UpdateMembreEquipe = ({ id, onUpdateSuccess }) => {
 
   return (
     <>
-      <Button onClick={() => setVisible(true)}>Update</Button>
-      <Modal
-        title="Update Membre Equipe"
-        visible={visible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
+      <Button className="update-button" onClick={() => setVisible(true)}>
+  Update
+</Button>
+
+<Modal
+  className="update-modal"
+  title="Update Task"
+  visible={visible}
+  onOk={handleOk}
+  onCancel={handleCancel}
+>
+
         {membre && (
           <Form form={form} layout="vertical">
             <Form.Item name="nom" label="Name">

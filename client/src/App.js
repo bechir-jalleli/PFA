@@ -1,6 +1,6 @@
 import React from 'react';
-import { ThemeProvider } from './Context/ThemeContext';
-import { AuthProvider } from './Context/AuthContext';
+import { ThemeProvider } from './styles/Context/ThemeContext';
+import { AuthProvider } from './styles/Context/AuthContext';
 import AppRoutes from './routes/AppRoutes';
 
 const App = () => {

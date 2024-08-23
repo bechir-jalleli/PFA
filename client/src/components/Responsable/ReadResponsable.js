@@ -5,6 +5,7 @@
   import UpdateResponsable from './UpdateResponsable';
   import DeleteResponsable from './DeleteResponsable';
   import CreateResponsable from './CreateResponsable';
+  import '../../styles/components/TableComponents.css';  // Adjust the path as necessary
 
   const ReadResponsables = () => {
     const [responsables, setResponsables] = useState([]);
@@ -86,7 +87,9 @@
     ];
 
     return (
-      <div style={{ padding: '20px', marginLeft: '20px' }}>    
+      
+      <div className="table-container">
+<div style={{ padding: '20px', marginLeft: '20px' }}>    
       
         <Button
           type="primary"
@@ -107,6 +110,7 @@
             onCreateSuccess={handleCreateSuccess} 
           />
         </Modal>
+      </div>
       </div>
     );
   };

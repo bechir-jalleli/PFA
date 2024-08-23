@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Input, Button, notification, Select } from 'antd';
+import '../../styles/components/CreateForms.css';
 
 const { Option } = Select;
 

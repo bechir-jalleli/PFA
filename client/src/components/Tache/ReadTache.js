@@ -4,6 +4,7 @@ import { Table, Button, Modal } from 'antd';
 import UpdateTache from './UpdateTache';
 import DeleteTache from './DeleteTache';
 import CreateTache from './CreateTache';
+import '../../styles/components/TableComponents.css';  // Adjust the path as necessary
 
 const ReadTaches = () => {
   const [taches, setTaches] = useState([]);
@@ -69,7 +70,9 @@ const ReadTaches = () => {
   ];
 
   return (
-    <div style={{ padding: '20px', marginLeft: '20px' }}>
+    
+    <div className="table-container">
+<div style={{ padding: '20px', marginLeft: '20px' }}>
       <Button
         type="primary"
         onClick={() => setVisible(true)}
@@ -86,6 +89,7 @@ const ReadTaches = () => {
       >
         <CreateTache onCreateSuccess={handleCreateSuccess} />
       </Modal>
+    </div>
     </div>
   );
 };

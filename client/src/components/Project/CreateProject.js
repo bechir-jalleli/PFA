@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Form, Input, DatePicker, Select, Button, notification } from 'antd';
+import '../../styles/components/CreateForms.css';
 
 const { TextArea } = Input;
 const { Option } = Select;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Input, Button, Modal, notification, Select } from 'antd';
+import '../../styles/components/UpdateComponents.css';
 
 const { Option } = Select;
 
@@ -58,15 +59,17 @@ function UpdateTache({ id, onUpdateSuccess }) {
 
   return (
     <>
-      <Button type="primary" ghost onClick={() => setVisible(true)}>
-        Update
-      </Button>
-      <Modal
-        title="Update Task"
-        visible={visible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
+      <Button className="update-button" onClick={() => setVisible(true)}>
+  Update
+</Button>
+
+<Modal
+  className="update-modal"
+  title="Update Task"
+  visible={visible}
+  onOk={handleOk}
+  onCancel={handleCancel}
+>
         {tache && (
           <Form form={form} layout="vertical">
             <Form.Item

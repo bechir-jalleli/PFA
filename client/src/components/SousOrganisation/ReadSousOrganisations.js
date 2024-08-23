@@ -5,6 +5,7 @@ import { Table, Button, Modal } from 'antd';
 import UpdateSousOrganisation from './UpdateSousOrganisation';
 import DeleteSousOrganisation from './DeleteSousOrganisation';
 import CreateSousOrganisation from './CreateSousOrganisation';
+import '../../styles/components/TableComponents.css';  // Adjust the path as necessary
 
 const ReadSousOrganisations = () => {
   const [sousOrganisations, setSousOrganisations] = useState([]);
@@ -82,7 +83,9 @@ const ReadSousOrganisations = () => {
   ];
 
   return (
-    <div style={{ padding: '20px', marginLeft: '20px' }}>
+    
+    <div className="table-container">
+<div style={{ padding: '20px', marginLeft: '20px' }}>
       <Button
         type="primary"
         onClick={() => setVisible(true)}
@@ -106,6 +109,7 @@ const ReadSousOrganisations = () => {
           organisationOptions={organisationOptions}
         />
       </Modal>
+    </div>
     </div>
   );
 };

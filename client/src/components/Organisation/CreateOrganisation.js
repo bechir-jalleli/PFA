@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Form, Input, Button, notification } from 'antd';
+import '../../styles/components/CreateForms.css';
 
 const CreateOrganisation = ({ onClose, onCreateSuccess }) => {
   const [form] = Form.useForm();
