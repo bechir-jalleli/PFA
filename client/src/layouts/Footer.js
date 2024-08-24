@@ -27,7 +27,7 @@ const Footer = () => {
     >
       <Row justify="space-between" align="middle" gutter={[0, 16]}>
         <Col xs={24} sm={12}>
-          <Text>© 2023 GRCWebsite. All Rights Reserved.</Text>
+          <Text>© PFA 2024/2025 Createt by Bechir Jalleli</Text>
         </Col>
         <Col xs={24} sm={12} style={{ textAlign: 'right' }}>
           <Space size="large">

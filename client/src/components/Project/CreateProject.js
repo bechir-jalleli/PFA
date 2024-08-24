@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Form, Input, DatePicker, Select, Button, notification } from 'antd';
-import '../../styles/components/CreateForms.css';
+import { Form, Input, DatePicker, Select, Button, notification, Space } from 'antd';
 
 const { TextArea } = Input;
 const { Option } = Select;
 
-// Function to convert date to ISO string format
 const formatDate = (date) => {
   if (!date) return null;
   return new Date(date).toISOString();
@@ -21,8 +19,7 @@ const CreateProject = ({ onClose, onCreateSuccess }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [projectResponse, organisationsResponse, sousOrganisationsResponse, chefProjectsResponse] = await Promise.all([
-          axios.get('http://localhost:5000/projects'),
+        const [organisationsResponse, sousOrganisationsResponse, chefProjectsResponse] = await Promise.all([
           axios.get('http://localhost:5000/organisations'),
           axios.get('http://localhost:5000/sous-organisations'),
           axios.get('http://localhost:5000/chef-projects'),
@@ -88,9 +85,7 @@ const CreateProject = ({ onClose, onCreateSuccess }) => {
       >
         <Select placeholder="Select an Organisation">
           {organisations.map(org => (
-            <Option key={org._id} value={org._id}>
-              {org.nom}
-            </Option>
+            <Option key={org._id} value={org._id}>{org.nom}</Option>
           ))}
         </Select>
       </Form.Item>
@@ -100,9 +95,7 @@ const CreateProject = ({ onClose, onCreateSuccess }) => {
       >
         <Select placeholder="Select a Sous-Organisation">
           {sousOrganisations.map(sousOrg => (
-            <Option key={sousOrg._id} value={sousOrg._id}>
-              {sousOrg.nom}
-            </Option>
+            <Option key={sousOrg._id} value={sousOrg._id}>{sousOrg.nom}</Option>
           ))}
         </Select>
       </Form.Item>
@@ -113,9 +106,7 @@ const CreateProject = ({ onClose, onCreateSuccess }) => {
       >
         <Select placeholder="Select a Chef Project">
           {chefProjects.map(chefProject => (
-            <Option key={chefProject._id} value={chefProject._id}>
-              {chefProject.nom}
-            </Option>
+            <Option key={chefProject._id} value={chefProject._id}>{chefProject.nom}</Option>
           ))}
         </Select>
       </Form.Item>
@@ -124,13 +115,13 @@ const CreateProject = ({ onClose, onCreateSuccess }) => {
         label="Start Date"
         rules={[{ required: true, message: 'Please select the start date!' }]}
       >
-        <DatePicker format="YYYY-MM-DD" />
+        <DatePicker style={{ width: '100%' }} />
       </Form.Item>
       <Form.Item
         name="endDate"
         label="End Date"
       >
-        <DatePicker format="YYYY-MM-DD" />
+        <DatePicker style={{ width: '100%' }} />
       </Form.Item>
       <Form.Item
         name="budget"
@@ -140,9 +131,12 @@ const CreateProject = ({ onClose, onCreateSuccess }) => {
         <Input type="number" min={0} />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Create Project
-        </Button>
+        <Space>
+          <Button type="primary" htmlType="submit">
+            Create Project
+          </Button>
+          <Button onClick={onClose}>Cancel</Button>
+        </Space>
       </Form.Item>
     </Form>
   );

@@ -1,4 +1,3 @@
-// src/components/UpdateMembreEquipe.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Input, Button, Modal, notification } from 'antd';
@@ -31,7 +30,7 @@ const UpdateMembreEquipe = ({ id, onUpdateSuccess }) => {
         description: 'Membre equipe updated successfully',
       });
       setVisible(false);
-      if (onUpdateSuccess) onUpdateSuccess(); // Notify parent to refresh data
+      if (onUpdateSuccess) onUpdateSuccess();
     } catch (error) {
       notification.error({
         message: 'Error',
@@ -46,30 +45,27 @@ const UpdateMembreEquipe = ({ id, onUpdateSuccess }) => {
 
   return (
     <>
-      <Button className="update-button" onClick={() => setVisible(true)}>
-  Update
-</Button>
-
-<Modal
-  className="update-modal"
-  title="Update Task"
-  visible={visible}
-  onOk={handleOk}
-  onCancel={handleCancel}
->
-
+      <Button type="primary" onClick={() => setVisible(true)}>
+        Update
+      </Button>
+      <Modal
+        title="Update Membre Equipe"
+        visible={visible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
         {membre && (
           <Form form={form} layout="vertical">
-            <Form.Item name="nom" label="Name">
+            <Form.Item name="nom" label="Name" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            <Form.Item name="prenom" label="Surname">
+            <Form.Item name="prenom" label="Surname" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            <Form.Item name="email" label="Email">
+            <Form.Item name="email" label="Email" rules={[{ required: true, type: 'email' }]}>
               <Input />
             </Form.Item>
-            <Form.Item name="phone" label="Phone">
+            <Form.Item name="phone" label="Phone" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
           </Form>

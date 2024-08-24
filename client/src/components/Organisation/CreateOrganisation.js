@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Form, Input, Button, notification } from 'antd';
-import '../../styles/components/CreateForms.css';
+import { Form, Input, Button, notification, Space } from 'antd';
 
 const CreateOrganisation = ({ onClose, onCreateSuccess }) => {
   const [form] = Form.useForm();
@@ -14,8 +13,8 @@ const CreateOrganisation = ({ onClose, onCreateSuccess }) => {
         description: 'Organisation created successfully',
       });
       form.resetFields();
-      if (onClose) onClose(); // Close modal on success
-      if (onCreateSuccess) onCreateSuccess(); // Notify parent to refresh data
+      if (onClose) onClose();
+      if (onCreateSuccess) onCreateSuccess();
     } catch (error) {
       notification.error({
         message: 'Error',
@@ -40,9 +39,12 @@ const CreateOrganisation = ({ onClose, onCreateSuccess }) => {
         <Input.TextArea />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Create Organisation
-        </Button>
+        <Space>
+          <Button type="primary" htmlType="submit">
+            Create Organisation
+          </Button>
+          <Button onClick={onClose}>Cancel</Button>
+        </Space>
       </Form.Item>
     </Form>
   );

@@ -1,47 +1,54 @@
-// src/components/ReadMembreEquipe.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal, Space } from 'antd';
+import { Table, Button, Modal, Card, Space, Typography, notification } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import UpdateMembreEquipe from './UpdateMembreEquipe';
 import DeleteMembreEquipe from './DeleteMembreEquipe';
 import CreateMembreEquipe from './CreateMembreEquipe';
-import '../../styles/components/TableComponents.css';  // Adjust the path as necessary
+
+const { Title } = Typography;
 
 const ReadMembreEquipe = () => {
   const [membres, setMembres] = useState([]);
   const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    fetchMembres();
-  }, []);
+  const [selectedId, setSelectedId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchMembres = async () => {
     try {
       const response = await axios.get('http://localhost:5000/membre-equipes');
       setMembres(response.data);
     } catch (error) {
-      console.error('Error fetching membres equipe:', error);
+      console.error('Error fetching membres:', error);
+      notification.error({
+        message: 'Error',
+        description: 'Failed to fetch membres',
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchMembres();
+  }, []);
+
   const handleCreateSuccess = () => {
-    fetchMembres(); // Refresh the list after creation
+    fetchMembres();
+    setVisible(false);
   };
 
   const handleUpdateSuccess = () => {
-    fetchMembres(); // Refresh the list after update
+    fetchMembres();
+    setVisible(false);
+    setSelectedId(null);
   };
 
   const handleDeleteSuccess = () => {
-    fetchMembres(); // Refresh the list after deletion
+    fetchMembres();
   };
 
   const columns = [
-    {
-      title: 'ID',
-      dataIndex: '_id',
-      key: '_id',
-    },
     {
       title: 'Name',
       dataIndex: 'nom',
@@ -63,54 +70,68 @@ const ReadMembreEquipe = () => {
       key: 'phone',
     },
     {
-      title: 'Created At',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (text) => new Date(text).toLocaleDateString(),
-    },
-    {
-      title: 'Updated At',
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      render: (text) => new Date(text).toLocaleDateString(),
-    },
-    {
       title: 'Actions',
       key: 'actions',
-      render: (text, record) => (
+      render: (_, record) => (
         <Space>
-          <UpdateMembreEquipe id={record._id} onUpdateSuccess={handleUpdateSuccess} />
-          <DeleteMembreEquipe id={record._id} onDeleteSuccess={handleDeleteSuccess} />
+          <Button 
+            icon={<EditOutlined />} 
+            onClick={() => {
+              setSelectedId(record._id);
+              setVisible(true);
+            }}
+          />
+          <DeleteMembreEquipe id={record._id} onDeleteSuccess={handleDeleteSuccess}>
+            <Button icon={<DeleteOutlined />} danger />
+          </DeleteMembreEquipe>
         </Space>
       ),
     },
   ];
 
   return (
-   
-    <div className="table-container">
- <div style={{ padding: '20px', marginLeft: '20px' }}>
-      <Button
-        type="primary"
-        onClick={() => setVisible(true)}
-        style={{ marginBottom: 16 }}
-      >
-        Create Membre Equipe
-      </Button>
-      <Table dataSource={membres} columns={columns} rowKey="_id" />
-      <Modal
-        title="Create Membre Equipe"
-        visible={visible}
-        footer={null}
-        onCancel={() => setVisible(false)}
-      >
-        <CreateMembreEquipe 
-          onClose={() => setVisible(false)} 
-          onCreateSuccess={handleCreateSuccess} 
+    <Card>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <Space style={{ justifyContent: 'space-between', width: '100%' }}>
+          <Title level={2}>Membre Equipe</Title>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setVisible(true)}
+          >
+            Create Membre Equipe
+          </Button>
+        </Space>
+        <Table 
+          dataSource={membres} 
+          columns={columns} 
+          rowKey="_id" 
+          loading={loading}
+          pagination={{ pageSize: 10 }}
+          scroll={{ x: 'max-content' }}
         />
-      </Modal>
-    </div>
-    </div>
+        <Modal
+          title={selectedId ? "Update Membre Equipe" : "Create Membre Equipe"}
+          visible={visible}
+          onCancel={() => {
+            setVisible(false);
+            setSelectedId(null);
+          }}
+          footer={null}
+        >
+          {selectedId ? (
+            <UpdateMembreEquipe 
+              id={selectedId}
+              onUpdateSuccess={handleUpdateSuccess}
+            />
+          ) : (
+            <CreateMembreEquipe 
+              onCreateSuccess={handleCreateSuccess}
+            />
+          )}
+        </Modal>
+      </Space>
+    </Card>
   );
 };
 

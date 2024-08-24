@@ -3,7 +3,7 @@ import { Typography, Space, Card, Row, Col, Avatar, List, Button, theme } from '
 import { TeamOutlined, UserOutlined, ProjectOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import MainLayout from '../layouts/MainLayout';
 import ReadMembreEquipe from '../components/MembreEquipe/ReadMembreEquipe';
-import { useTheme } from '../styles/Context/ThemeContext';
+import { useTheme } from '../Context/ThemeContext';
 
 const { Title, Paragraph } = Typography;
 

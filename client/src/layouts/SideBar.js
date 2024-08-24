@@ -1,4 +1,3 @@
-
 // Sidebar.js
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -13,10 +12,9 @@ import {
   CrownOutlined,
   ApartmentOutlined,
 } from '@ant-design/icons';
-import { useTheme } from '../styles/Context/ThemeContext';
+import { useTheme } from '../Context/ThemeContext';
 
 const { Sider } = Layout;
-const { SubMenu } = Menu;
 
 const Sidebar = ({ collapsed, onCollapse }) => {
   const navigate = useNavigate();
@@ -29,42 +27,14 @@ const Sidebar = ({ collapsed, onCollapse }) => {
   };
 
   const menuItems = [
-    {
-      key: 'sub1',
-      icon: <CrownOutlined />,
-      label: 'Admin',
-      children: [
-        { key: 'admin', label: 'Admin Dashboard' },
-        { key: 'responsables', label: 'Responsables' },
-      ]
-    },
-    {
-      key: 'sub2',
-      icon: <TeamOutlined />,
-      label: 'Team',
-      children: [
-        { key: 'chef-projects', label: 'Chefs Project' },
-        { key: 'membre-equipes', label: 'Membres equipe' },
-      ]
-    },
-    {
-      key: 'sub3',
-      icon: <ApartmentOutlined />,
-      label: 'Organization',
-      children: [
-        { key: 'organisations', label: 'Organisations' },
-        { key: 'sous-organisation', label: 'Sous Organisation' },
-      ]
-    },
-    {
-      key: 'sub4',
-      icon: <AppstoreOutlined />,
-      label: 'Projects',
-      children: [
-        { key: 'project', label: 'Project' },
-        { key: 'taches', label: 'Taches' },
-      ]
-    },
+    { key: 'admin', icon: <CrownOutlined />, label: 'Admin' },
+    { key: 'responsables', icon: <UserOutlined />, label: 'Responsables' },
+    { key: 'chef-projects', icon: <TeamOutlined />, label: 'Chefs Project' },
+    { key: 'membre-equipes', icon: <TeamOutlined />, label: 'Membres equipe' },
+    { key: 'organisations', icon: <ApartmentOutlined />, label: 'Organisations' },
+    { key: 'sous-organisation', icon: <BranchesOutlined />, label: 'Sous Organisation' },
+    { key: 'project', icon: <ProjectOutlined />, label: 'Project' },
+    { key: 'taches', icon: <CheckSquareOutlined />, label: 'Taches' },
   ];
 
   return (
@@ -87,16 +57,13 @@ const Sidebar = ({ collapsed, onCollapse }) => {
         mode="inline"
         theme={isDarkMode ? 'dark' : 'light'}
         defaultSelectedKeys={[location.pathname.split('/')[1] || 'admin']}
-        defaultOpenKeys={['sub1', 'sub2', 'sub3', 'sub4']}
         onClick={handleMenuClick}
         style={{ height: '100%', borderRight: 0 }}
       >
         {menuItems.map(item => (
-          <SubMenu key={item.key} icon={item.icon} title={item.label}>
-            {item.children.map(child => (
-              <Menu.Item key={child.key}>{child.label}</Menu.Item>
-            ))}
-          </SubMenu>
+          <Menu.Item key={item.key} icon={item.icon}>
+            {item.label}
+          </Menu.Item>
         ))}
       </Menu>
     </Sider>

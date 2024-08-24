@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Button, notification } from 'antd';
-import '../../styles/components/ChefProject.css';
+import { Button, notification, Popconfirm } from 'antd';
 
 const DeleteChefProject = ({ id, onDeleteSuccess }) => {
   const handleDelete = async () => {
@@ -21,9 +20,16 @@ const DeleteChefProject = ({ id, onDeleteSuccess }) => {
   };
 
   return (
-    <Button onClick={handleDelete} danger className="delete-button">
-      Delete
-    </Button>
+    <Popconfirm
+      title="Are you sure you want to delete this Chef Project?"
+      onConfirm={handleDelete}
+      okText="Yes"
+      cancelText="No"
+    >
+      <Button type="primary" danger>
+        Delete
+      </Button>
+    </Popconfirm>
   );
 };
 

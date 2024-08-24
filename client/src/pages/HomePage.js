@@ -1,19 +1,57 @@
-import React from 'react';
-import { Layout, Typography, Card, Row, Col, Button, Space } from 'antd';
+import React, { useEffect } from 'react';
+import { Layout, Typography, Card, Row, Col, Button, Space, theme } from 'antd';
 import { RocketOutlined, SafetyOutlined, TeamOutlined } from '@ant-design/icons';
-import MainLayout from '../layouts/MainLayout';
-import { useTheme } from '../styles/Context/ThemeContext';
-
-const { Content } = Layout;
-const { Title, Paragraph } = Typography;
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../Context/AuthContext';
+import { useTheme } from '../Context/ThemeContext';
+import Footer from '../layouts/Footer';
+import Header from '../layouts/Header';
+const { Content} = Layout;
+const { Title, Paragraph, Text } = Typography;
+const { useToken } = theme;
 
 const HomePage = () => {
-  const { theme, isDarkMode } = useTheme();
+  const { isDarkMode } = useTheme();
+  const { token } = useToken();
+  const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
 
-  const cardShadow = theme?.shadows?.[1] || '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)';
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      navigateBasedOnRole(user.role);
+    }
+  }, [isAuthenticated, user, navigate]);
+
+  const navigateBasedOnRole = (role) => {
+    switch (role) {
+      case 'admin':
+        navigate('/admin');
+        break;
+      case 'responsable':
+        navigate('/responsables');
+        break;
+      case 'chef-project':
+        navigate('/chef-projects');
+        break;
+      case 'membre-equipe':
+        navigate('/membre-equipes');
+        break;
+      default:
+        // If role is not recognized, stay on the home page
+        break;
+    }
+  };
+
+  const cardShadow = '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)';
+
+  // If the user is authenticated, don't render the home page content
+  if (isAuthenticated && user) {
+    return null; // or you could return a loading spinner here
+  }
 
   return (
-    <MainLayout>
+    <Layout style={{ minHeight: '100vh' }}>
+      <Header />
       <Content style={{ padding: '50px 50px' }}>
         <Row gutter={[32, 32]} align="middle">
           <Col xs={24} md={12}>
@@ -28,14 +66,14 @@ const HomePage = () => {
             </Space>
           </Col>
           <Col xs={24} md={12}>
-            <img src="https://placeholder.com/3d-illustration-grc" alt="GRC Illustration" style={{ width: '100%', maxWidth: '500px' }} />
+            <img src="../assets/image/business-growth.jpg" alt="GRC Illustration" style={{ width: '100%', maxWidth: '500px' }} />
           </Col>
         </Row>
 
         <Row gutter={[32, 32]} style={{ marginTop: '50px' }}>
           <Col xs={24} md={8}>
             <Card hoverable style={{ boxShadow: cardShadow }}>
-              <SafetyOutlined style={{ fontSize: '48px', color: theme.colorPrimary }} />
+              <SafetyOutlined style={{ fontSize: '48px', color: token.colorPrimary }} />
               <Title level={3}>Risk Management</Title>
               <Paragraph>
                 Identify, assess, and mitigate risks effectively with our advanced risk management tools.
@@ -44,7 +82,7 @@ const HomePage = () => {
           </Col>
           <Col xs={24} md={8}>
             <Card hoverable style={{ boxShadow: cardShadow }}>
-              <TeamOutlined style={{ fontSize: '48px', color: theme.colorPrimary }} />
+              <TeamOutlined style={{ fontSize: '48px', color: token.colorPrimary }} />
               <Title level={3}>Compliance</Title>
               <Paragraph>
                 Stay compliant with regulatory requirements and industry standards using our compliance management features.
@@ -53,7 +91,7 @@ const HomePage = () => {
           </Col>
           <Col xs={24} md={8}>
             <Card hoverable style={{ boxShadow: cardShadow }}>
-              <RocketOutlined style={{ fontSize: '48px', color: theme.colorPrimary }} />
+              <RocketOutlined style={{ fontSize: '48px', color: token.colorPrimary }} />
               <Title level={3}>Governance</Title>
               <Paragraph>
                 Improve overall governance with our comprehensive suite of tools and best practices.
@@ -62,7 +100,8 @@ const HomePage = () => {
           </Col>
         </Row>
       </Content>
-    </MainLayout>
+      <Footer />
+    </Layout>
   );
 };
 

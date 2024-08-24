@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Button, notification } from 'antd';
+import { Button, notification, Popconfirm } from 'antd';
 
 const DeleteProject = ({ id, onDeleteSuccess }) => {
   const handleDelete = async () => {
@@ -20,13 +20,16 @@ const DeleteProject = ({ id, onDeleteSuccess }) => {
   };
 
   return (
-    <Button 
-      type="primary" 
-      danger ghost
-      onClick={handleDelete}
+    <Popconfirm
+      title="Are you sure you want to delete this project?"
+      onConfirm={handleDelete}
+      okText="Yes"
+      cancelText="No"
     >
-      Delete
-    </Button>
+      <Button type="primary" danger>
+        Delete
+      </Button>
+    </Popconfirm>
   );
 };
 

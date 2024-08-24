@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Input, Button, Modal, notification } from 'antd';
-import '../../styles/components/ChefProject.css';
 
 const UpdateChefProject = ({ id, onUpdateSuccess }) => {
   const [visible, setVisible] = useState(false);
@@ -34,7 +33,7 @@ const UpdateChefProject = ({ id, onUpdateSuccess }) => {
         description: 'Chef Project updated successfully',
       });
       setVisible(false);
-      if (onUpdateSuccess) onUpdateSuccess(); 
+      if (onUpdateSuccess) onUpdateSuccess();
     } catch (error) {
       notification.error({
         message: 'Error',
@@ -49,32 +48,31 @@ const UpdateChefProject = ({ id, onUpdateSuccess }) => {
 
   return (
     <>
-      <Button className="update-button" onClick={() => setVisible(true)}>
+      <Button type="primary" onClick={() => setVisible(true)}>
         Update
       </Button>
       <Modal
-        className="update-modal"
         title="Update Chef Project"
         visible={visible}
         onOk={handleOk}
         onCancel={handleCancel}
       >
         {chefProject && (
-          <Form form={form} layout="vertical" className="chef-project-form">
-            <Form.Item name="nom" label="Name">
-              <Input className="input-field" />
+          <Form form={form} layout="vertical">
+            <Form.Item name="nom" label="Name" rules={[{ required: true }]}>
+              <Input />
             </Form.Item>
-            <Form.Item name="prenom" label="Surname">
-              <Input className="input-field" />
+            <Form.Item name="prenom" label="Surname" rules={[{ required: true }]}>
+              <Input />
             </Form.Item>
-            <Form.Item name="email" label="Email">
-              <Input className="input-field" />
+            <Form.Item name="email" label="Email" rules={[{ required: true, type: 'email' }]}>
+              <Input />
             </Form.Item>
-            <Form.Item name="phone" label="Phone">
-              <Input className="input-field" />
+            <Form.Item name="phone" label="Phone" rules={[{ required: true }]}>
+              <Input />
             </Form.Item>
-            <Form.Item name="mdp" label="Password">
-              <Input.Password className="input-field" />
+            <Form.Item name="mdp" label="Password" rules={[{ required: true }]}>
+              <Input.Password />
             </Form.Item>
           </Form>
         )}

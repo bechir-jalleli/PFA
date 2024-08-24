@@ -3,7 +3,7 @@ import { Typography, Space, Card, Row, Col, Progress, List, Avatar, Button, them
 import { ProjectOutlined, TeamOutlined, ClockCircleOutlined, FileOutlined } from '@ant-design/icons';
 import MainLayout from '../layouts/MainLayout';
 import ReadChefProject from '../components/ChefProject/ReadChefProject';
-import { useTheme } from '../styles/Context/ThemeContext';
+import { useTheme } from '../Context/ThemeContext';
 
 const { Title, Paragraph } = Typography;
 
@@ -13,7 +13,6 @@ const ChefProjectPage = () => {
 
   const pageStyle = {
     padding: token.padding,
-    minHeight: '100vh',
     backgroundColor: token.colorBgContainer,
     color: token.colorText,
   };
@@ -38,18 +37,20 @@ const ChefProjectPage = () => {
   return (
     <MainLayout>
       <div style={pageStyle}>
-        <Space align="center" style={{ marginBottom: token.marginLG }}>
-          <ProjectOutlined style={iconStyle} />
-          <Title level={2} style={{ margin: 0, color: token.colorText }}>
-            Chef Project Dashboard
-          </Title>
-        </Space>
+        <Row gutter={[16, 16]} align="middle" style={{ marginBottom: token.marginLG }}>
+          <Col>
+            <ProjectOutlined style={iconStyle} />
+          </Col>
+          <Col>
+            <Title level={2} style={{ margin: 0, color: token.colorText }}>
+              Chef Project Dashboard
+            </Title>
+          </Col>
+        </Row>
 
         <Row gutter={[16, 16]}>
           <Col xs={24} lg={16}>
-            <Card style={cardStyle} title="Project Overview">
-              <ReadChefProject />
-            </Card>
+            <ReadChefProject />
           </Col>
           <Col xs={24} lg={8}>
             <Card style={cardStyle} title="Project Progress">

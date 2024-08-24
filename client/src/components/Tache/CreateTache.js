@@ -1,25 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Form, Input, Button, notification, Select } from 'antd';
-import '../../styles/components/CreateForms.css';
+import { Form, Input, Select, DatePicker, Button, notification, Space } from 'antd';
 
 const { Option } = Select;
+const { TextArea } = Input;
 
 const CreateTache = ({ onClose, onCreateSuccess }) => {
   const [form] = Form.useForm();
+  const [projects, setProjects] = useState([]);
   const [chefProjects, setChefProjects] = useState([]);
 
   useEffect(() => {
-    const fetchChefProjects = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/chef-projects'); // Update URL as needed
-        setChefProjects(response.data);
+        const [projectsResponse, chefProjectsResponse] = await Promise.all([
+          axios.get('http://localhost:5000/projects'),
+          axios.get('http://localhost:5000/chef-projects'),
+        ]);
+        setProjects(projectsResponse.data);
+        setChefProjects(chefProjectsResponse.data);
       } catch (error) {
-        console.error('Error fetching chef projects:', error);
+        notification.error({
+          message: 'Error',
+          description: 'Failed to fetch data',
+        });
       }
     };
 
-    fetchChefProjects();
+    fetchData();
   }, []);
 
   const onFinish = async (values) => {
@@ -30,8 +38,8 @@ const CreateTache = ({ onClose, onCreateSuccess }) => {
         description: 'Task created successfully',
       });
       form.resetFields();
-      if (onClose) onClose(); // Close modal on success
-      if (onCreateSuccess) onCreateSuccess(); // Trigger refresh
+      if (onCreateSuccess) onCreateSuccess();
+      if (onClose) onClose();
     } catch (error) {
       notification.error({
         message: 'Error',
@@ -45,7 +53,7 @@ const CreateTache = ({ onClose, onCreateSuccess }) => {
       <Form.Item
         name="titre"
         label="Title"
-        rules={[{ required: true, message: 'Please input the title!' }]}
+        rules={[{ required: true, message: 'Please input the task title!' }]}
       >
         <Input />
       </Form.Item>
@@ -53,36 +61,61 @@ const CreateTache = ({ onClose, onCreateSuccess }) => {
         name="description"
         label="Description"
       >
-        <Input.TextArea />
+        <TextArea rows={4} />
       </Form.Item>
       <Form.Item
         name="status"
         label="Status"
-        rules={[{ required: true, message: 'Please select a status!' }]}
+        rules={[{ required: true, message: 'Please select the status!' }]}
       >
-        <Select placeholder="Select a status">
-          <Option value="Not Started">Not Started</Option>
+        <Select placeholder="Select status">
+          <Option value="To Do">To Do</Option>
           <Option value="In Progress">In Progress</Option>
-          <Option value="Completed">Completed</Option>
+          <Option value="Done">Done</Option>
+        </Select>
+      </Form.Item>
+      <Form.Item
+        name="project"
+        label="Project"
+        rules={[{ required: true, message: 'Please select a project!' }]}
+      >
+        <Select placeholder="Select a project">
+          {projects.map(project => (
+            <Option key={project._id} value={project._id}>{project.name}</Option>
+          ))}
         </Select>
       </Form.Item>
       <Form.Item
         name="chefProject"
         label="Chef Project"
-        rules={[{ required: true, message: 'Please select a Chef Project!' }]}
+        rules={[{ required: true, message: 'Please select a chef project!' }]}
       >
-        <Select placeholder="Select a Chef Project">
+        <Select placeholder="Select a chef project">
           {chefProjects.map(chef => (
-            <Option key={chef._id} value={chef._id}>
-              {chef.nom}   {chef.prenom}
-            </Option>
+            <Option key={chef._id} value={chef._id}>{`${chef.nom} ${chef.prenom}`}</Option>
           ))}
         </Select>
       </Form.Item>
+      <Form.Item
+        name="dateDebut"
+        label="Start Date"
+        rules={[{ required: true, message: 'Please select the start date!' }]}
+      >
+        <DatePicker style={{ width: '100%' }} />
+      </Form.Item>
+      <Form.Item
+        name="dateFin"
+        label="End Date"
+      >
+        <DatePicker style={{ width: '100%' }} />
+      </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Create Task
-        </Button>
+        <Space>
+          <Button type="primary" htmlType="submit">
+            Create Task
+          </Button>
+          <Button onClick={onClose}>Cancel</Button>
+        </Space>
       </Form.Item>
     </Form>
   );

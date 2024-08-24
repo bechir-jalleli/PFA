@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Button, notification } from 'antd';
+import { Button, notification, Popconfirm } from 'antd';
 
 const DeleteTache = ({ id, onDeleteSuccess }) => {
   const handleDelete = async () => {
@@ -10,7 +10,7 @@ const DeleteTache = ({ id, onDeleteSuccess }) => {
         message: 'Success',
         description: 'Task deleted successfully',
       });
-      if (onDeleteSuccess) onDeleteSuccess(); // Trigger refresh
+      if (onDeleteSuccess) onDeleteSuccess();
     } catch (error) {
       notification.error({
         message: 'Error',
@@ -19,14 +19,17 @@ const DeleteTache = ({ id, onDeleteSuccess }) => {
     }
   };
 
-  return (<Button 
-    type="primary" 
-    danger 
-    ghost
-    onClick={handleDelete}
-  >
-    Delete
-  </Button>
+  return (
+    <Popconfirm
+      title="Are you sure you want to delete this task?"
+      onConfirm={handleDelete}
+      okText="Yes"
+      cancelText="No"
+    >
+      <Button type="primary" danger>
+        Delete
+      </Button>
+    </Popconfirm>
   );
 };
 

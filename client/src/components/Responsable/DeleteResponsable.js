@@ -1,7 +1,6 @@
-// src/components/DeleteResponsable.js
 import React from 'react';
 import axios from 'axios';
-import { notification , Button} from 'antd';
+import { Button, notification, Popconfirm } from 'antd';
 
 const DeleteResponsable = ({ id, onDeleteSuccess }) => {
   const handleDelete = async () => {
@@ -11,7 +10,7 @@ const DeleteResponsable = ({ id, onDeleteSuccess }) => {
         message: 'Success',
         description: 'Responsable deleted successfully',
       });
-      if (onDeleteSuccess) onDeleteSuccess(); // Refresh data after delete
+      if (onDeleteSuccess) onDeleteSuccess();
     } catch (error) {
       notification.error({
         message: 'Error',
@@ -20,8 +19,18 @@ const DeleteResponsable = ({ id, onDeleteSuccess }) => {
     }
   };
 
-  return <div>
-  <Button type="primary" danger ghost onClick={handleDelete}>Delete</Button>
-</div>
+  return (
+    <Popconfirm
+      title="Are you sure you want to delete this responsable?"
+      onConfirm={handleDelete}
+      okText="Yes"
+      cancelText="No"
+    >
+      <Button type="primary" danger>
+        Delete
+      </Button>
+    </Popconfirm>
+  );
 };
+
 export default DeleteResponsable;

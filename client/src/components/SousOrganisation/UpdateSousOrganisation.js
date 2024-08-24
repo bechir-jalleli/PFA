@@ -1,8 +1,6 @@
-// src/components/UpdateSousOrganisation.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Input, Button, Modal, notification, Select } from 'antd';
-import '../../styles/components/UpdateComponents.css';
 
 const { Option } = Select;
 
@@ -45,7 +43,7 @@ const UpdateSousOrganisation = ({ id, onUpdateSuccess }) => {
         description: 'Sous-organisation updated successfully',
       });
       setVisible(false);
-      if (onUpdateSuccess) onUpdateSuccess(); // Notify parent to refresh data
+      if (onUpdateSuccess) onUpdateSuccess();
     } catch (error) {
       notification.error({
         message: 'Error',
@@ -60,20 +58,18 @@ const UpdateSousOrganisation = ({ id, onUpdateSuccess }) => {
 
   return (
     <>
-      <Button className="update-button" onClick={() => setVisible(true)}>
-  Update
-</Button>
-
-<Modal
-  className="update-modal"
-  title="Update Task"
-  visible={visible}
-  onOk={handleOk}
-  onCancel={handleCancel}
->
+      <Button type="primary" onClick={() => setVisible(true)}>
+        Update
+      </Button>
+      <Modal
+        title="Update Sous-Organisation"
+        visible={visible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
         {sousOrganisation && (
           <Form form={form} layout="vertical">
-            <Form.Item name="nom" label="Name">
+            <Form.Item name="nom" label="Name" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
             <Form.Item name="description" label="Details">

@@ -1,28 +1,28 @@
-// src/components/ReadChefProject.js
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Typography, Button, Space, notification, Modal } from 'antd';
-import UpdateChefProject from './UpdateOrganisation';
-import CreateChefProject from './CreateOrganisation';
-import '../../styles/components/TableComponents.css';
+import { Table, Button, Modal, Card, Row, Col, Typography, Space, notification } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import UpdateOrganisation from './UpdateOrganisation';
+import DeleteOrganisation from './DeleteOrganisation';
+import CreateOrganisation from './CreateOrganisation';
 
 const { Title } = Typography;
 
-const ReadChefProject = () => {
-  const [data, setData] = useState([]);
+const ReadOrganisation = () => {
+  const [organisations, setOrganisations] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const [selectedOrganisationId, setSelectedOrganisationId] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [createVisible, setCreateVisible] = useState(false);
-  const [updateVisible, setUpdateVisible] = useState(false);
-  const [currentChefProject, setCurrentChefProject] = useState(null);
 
-  const fetchData = async () => {
+  const fetchOrganisations = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/chef-projects');
-      setData(response.data);
+      const response = await axios.get('http://localhost:5000/organisations');
+      setOrganisations(response.data);
     } catch (error) {
+      console.error('Error fetching organisations:', error);
       notification.error({
         message: 'Error',
-        description: 'Failed to fetch Chef Projects',
+        description: 'Failed to fetch organisations',
       });
     } finally {
       setLoading(false);
@@ -30,48 +30,34 @@ const ReadChefProject = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchOrganisations();
   }, []);
 
   const handleCreateSuccess = () => {
-    fetchData();
-    setCreateVisible(false);
+    fetchOrganisations();
+    setVisible(false);
   };
 
   const handleUpdateSuccess = () => {
-    fetchData();
-    setUpdateVisible(false);
+    fetchOrganisations();
+    setSelectedOrganisationId(null);
+    setVisible(false);
   };
 
   const handleDeleteSuccess = () => {
-    fetchData();
+    fetchOrganisations();
   };
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: '_id',
-      key: 'id',
-    },
-    {
       title: 'Name',
       dataIndex: 'nom',
-      key: 'name',
+      key: 'nom',
     },
     {
-      title: 'Surname',
-      dataIndex: 'prenom',
-      key: 'surname',
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-    },
-    {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
     },
     {
       title: 'Created At',
@@ -89,89 +75,73 @@ const ReadChefProject = () => {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <Space size="middle">
+        <Space>
           <Button
-            type="primary"
+            icon={<EditOutlined />}
             onClick={() => {
-              setCurrentChefProject(record);
-              setUpdateVisible(true);
+              setSelectedOrganisationId(record._id);
+              setVisible(true);
             }}
-            style={{ marginRight: '8px' }}
-          >
-            Update
-          </Button>
-          <Button
-            type="danger"
-            onClick={() => {
-              setCurrentChefProject(record);
-              Modal.confirm({
-                title: 'Are you sure you want to delete this Chef Project?',
-                onOk: async () => {
-                  try {
-                    await axios.delete(`http://localhost:5000/chef-projects/${record._id}`);
-                    notification.success({
-                      message: 'Success',
-                      description: 'Chef Project deleted successfully',
-                    });
-                    handleDeleteSuccess();
-                  } catch (error) {
-                    notification.error({
-                      message: 'Error',
-                      description: 'Failed to delete Chef Project',
-                    });
-                  }
-                },
-              });
-            }}
-          >
-            Delete
-          </Button>
+          />
+          <DeleteOrganisation id={record._id} onDeleteSuccess={handleDeleteSuccess}>
+            <Button icon={<DeleteOutlined />} danger />
+          </DeleteOrganisation>
         </Space>
       ),
     },
   ];
 
   return (
-    <div className="table-container">
-      <div style={{ padding: '20px', marginLeft: '20px' }}>
-        <Title level={2}>Chef Projects</Title>
-        <Button
-          type="primary"
-          onClick={() => setCreateVisible(true)}
-          style={{ marginBottom: 16, float: 'right' }}
-        >
-          Create Chef Project
-        </Button>
-        <Table
-          columns={columns}
-          dataSource={data}
-          rowKey="_id"
-          loading={loading}
-          pagination={{ pageSize: 10 }}
-          scroll={{ x: true }}
-        />
-        <Modal
-          title="Create Chef Project"
-          visible={createVisible}
-          footer={null}
-          onCancel={() => setCreateVisible(false)}
-        >
-          <CreateChefProject 
-            onClose={() => setCreateVisible(false)} 
-            onCreateSuccess={handleCreateSuccess} 
-          />
-        </Modal>
-        {currentChefProject && (
-          <UpdateChefProject
-            id={currentChefProject._id}
-            visible={updateVisible}
+    <Card>
+      <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
+        <Col>
+          <Title level={4}>Organisations</Title>
+        </Col>
+        <Col>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setVisible(true)}
+          >
+            Create Organisation
+          </Button>
+        </Col>
+      </Row>
+      <Table
+        dataSource={organisations}
+        columns={columns}
+        rowKey="_id"
+        loading={loading}
+        pagination={{ pageSize: 10 }}
+        scroll={{ x: 'max-content' }}
+      />
+      <Modal
+        title={selectedOrganisationId ? "Update Organisation" : "Create Organisation"}
+        visible={visible}
+        onCancel={() => {
+          setVisible(false);
+          setSelectedOrganisationId(null);
+        }}
+        footer={null}
+      >
+        {selectedOrganisationId ? (
+          <UpdateOrganisation
+            id={selectedOrganisationId}
             onUpdateSuccess={handleUpdateSuccess}
-            onClose={() => setUpdateVisible(false)}
+            onCancel={() => {
+              setVisible(false);
+              setSelectedOrganisationId(null);
+            }}
+          />
+        ) : (
+          <CreateOrganisation
+            onCreateSuccess={handleCreateSuccess}
+            onCancel={() => setVisible(false)}
           />
         )}
-      </div>
-    </div>
+      </Modal>
+    </Card>
   );
 };
 
-export default ReadChefProject;
+export default ReadOrganisation;

@@ -1,10 +1,15 @@
 import React from 'react';
 import { Spin } from 'antd';
-import '../styles/components/LoadingSpinner.css';
 
 const LoadingSpinner = () => {
   return (
-    <div className="spinner-wrapper">
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+      width: '100%'
+    }}>
       <Spin size="large" />
     </div>
   );

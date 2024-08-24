@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Dropdown, Switch, Menu, Typography, Space, theme } from 'antd';
+import { Layout, Dropdown, Switch, Menu, Typography, Space, theme, Button } from 'antd';
 import { 
   UserOutlined, 
   LogoutOutlined, 
@@ -8,11 +8,11 @@ import {
   LoginOutlined
 } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../styles/Context/AuthContext';
+import { useAuth } from '../Context/AuthContext';
 import LogoWhite from '../assets/image/logo-white.jpg';
 import LogoBlack from '../assets/image/logo-black.jpg';
 import ProfileImage from '../assets/image/profile.png';
-import { useTheme } from '../styles/Context/ThemeContext';
+import { useTheme } from '../Context/ThemeContext';
 
 const { Header: AntHeader } = Layout;
 const { Text } = Typography;
@@ -104,14 +104,13 @@ const Header = ({ toggleSidebar }) => {
             />
           </Dropdown>
         ) : (
-          <LoginOutlined 
-            style={{
-              fontSize: '24px',
-              cursor: 'pointer',
-              color: token.colorPrimary,
-            }}
+          <Button 
+            type="primary" 
+            icon={<LoginOutlined />} 
             onClick={() => navigate('/login')}
-          />
+          >
+            Login
+          </Button>
         )}
       </Space>
     </AntHeader>

@@ -3,7 +3,7 @@ import { Typography, Card, Space, Button, Row, Col, Progress, List, Avatar, them
 import { ProjectOutlined, PlusCircleOutlined, SettingOutlined, FileTextOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import MainLayout from '../layouts/MainLayout';
 import ReadProject from '../components/Project/ReadProjects';
-import { useTheme } from '../styles/Context/ThemeContext';
+import { useTheme } from '../Context/ThemeContext';
 
 const { Title, Paragraph } = Typography;
 

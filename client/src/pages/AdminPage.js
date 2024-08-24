@@ -3,7 +3,7 @@ import { Typography, Card, Row, Col, Space, Statistic, Button, theme } from 'ant
 import { DashboardOutlined, UserOutlined, TeamOutlined, ProjectOutlined } from '@ant-design/icons';
 import MainLayout from '../layouts/MainLayout';
 import ReadAdmins from '../components/Admin/ReadAdmins';
-import { useTheme } from '../styles/Context/ThemeContext';
+import { useTheme } from '../Context/ThemeContext';
 
 const { Title } = Typography;
 

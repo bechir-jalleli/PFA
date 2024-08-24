@@ -1,8 +1,6 @@
-// src/components/UpdateOrganisation.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Input, Button, Modal, notification } from 'antd';
-import '../../styles/components/UpdateComponents.css';
 
 const UpdateOrganisation = ({ id, onUpdateSuccess }) => {
   const [visible, setVisible] = useState(false);
@@ -32,7 +30,7 @@ const UpdateOrganisation = ({ id, onUpdateSuccess }) => {
         description: 'Organisation updated successfully',
       });
       setVisible(false);
-      if (onUpdateSuccess) onUpdateSuccess(); // Notify parent to refresh data
+      if (onUpdateSuccess) onUpdateSuccess();
     } catch (error) {
       notification.error({
         message: 'Error',
@@ -47,19 +45,17 @@ const UpdateOrganisation = ({ id, onUpdateSuccess }) => {
 
   return (
     <>
-      <Button className="update-button" onClick={() => setVisible(true)}>
+      <Button type="primary" onClick={() => setVisible(true)}>
         Update
       </Button>
-
       <Modal
-        className="update-modal"
         title="Update Organisation"
         visible={visible}
         onOk={handleOk}
         onCancel={handleCancel}
       >
         {organisation && (
-          <Form form={form} layout="vertical" className="update-form">
+          <Form form={form} layout="vertical">
             <Form.Item name="nom" label="Name" rules={[{ required: true, message: 'Please input the name!' }]}>
               <Input />
             </Form.Item>

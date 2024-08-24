@@ -60,12 +60,25 @@ export const AuthProvider = ({ children }) => {
     navigate('/login');
   };
 
+  // Check if user has a specific role
+  const hasRole = (requiredRole) => {
+    if (user && user.role) {
+      return user.role === requiredRole;
+    }
+    return false;
+  };
+
+  // Check if the user is authenticated
+  const isLoggedIn = () => {
+    return isAuthenticated;
+  };
+
   useEffect(() => {
     checkAuthStatus();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, hasRole, isLoggedIn }}>
       {children}
     </AuthContext.Provider>
   );

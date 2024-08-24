@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Typography, Button, Space, notification, Modal } from 'antd';
+import { Table, Typography, Button, Space, notification, Modal, Card } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import UpdateChefProject from './UpdateChefProject';
 import DeleteChefProject from './DeleteChefProject';
 import CreateChefProject from './CreateChefProject';
-import '../../styles/components/ChefProject.css';
 
 const { Title } = Typography;
 
@@ -12,6 +12,7 @@ const ReadChefProject = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -33,10 +34,13 @@ const ReadChefProject = () => {
 
   const handleCreateSuccess = () => {
     fetchData();
+    setVisible(false);
   };
 
   const handleUpdateSuccess = () => {
     fetchData();
+    setVisible(false);
+    setSelectedId(null);
   };
 
   const handleDeleteSuccess = () => {
@@ -44,11 +48,6 @@ const ReadChefProject = () => {
   };
 
   const columns = [
-    {
-      title: 'ID',
-      dataIndex: '_id',
-      key: 'id',
-    },
     {
       title: 'Name',
       dataIndex: 'nom',
@@ -70,25 +69,19 @@ const ReadChefProject = () => {
       key: 'phone',
     },
     {
-      title: 'Created At',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (text) => new Date(text).toLocaleDateString(),
-    },
-    {
-      title: 'Updated At',
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      render: (text) => new Date(text).toLocaleDateString(),
-    },
-    {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <Space size="middle">
-          <UpdateChefProject id={record._id} onUpdateSuccess={handleUpdateSuccess} />
+        <Space>
+          <Button 
+            icon={<EditOutlined />} 
+            onClick={() => {
+              setSelectedId(record._id);
+              setVisible(true);
+            }}
+          />
           <DeleteChefProject id={record._id} onDeleteSuccess={handleDeleteSuccess}>
-            Delete
+            <Button icon={<DeleteOutlined />} danger />
           </DeleteChefProject>
         </Space>
       ),
@@ -96,35 +89,48 @@ const ReadChefProject = () => {
   ];
 
   return (
-    <div className="table-container">
-      <div style={{ padding: '20px', marginLeft: '20px' }}>
-        <Title level={2}>Chef Projects</Title>
-        <Button
-          type="primary"
-          onClick={() => setVisible(true)}
-          style={{ marginBottom: 16 }}
-        >
-          Create Chef Project
-        </Button>
+    <Card>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <Space style={{ justifyContent: 'space-between', width: '100%' }}>
+          <Title level={2}>Chef Projects</Title>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setVisible(true)}
+          >
+            Create Chef Project
+          </Button>
+        </Space>
         <Table
           columns={columns}
           dataSource={data}
           rowKey="_id"
           loading={loading}
+          pagination={{ pageSize: 10 }}
+          scroll={{ x: 'max-content' }}
         />
         <Modal
-          title="Create Chef Project"
+          title={selectedId ? "Update Chef Project" : "Create Chef Project"}
           visible={visible}
+          onCancel={() => {
+            setVisible(false);
+            setSelectedId(null);
+          }}
           footer={null}
-          onCancel={() => setVisible(false)}
         >
-          <CreateChefProject 
-            onClose={() => setVisible(false)} 
-            onCreateSuccess={handleCreateSuccess} 
-          />
+          {selectedId ? (
+            <UpdateChefProject 
+              id={selectedId}
+              onUpdateSuccess={handleUpdateSuccess}
+            />
+          ) : (
+            <CreateChefProject 
+              onCreateSuccess={handleCreateSuccess}
+            />
+          )}
         </Modal>
-      </div>
-    </div>
+      </Space>
+    </Card>
   );
 };
 

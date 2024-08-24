@@ -1,118 +1,148 @@
-  // src/components/ReadResponsables.js
-  import React, { useState, useEffect } from 'react';
-  import axios from 'axios';
-  import { Table, Button, Modal, Space } from 'antd';
-  import UpdateResponsable from './UpdateResponsable';
-  import DeleteResponsable from './DeleteResponsable';
-  import CreateResponsable from './CreateResponsable';
-  import '../../styles/components/TableComponents.css';  // Adjust the path as necessary
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Table, Button, Modal, Card, Space, Typography, notification } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import UpdateResponsable from './UpdateResponsable';
+import DeleteResponsable from './DeleteResponsable';
+import CreateResponsable from './CreateResponsable';
 
-  const ReadResponsables = () => {
-    const [responsables, setResponsables] = useState([]);
-    const [visible, setVisible] = useState(false);
+const { Title } = Typography;
 
-    const fetchResponsables = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/responsables');
-        setResponsables(response.data);
-      } catch (error) {
-        console.error('Error fetching responsables:', error);
-      }
-    };
+const ReadResponsable = () => {
+  const [responsables, setResponsables] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-      fetchResponsables();
-    }, []);
-
-    const handleCreateSuccess = () => {
-      fetchResponsables();
-    };
-
-    const handleUpdateSuccess = () => {
-      fetchResponsables();
-    };
-
-    const handleDeleteSuccess = () => {
-      fetchResponsables();
-    };
-
-    const columns = [
-      {
-        title: 'ID',
-        dataIndex: '_id',
-        key: '_id',
-      },
-      {
-        title: 'Name',
-        dataIndex: 'nom',
-        key: 'nom',
-      },
-      {
-        title: 'Surname',
-        dataIndex: 'prenom',
-        key: 'prenom',
-      },
-      {
-        title: 'Email',
-        dataIndex: 'email',
-        key: 'email',
-      },
-      {
-        title: 'Phone',
-        dataIndex: 'phone',
-        key: 'phone',
-      },
-      {
-        title: 'Created At',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-        render: (text) => new Date(text).toLocaleDateString(),
-      },
-      {
-        title: 'Updated At',
-        dataIndex: 'updatedAt',
-        key: 'updatedAt',
-        render: (text) => new Date(text).toLocaleDateString(),
-      },
-      {
-        title: 'Actions',
-        key: 'actions',
-        render: (text, record) => (
-          <Space>
-            <UpdateResponsable id={record._id} onUpdateSuccess={handleUpdateSuccess} />
-            <DeleteResponsable id={record._id} onDeleteSuccess={handleDeleteSuccess} />
-          </Space>
-        ),
-      },
-    ];
-
-    return (
-      
-      <div className="table-container">
-<div style={{ padding: '20px', marginLeft: '20px' }}>    
-      
-        <Button
-          type="primary"
-          onClick={() => setVisible(true)}
-          style={{ marginBottom: 16 }}
-        >
-          Create Responsable
-        </Button>
-        <Table dataSource={responsables} columns={columns} rowKey="_id" />
-        <Modal
-          title="Create Responsable"
-          visible={visible}
-          footer={null}
-          onCancel={() => setVisible(false)}
-        >
-          <CreateResponsable 
-            onClose={() => setVisible(false)} 
-            onCreateSuccess={handleCreateSuccess} 
-          />
-        </Modal>
-      </div>
-      </div>
-    );
+  const fetchResponsables = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/responsables');
+      setResponsables(response.data);
+    } catch (error) {
+      console.error('Error fetching responsables:', error);
+      notification.error({
+        message: 'Error',
+        description: 'Failed to fetch responsables',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  export default ReadResponsables;
+  useEffect(() => {
+    fetchResponsables();
+  }, []);
+
+  const handleCreateSuccess = () => {
+    fetchResponsables();
+    setVisible(false);
+  };
+
+  const handleUpdateSuccess = () => {
+    fetchResponsables();
+    setVisible(false);
+    setSelectedId(null);
+  };
+
+  const handleDeleteSuccess = () => {
+    fetchResponsables();
+  };
+
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'nom',
+      key: 'nom',
+    },
+    {
+      title: 'Surname',
+      dataIndex: 'prenom',
+      key: 'prenom',
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
+    {
+      title: 'Phone',
+      dataIndex: 'phone',
+      key: 'phone',
+    },
+    {
+      title: 'Organisation',
+      dataIndex: ['organisation', 'nom'],
+      key: 'organisation',
+    },
+    {
+      title: 'Sous-Organisation',
+      dataIndex: ['sousOrganisation', 'nom'],
+      key: 'sousOrganisation',
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, record) => (
+        <Space>
+          <Button 
+            icon={<EditOutlined />} 
+            onClick={() => {
+              setSelectedId(record._id);
+              setVisible(true);
+            }}
+          />
+          <DeleteResponsable id={record._id} onDeleteSuccess={handleDeleteSuccess}>
+            <Button icon={<DeleteOutlined />} danger />
+          </DeleteResponsable>
+        </Space>
+      ),
+    },
+  ];
+
+  return (
+    <Card>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <Space style={{ justifyContent: 'space-between', width: '100%' }}>
+          <Title level={2}>Responsables</Title>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setVisible(true)}
+          >
+            Create Responsable
+          </Button>
+        </Space>
+        <Table 
+          dataSource={responsables} 
+          columns={columns} 
+          rowKey="_id" 
+          loading={loading}
+          pagination={{ pageSize: 10 }}
+          scroll={{ x: 'max-content' }}
+        />
+        <Modal
+          title={selectedId ? "Update Responsable" : "Create Responsable"}
+          visible={visible}
+          onCancel={() => {
+            setVisible(false);
+            setSelectedId(null);
+          }}
+          footer={null}
+        >
+          {selectedId ? (
+            <UpdateResponsable 
+              id={selectedId}
+              onUpdateSuccess={handleUpdateSuccess}
+            />
+          ) : (
+            <CreateResponsable 
+              onCreateSuccess={handleCreateSuccess}
+            />
+          )}
+        </Modal>
+      </Space>
+    </Card>
+  );
+};
+
+export default ReadResponsable;

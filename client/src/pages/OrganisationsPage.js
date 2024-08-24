@@ -3,7 +3,7 @@ import { Typography, Card, Space, Row, Col, Statistic, Button, theme } from 'ant
 import { BankOutlined, TeamOutlined, BranchesOutlined, PlusOutlined } from '@ant-design/icons';
 import MainLayout from '../layouts/MainLayout';
 import ReadOrganisations from '../components/Organisation/ReadOrganisations';
-import { useTheme } from '../styles/Context/ThemeContext';
+import { useTheme } from '../Context/ThemeContext';
 
 const { Title, Paragraph } = Typography;
 

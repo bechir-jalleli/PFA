@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal } from 'antd';
+import { Table, Button, Modal, Card, Space, Typography } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import UpdateTache from './UpdateTache';
 import DeleteTache from './DeleteTache';
 import CreateTache from './CreateTache';
-import '../../styles/components/TableComponents.css';  // Adjust the path as necessary
+
+const { Title } = Typography;
 
 const ReadTaches = () => {
   const [taches, setTaches] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchTaches();
@@ -20,20 +24,24 @@ const ReadTaches = () => {
       setTaches(response.data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleCreateSuccess = () => {
-    fetchTaches(); // Refresh tasks after creating a new one
-    setVisible(false); // Close the modal
+    fetchTaches();
+    setVisible(false);
   };
 
   const handleUpdateSuccess = () => {
-    fetchTaches(); // Refresh tasks after updating
+    fetchTaches();
+    setVisible(false);
+    setSelectedId(null);
   };
 
   const handleDeleteSuccess = () => {
-    fetchTaches(); // Refresh tasks after deleting
+    fetchTaches();
   };
 
   const columns = [
@@ -60,37 +68,66 @@ const ReadTaches = () => {
     {
       title: 'Actions',
       key: 'actions',
-      render: (text, record) => (
-        <span>
-          <UpdateTache id={record._id} onUpdateSuccess={handleUpdateSuccess} />
-          <DeleteTache id={record._id} onDeleteSuccess={handleDeleteSuccess} />
-        </span>
+      render: (_, record) => (
+        <Space>
+          <Button 
+            icon={<EditOutlined />} 
+            onClick={() => {
+              setSelectedId(record._id);
+              setVisible(true);
+            }}
+          />
+          <DeleteTache id={record._id} onDeleteSuccess={handleDeleteSuccess}>
+            <Button icon={<DeleteOutlined />} danger />
+          </DeleteTache>
+        </Space>
       ),
     },
   ];
 
   return (
-    
-    <div className="table-container">
-<div style={{ padding: '20px', marginLeft: '20px' }}>
-      <Button
-        type="primary"
-        onClick={() => setVisible(true)}
-        style={{ marginBottom: 16 }}
-      >
-        Create Task
-      </Button>
-      <Table dataSource={taches} columns={columns} rowKey="_id" />
-      <Modal
-        title="Create Task"
-        visible={visible}
-        footer={null}
-        onCancel={() => setVisible(false)}
-      >
-        <CreateTache onCreateSuccess={handleCreateSuccess} />
-      </Modal>
-    </div>
-    </div>
+    <Card>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <Space style={{ justifyContent: 'space-between', width: '100%' }}>
+          <Title level={2}>Tasks</Title>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setVisible(true)}
+          >
+            Create Task
+          </Button>
+        </Space>
+        <Table 
+          dataSource={taches} 
+          columns={columns} 
+          rowKey="_id" 
+          loading={loading}
+          pagination={{ pageSize: 10 }}
+          scroll={{ x: 'max-content' }}
+        />
+        <Modal
+          title={selectedId ? "Update Task" : "Create Task"}
+          visible={visible}
+          onCancel={() => {
+            setVisible(false);
+            setSelectedId(null);
+          }}
+          footer={null}
+        >
+          {selectedId ? (
+            <UpdateTache 
+              id={selectedId}
+              onUpdateSuccess={handleUpdateSuccess}
+            />
+          ) : (
+            <CreateTache 
+              onCreateSuccess={handleCreateSuccess}
+            />
+          )}
+        </Modal>
+      </Space>
+    </Card>
   );
 };
 

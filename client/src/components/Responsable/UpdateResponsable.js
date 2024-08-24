@@ -1,8 +1,6 @@
-// src/components/UpdateResponsable.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Input, Button, Modal, notification } from 'antd';
-import '../../styles/components/UpdateComponents.css';
 
 const UpdateResponsable = ({ id, onUpdateSuccess }) => {
   const [visible, setVisible] = useState(false);
@@ -32,7 +30,7 @@ const UpdateResponsable = ({ id, onUpdateSuccess }) => {
         description: 'Responsable updated successfully',
       });
       setVisible(false);
-      if (onUpdateSuccess) onUpdateSuccess(); // Refresh data after update
+      if (onUpdateSuccess) onUpdateSuccess();
     } catch (error) {
       notification.error({
         message: 'Error',
@@ -47,32 +45,64 @@ const UpdateResponsable = ({ id, onUpdateSuccess }) => {
 
   return (
     <>
-      <Button className="update-button" onClick={() => setVisible(true)}>
-  Update
-</Button>
+      <Button 
+        type="primary" 
+        onClick={() => setVisible(true)}
+        style={{ marginBottom: '16px' }}
+      >
+        Update
+      </Button>
 
-<Modal
-  className="update-modal"
-  title="Update Task"
-  visible={visible}
-  onOk={handleOk}
-  onCancel={handleCancel}
->
+      <Modal
+        title="Update Responsable"
+        visible={visible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText="Update"
+        cancelText="Cancel"
+      >
         {responsable && (
-          <Form form={form} layout="vertical">
-            <Form.Item name="nom" label="Name">
+          <Form 
+            form={form} 
+            layout="vertical"
+            style={{ maxWidth: '400px', margin: '0 auto' }}
+          >
+            <Form.Item 
+              name="nom" 
+              label="Name"
+              rules={[{ required: true, message: 'Please input the name!' }]}
+            >
               <Input />
             </Form.Item>
-            <Form.Item name="prenom" label="Surname">
+            <Form.Item 
+              name="prenom" 
+              label="Surname"
+              rules={[{ required: true, message: 'Please input the surname!' }]}
+            >
               <Input />
             </Form.Item>
-            <Form.Item name="email" label="Email">
+            <Form.Item 
+              name="email" 
+              label="Email"
+              rules={[
+                { required: true, message: 'Please input the email!' },
+                { type: 'email', message: 'Please enter a valid email!' }
+              ]}
+            >
               <Input />
             </Form.Item>
-            <Form.Item name="phone" label="Phone">
+            <Form.Item 
+              name="phone" 
+              label="Phone"
+              rules={[{ required: true, message: 'Please input the phone number!' }]}
+            >
               <Input />
             </Form.Item>
-            <Form.Item name="mdp" label="Password">
+            <Form.Item 
+              name="mdp" 
+              label="Password"
+              rules={[{ required: true, message: 'Please input the password!' }]}
+            >
               <Input.Password />
             </Form.Item>
           </Form>

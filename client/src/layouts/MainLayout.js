@@ -4,7 +4,7 @@ import { Layout, theme } from 'antd';
 import Header from './Header';
 import Sidebar from './SideBar';
 import Footer from './Footer';
-import { useTheme } from '../styles/Context/ThemeContext';
+import { useTheme } from '../Context/ThemeContext';
 
 const { Content } = Layout;
 

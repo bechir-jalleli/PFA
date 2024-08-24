@@ -1,26 +1,34 @@
-// src/components/DeleteSousOrganisation.js
 import React from 'react';
 import axios from 'axios';
-import { Button, Popconfirm } from 'antd';
+import { Button, notification, Popconfirm } from 'antd';
 
 const DeleteSousOrganisation = ({ id, onDelete }) => {
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:5000/sous-organisations/${id}`);
-      if (onDelete) onDelete(); // Refresh the list on success
+      notification.success({
+        message: 'Success',
+        description: 'Sous-organisation deleted successfully',
+      });
+      if (onDelete) onDelete();
     } catch (error) {
-      console.error('Error deleting sous-organisation:', error);
+      notification.error({
+        message: 'Error',
+        description: 'Failed to delete sous-organisation',
+      });
     }
   };
 
   return (
     <Popconfirm
-      title="Are you sure to delete this sous-organisation?"
+      title="Are you sure you want to delete this sous-organisation?"
       onConfirm={handleDelete}
       okText="Yes"
       cancelText="No"
     >
-      <Button type="danger">Delete</Button>
+      <Button type="primary" danger>
+        Delete
+      </Button>
     </Popconfirm>
   );
 };

@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Form, Input, Button, notification } from 'antd';
-import '../../styles/components/CreateForms.css';
+import { Form, Input, Button, notification, Space } from 'antd';
 
 const phoneNumberValidator = (_, value) => {
   if (!value) {
@@ -55,7 +54,10 @@ const CreateResponsable = ({ onClose, onCreateSuccess }) => {
         <Input.Password />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit">Create Responsable</Button>
+        <Space>
+          <Button type="primary" htmlType="submit">Create Responsable</Button>
+          <Button onClick={onClose}>Cancel</Button>
+        </Space>
       </Form.Item>
     </Form>
   );

@@ -1,21 +1,35 @@
 import React from 'react';
 import axios from 'axios';
-import { Button } from 'antd';
+import { Button, notification, Popconfirm } from 'antd';
 
 const DeleteOrganisation = ({ id, onDelete }) => {
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:5000/organisations/${id}`);
-      if (onDelete) onDelete(); // Notify parent component about deletion
+      notification.success({
+        message: 'Success',
+        description: 'Organisation deleted successfully',
+      });
+      if (onDelete) onDelete();
     } catch (error) {
-      console.error('Error deleting organisation:', error);
+      notification.error({
+        message: 'Error',
+        description: 'Failed to delete organisation',
+      });
     }
   };
 
   return (
-    <Button type="danger" onClick={handleDelete}>
-      Delete
-    </Button>
+    <Popconfirm
+      title="Are you sure you want to delete this organisation?"
+      onConfirm={handleDelete}
+      okText="Yes"
+      cancelText="No"
+    >
+      <Button type="primary" danger>
+        Delete
+      </Button>
+    </Popconfirm>
   );
 };
 

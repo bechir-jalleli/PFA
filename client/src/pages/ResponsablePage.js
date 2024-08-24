@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import MainLayout from '../layouts/MainLayout';
 import ReadResponsables from '../components/Responsable/ReadResponsable';
-import { useTheme } from '../styles/Context/ThemeContext';
+import { useTheme } from '../Context/ThemeContext';
 
 const { Title, Paragraph } = Typography;
 

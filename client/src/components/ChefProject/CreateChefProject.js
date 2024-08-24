@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Form, Input, Button, notification } from 'antd';
-import '../../styles/components/ChefProject.css';
+import { Form, Input, Button, notification, Space } from 'antd';
 
 const CreateChefProject = ({ onClose, onCreateSuccess }) => {
   const [form] = Form.useForm();
@@ -23,6 +22,7 @@ const CreateChefProject = ({ onClose, onCreateSuccess }) => {
       });
     }
   };
+
   const phoneNumberValidator = (_, value) => {
     if (!value) {
       return Promise.reject(new Error('Please input the phone number!'));
@@ -37,45 +37,48 @@ const CreateChefProject = ({ onClose, onCreateSuccess }) => {
   };
 
   return (
-    <Form form={form} onFinish={onFinish} layout="vertical" className="chef-project-form">
+    <Form form={form} onFinish={onFinish} layout="vertical">
       <Form.Item
         name="nom"
         label="Name"
         rules={[{ required: true, message: 'Please input the name!' }]}
       >
-        <Input className="input-field" />
+        <Input />
       </Form.Item>
       <Form.Item
         name="prenom"
         label="Surname"
       >
-        <Input className="input-field" />
+        <Input />
       </Form.Item>
       <Form.Item
         name="email"
         label="Email"
         rules={[{ required: true, type: 'email', message: 'Please input a valid email!' }]}
       >
-        <Input className="input-field" />
+        <Input />
       </Form.Item>
       <Form.Item
         name="phone"
         label="Phone"
         rules={[{ required: true, validator: phoneNumberValidator }]}
       >
-        <Input className="input-field" />
+        <Input />
       </Form.Item>
       <Form.Item
         name="mdp"
         label="Password"
         rules={[{ required: true, message: 'Please input the password!' }]}
       >
-        <Input.Password className="input-field" />
+        <Input.Password />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit" className="form-button">
-          Create Chef Project
-        </Button>
+        <Space>
+          <Button type="primary" htmlType="submit">
+            Create Chef Project
+          </Button>
+          <Button onClick={onClose}>Cancel</Button>
+        </Space>
       </Form.Item>
     </Form>
   );

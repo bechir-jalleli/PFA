@@ -1,14 +1,12 @@
 import React from 'react';
 import axios from 'axios';
-import { Form, Input, Button, notification } from 'antd';
-import '../../styles/components/CreateForms.css';
+import { Form, Input, Button, notification, Space } from 'antd';
 
 const phoneNumberValidator = (_, value) => {
   if (!value) {
     return Promise.reject(new Error('Please input the phone number!'));
   }
   
-  // Regular expression for validating the phone number
   const phoneRegex = /^(?:2|9|5|\+216)[0-9]{7}$/;
   if (!phoneRegex.test(value)) {
     return Promise.reject(new Error('Phone number must start with 2, 9, 5, or +216 followed by 7 digits.'));
@@ -23,16 +21,16 @@ const CreateMembreEquipe = ({ onClose, onCreateSuccess }) => {
   const onFinish = async (values) => {
     try {
       const response = await axios.post('http://localhost:5000/membre-equipes', values);
-      console.log('Create response:', response); // Log the response for debugging
+      console.log('Create response:', response);
       notification.success({
         message: 'Success',
         description: 'Membre equipe created successfully',
       });
       form.resetFields();
-      if (onCreateSuccess) onCreateSuccess(); // Call the success function passed from the parent
-      if (onClose) onClose(); // Close modal on success
+      if (onCreateSuccess) onCreateSuccess();
+      if (onClose) onClose();
     } catch (error) {
-      console.error('Create error:', error); // Log the error details
+      console.error('Create error:', error);
       notification.error({
         message: 'Error',
         description: 'Failed to create membre equipe',
@@ -78,9 +76,12 @@ const CreateMembreEquipe = ({ onClose, onCreateSuccess }) => {
         <Input.Password />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Create Membre Equipe
-        </Button>
+        <Space>
+          <Button type="primary" htmlType="submit">
+            Create Membre Equipe
+          </Button>
+          <Button onClick={onClose}>Cancel</Button>
+        </Space>
       </Form.Item>
     </Form>
   );

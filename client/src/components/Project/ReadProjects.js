@@ -1,67 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal, notification } from 'antd';
+import { Table, Button, Modal, Card, Space, Typography, notification } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import UpdateProject from './UpdateProject';
 import DeleteProject from './DeleteProject';
 import CreateProject from './CreateProject';
-import '../../styles/components/TableComponents.css';  // Adjust the path as necessary
+
+const { Title } = Typography;
 
 const ReadProjects = () => {
   const [projects, setProjects] = useState([]);
-  const [organisations, setOrganisations] = useState([]);
-  const [sousOrganisations, setSousOrganisations] = useState([]);
   const [visible, setVisible] = useState(false);
-  const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const fetchData = async () => {
+  const fetchProjects = async () => {
     try {
-      const [projectsResponse, organisationsResponse, sousOrganisationsResponse] = await Promise.all([
-        axios.get('http://localhost:5000/projects'),
-        axios.get('http://localhost:5000/organisations'),
-        axios.get('http://localhost:5000/sous-organisations'),
-      ]);
-
-      setProjects(projectsResponse.data);
-      setOrganisations(organisationsResponse.data);
-      setSousOrganisations(sousOrganisationsResponse.data);
+      const response = await axios.get('http://localhost:5000/projects');
+      setProjects(response.data);
     } catch (error) {
-      console.error('Error fetching data:', error.response ? error.response.data : error.message);
+      console.error('Error fetching projects:', error);
       notification.error({
         message: 'Error',
-        description: error.response ? error.response.data.message : 'Failed to fetch data.',
+        description: 'Failed to fetch projects',
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchProjects();
   }, []);
 
-  const enrichProjectData = (projects) => {
-    return projects.map(project => {
-      const organisation = organisations.find(org => org.no === project.organisation?._id) || { nom: 'N/A' };
-      const sousOrganisation = sousOrganisations.find(sousOrg => sousOrg._id === project.sousOrganisation?._id) || { nom: 'N/A' };
-      const chefProject = project.chefProject || { nom: 'N/A', prenom: 'N/A' };
-
-      return {
-        ...project,
-        organisationName: organisation.nom,
-        sousOrganisationName: sousOrganisation.nom,
-        chefProjectName: `${chefProject.nom || 'N/A'} ${chefProject.prenom || 'N/A'}`,
-      };
-    });
-  };
-
   const handleCreateSuccess = () => {
-    fetchData(); // Refresh the project list after creation
+    fetchProjects();
+    setVisible(false);
   };
 
   const handleUpdateSuccess = () => {
-    fetchData(); // Refresh the project list after update
+    fetchProjects();
+    setVisible(false);
+    setSelectedId(null);
   };
 
   const handleDeleteSuccess = () => {
-    fetchData(); // Refresh the project list after deletion
+    fetchProjects();
   };
 
   const columns = [
@@ -79,13 +63,13 @@ const ReadProjects = () => {
       title: 'Start Date',
       dataIndex: 'startDate',
       key: 'startDate',
-      render: (text) => new Date(text).toLocaleDateString(),
+      render: (date) => new Date(date).toLocaleDateString(),
     },
     {
       title: 'End Date',
       dataIndex: 'endDate',
       key: 'endDate',
-      render: (text) => new Date(text).toLocaleDateString(),
+      render: (date) => new Date(date).toLocaleDateString(),
     },
     {
       title: 'Budget',
@@ -94,79 +78,72 @@ const ReadProjects = () => {
     },
     {
       title: 'Organisation',
-      dataIndex: 'organisationName',
-      key: 'organisationName',
-    },
-    {
-      title: 'Sous Organisation',
-      dataIndex: 'sousOrganisationName',
-      key: 'sousOrganisationName',
-    },
-    {
-      title: 'Chef Project',
-      dataIndex: 'chefProjectName',
-      key: 'chefProjectName',
+      dataIndex: ['organisation', 'nom'],
+      key: 'organisation',
     },
     {
       title: 'Actions',
       key: 'actions',
-      render: (text, record) => (
-        <span style={{ padding: '20px', marginLeft: '20px' }}>
-          <Button
+      render: (_, record) => (
+        <Space>
+          <Button 
+            icon={<EditOutlined />} 
             onClick={() => {
-              setSelectedProjectId(record._id);
+              setSelectedId(record._id);
               setVisible(true);
             }}
-            style={{ marginRight: 8 }}
-          >
-            Update
-          </Button>
-          <DeleteProject
-            id={record._id}
-            onDeleteSuccess={handleDeleteSuccess}
           />
-        </span>
+          <DeleteProject id={record._id} onDeleteSuccess={handleDeleteSuccess}>
+            <Button icon={<DeleteOutlined />} danger />
+          </DeleteProject>
+        </Space>
       ),
     },
   ];
 
   return (
-   
-    <div className="table-container">
- <div style={{ padding: '20px', marginLeft: '20px' }}>
-      <Button
-        type="primary"
-        onClick={() => setVisible(true)}
-        style={{ marginBottom: 16 }}
-      >
-        Create Project
-      </Button>
-      <Table dataSource={enrichProjectData(projects)} columns={columns} rowKey="_id" />
-      <Modal
-        title="Create Project"
-        visible={visible && !selectedProjectId}
-        footer={null}
-        onCancel={() => setVisible(false)}
-      >
-        <CreateProject
-          onCreateSuccess={handleCreateSuccess}
-          onCancel={() => setVisible(false)}
+    <Card>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <Space style={{ justifyContent: 'space-between', width: '100%' }}>
+          <Title level={2}>Projects</Title>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setVisible(true)}
+          >
+            Create Project
+          </Button>
+        </Space>
+        <Table 
+          dataSource={projects} 
+          columns={columns} 
+          rowKey="_id" 
+          loading={loading}
+          pagination={{ pageSize: 10 }}
+          scroll={{ x: 'max-content' }}
         />
-      </Modal>
-      <Modal
-        title="Update Project"
-        visible={visible && selectedProjectId}
-        footer={null}
-        onCancel={() => setVisible(false)}
-      >
-        <UpdateProject
-          id={selectedProjectId}
-          onUpdateSuccess={handleUpdateSuccess}
-          onCancel={() => setVisible(false)}
-        />
-      </Modal>
-    </div>
-    </div>
+        <Modal
+          title={selectedId ? "Update Project" : "Create Project"}
+          visible={visible}
+          onCancel={() => {
+            setVisible(false);
+            setSelectedId(null);
+          }}
+          footer={null}
+        >
+          {selectedId ? (
+            <UpdateProject 
+              id={selectedId}
+              onUpdateSuccess={handleUpdateSuccess}
+            />
+          ) : (
+            <CreateProject 
+              onCreateSuccess={handleCreateSuccess}
+            />
+          )}
+        </Modal>
+      </Space>
+    </Card>
   );
 };
 

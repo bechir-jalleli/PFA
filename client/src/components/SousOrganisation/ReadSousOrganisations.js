@@ -1,28 +1,31 @@
-// src/components/ReadSousOrganisations.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal } from 'antd';
+import { Table, Button, Modal, Card, Space, Typography } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import UpdateSousOrganisation from './UpdateSousOrganisation';
 import DeleteSousOrganisation from './DeleteSousOrganisation';
 import CreateSousOrganisation from './CreateSousOrganisation';
-import '../../styles/components/TableComponents.css';  // Adjust the path as necessary
+
+const { Title } = Typography;
 
 const ReadSousOrganisations = () => {
   const [sousOrganisations, setSousOrganisations] = useState([]);
   const [organisationOptions, setOrganisationOptions] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch sous-organisations
   const fetchSousOrganisations = async () => {
     try {
       const response = await axios.get('http://localhost:5000/sous-organisations');
       setSousOrganisations(response.data);
     } catch (error) {
       console.error('Error fetching sous-organisations:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Fetch organisations for the select options
   const fetchOrganisations = async () => {
     try {
       const response = await axios.get('http://localhost:5000/organisations');
@@ -37,10 +40,15 @@ const ReadSousOrganisations = () => {
     fetchOrganisations();
   }, []);
 
-  // Update sous-organisation list after creation or deletion
   const handleCreateSuccess = () => {
     fetchSousOrganisations();
     setVisible(false);
+  };
+
+  const handleUpdateSuccess = () => {
+    fetchSousOrganisations();
+    setVisible(false);
+    setSelectedId(null);
   };
 
   const handleDeleteSuccess = () => {
@@ -67,50 +75,71 @@ const ReadSousOrganisations = () => {
     {
       title: 'Actions',
       key: 'actions',
-      render: (text, record) => (
-        <span>
-          <UpdateSousOrganisation
-            id={record._id}
-            onUpdateSuccess={fetchSousOrganisations}
+      render: (_, record) => (
+        <Space>
+          <Button 
+            icon={<EditOutlined />} 
+            onClick={() => {
+              setSelectedId(record._id);
+              setVisible(true);
+            }}
           />
           <DeleteSousOrganisation
             id={record._id}
-            onDelete={handleDeleteSuccess}
-          />
-        </span>
+            onDeleteSuccess={handleDeleteSuccess}
+          >
+            <Button icon={<DeleteOutlined />} danger />
+          </DeleteSousOrganisation>
+        </Space>
       ),
     },
   ];
 
   return (
-    
-    <div className="table-container">
-<div style={{ padding: '20px', marginLeft: '20px' }}>
-      <Button
-        type="primary"
-        onClick={() => setVisible(true)}
-        style={{ marginBottom: 16 }}
-      >
-        Create Sous-Organisation
-      </Button>
-      <Table
-        dataSource={sousOrganisations}
-        columns={columns}
-        rowKey="_id"
-      />
-      <Modal
-        title="Create Sous-Organisation"
-        visible={visible}
-        footer={null}
-        onCancel={() => setVisible(false)}
-      >
-        <CreateSousOrganisation
-          onClose={handleCreateSuccess}
-          organisationOptions={organisationOptions}
+    <Card>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <Space style={{ justifyContent: 'space-between', width: '100%' }}>
+          <Title level={2}>Sous-Organisations</Title>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setVisible(true)}
+          >
+            Create Sous-Organisation
+          </Button>
+        </Space>
+        <Table
+          dataSource={sousOrganisations}
+          columns={columns}
+          rowKey="_id"
+          loading={loading}
+          pagination={{ pageSize: 10 }}
+          scroll={{ x: 'max-content' }}
         />
-      </Modal>
-    </div>
-    </div>
+        <Modal
+          title={selectedId ? "Update Sous-Organisation" : "Create Sous-Organisation"}
+          visible={visible}
+          onCancel={() => {
+            setVisible(false);
+            setSelectedId(null);
+          }}
+          footer={null}
+        >
+          {selectedId ? (
+            <UpdateSousOrganisation
+              id={selectedId}
+              onUpdateSuccess={handleUpdateSuccess}
+              organisationOptions={organisationOptions}
+            />
+          ) : (
+            <CreateSousOrganisation
+              onCreateSuccess={handleCreateSuccess}
+              organisationOptions={organisationOptions}
+            />
+          )}
+        </Modal>
+      </Space>
+    </Card>
   );
 };
 

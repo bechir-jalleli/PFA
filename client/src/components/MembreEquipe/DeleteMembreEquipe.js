@@ -1,7 +1,6 @@
-// src/components/DeleteMembreEquipe.js
 import React from 'react';
 import axios from 'axios';
-import { Button, notification } from 'antd';
+import { Button, notification, Popconfirm } from 'antd';
 
 const DeleteMembreEquipe = ({ id, onDeleteSuccess }) => {
   const handleDelete = async () => {
@@ -11,7 +10,7 @@ const DeleteMembreEquipe = ({ id, onDeleteSuccess }) => {
         message: 'Success',
         description: 'Membre equipe deleted successfully',
       });
-      if (onDeleteSuccess) onDeleteSuccess(); // Notify parent to refresh data
+      if (onDeleteSuccess) onDeleteSuccess();
     } catch (error) {
       notification.error({
         message: 'Error',
@@ -21,14 +20,16 @@ const DeleteMembreEquipe = ({ id, onDeleteSuccess }) => {
   };
 
   return (
-    <Button 
-      type="primary" 
-      danger 
-      ghost
-      onClick={handleDelete}
+    <Popconfirm
+      title="Are you sure you want to delete this team member?"
+      onConfirm={handleDelete}
+      okText="Yes"
+      cancelText="No"
     >
-      Delete
-    </Button>
+      <Button type="primary" danger>
+        Delete
+      </Button>
+    </Popconfirm>
   );
 };
 
