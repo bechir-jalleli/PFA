@@ -1,194 +1,110 @@
-const Admin = require('../models/Admin');
+const mongoose = require('mongoose'); // Ensure mongoose is imported
+const Admin = require('../models/admin');
+const Organisation = require('../models/organisation');
+const SousOrganisation = require('../models/sousOrganisation');
+const Project = require('../models/project');
+const ChefProject = require('../models/chefProject');
+const Responsable = require('../models/responsable');
+const MembreEquipe = require('../models/membreEquipe');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const handleError = require('../utils/handleError');
 
-const handleError = (res, status, message) => {
-    res.status(status).json({ error: message });
-};
-
-const generateAccessToken = (admin) => {
-    return jwt.sign(
-        { UserInfo: { id: admin._id, role: 'admin' } },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '15m' }
-    );
-};
-
-const generateRefreshToken = (admin) => {
-    return jwt.sign(
-        { UserInfo: { id: admin._id, role: 'admin' } },
-        process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: '7d' }
-    );
-};
-
-const verifyToken = (token, secret) => {
-    return new Promise((resolve, reject) => {
-        jwt.verify(token, secret, (err, decoded) => {
-            if (err) reject(err);
-            else resolve(decoded);
-        });
-    });
-};
-
-exports.login = async (req, res) => {
-    const { email, mdp } = req.body;
-
-    if (!email || !mdp) {
-        return handleError(res, 400, 'Email and password are required should be not empty');
-    }
-
-    try {
-        const foundAdmin = await Admin.findOne({ email }).exec();
-        if (!foundAdmin) {
-            return handleError(res, 401, 'Wrong email');
-        }
-
-        const match = await bcrypt.compare(mdp, foundAdmin.mdp);
-        if (!match) {
-            return handleError(res, 401, 'Wrong password');
-        }
-
-        const accessToken = generateAccessToken(foundAdmin);
-        const refreshToken = generateRefreshToken(foundAdmin);
-
-        res.cookie('jwt', refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'None',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
-
-        res.json({
-            accessToken,
-            email: foundAdmin.email
-        });
-
-    } catch (error) {
-        handleError(res, 500, 'Error logging in: ' + error.message);
-    }
-};
-
-
-exports.register = async (req, res) => {
-    const { nom, prenom, email, phone, mdp } = req.body;
-
-    if (!nom || !email || !mdp) {
-        return res.status(400).json({ error: 'Name, email, and password are required' });
-    }
-
-    try {
-        const foundAdmin = await Admin.findOne({ email }).exec();
-        if (foundAdmin) {
-            return res.status(409).json({ error: 'Admin already exists' });
-        }
-
-        const hashedPassword = await bcrypt.hash(mdp, 10);
-        const admin = new Admin({ nom, prenom, email, phone, mdp: hashedPassword });
-        const createdAdmin = await admin.save();
-
-
-        res.status(201).json({
-            id: createdAdmin._id,
-            nom: createdAdmin.nom,
-            prenom:createdAdmin.prenom,
-            email: createdAdmin.email,
-            phone: createdAdmin.phone,
-            mdp: createdAdmin.mdp,
-        });
-
-    } catch (error) {
-        res.status(500).json({ error: 'Error registering admin: ' + error.message });
-    }
-};
-
-exports.refresh = async (req, res) => {
-    const cookies = req.cookies;
-
-    if (!cookies?.jwt) {
-        return handleError(res, 401, 'you should loggin to refresh token');
-    }
-
-    const refreshToken = cookies.jwt;
-    try {
-        const decoded = await verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-
-        const foundAdmin = await Admin.findById(decoded.UserInfo.id).exec();
-        if (!foundAdmin) {
-            return handleError(res, 401, 'this Amin (ID) doesnt exist');
-        }
-
-        const accessToken = generateAccessToken(foundAdmin);
-
-        res.json({ accessToken });
-    } catch (error) {
-        handleError(res, 403, 'you dont have access: ' + error.message);
-    }
-};
-
-exports.logout = (req, res) => {
-    res.clearCookie('jwt', {
-        httpOnly: true,
-        sameSite: 'None',
-        secure: true
-    });
-
-    res.json({ message: 'logout success & Cookie cleared' });
-};
-
-exports.getAllAdmins = async (req, res) => {
-    try {
-        const admins = await Admin.find({});
-        res.status(200).json(admins);
-
-    } catch (error) {
-        handleError(res, 400, 'Error fetching admins: ' + error.message);
-    }
-};
-
-exports.getAdminById = async (req, res) => {
+exports.getAdmin = async (req, res) => {
     const { id } = req.params;
-
     try {
-        const admin = await Admin.findById(id);
-        if (admin) {
-            res.status(200).json(admin);
-        } else {
-            handleError(res, 404, 'Admin not found');
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: 'Invalid admin ID' });
         }
+        const admin = await Admin.findById(id);
+        if (!admin) return handleError(res, 404, 'Admin not found');
+        res.status(200).json(admin);
     } catch (error) {
-        handleError(res, 400, 'Error fetching admin: ' + error.message);
+        handleError(res, 400, `Error fetching admin: ${error.message}`);
     }
 };
 
+// Update admin by ID
 exports.updateAdmin = async (req, res) => {
     const { id } = req.params;
-    const updates = req.body;
+    const updates = { ...req.body };
 
     try {
+        if (updates.mdp) {
+            const saltRounds = 10;
+            updates.mdp = await bcrypt.hash(updates.mdp, saltRounds);
+        }
+
         const updatedAdmin = await Admin.findByIdAndUpdate(id, updates, { new: true });
+
         if (updatedAdmin) {
-            res.status(200).json(updatedAdmin);
+            return res.status(200).json(updatedAdmin);
         } else {
-            handleError(res, 404, 'Admin not found');
+            return res.status(404).json({ error: 'Admin not found' });
         }
     } catch (error) {
-        handleError(res, 400, 'Error updating admin: ' + error.message);
+        return res.status(400).json({ error: `Error updating admin: ${error.message}` });
     }
 };
 
-exports.deleteAdmin = async (req, res) => {
-    const { id } = req.params;
-
+exports.createAdmin = async (req, res) => {
     try {
-        const result = await Admin.findByIdAndDelete(id);
-        if (result) {
-            res.status(200).json({ message: 'Admin deleted successfully' });
-        } else {
-            handleError(res, 404, 'Admin not found');
-        }
+        const { nom, prenom, email, phone, mdp, role } = req.body;
+
+
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(mdp, saltRounds);
+
+        const newAdmin = new Admin({
+            nom,
+            prenom,
+            email,
+            phone,
+            mdp: hashedPassword, 
+            role,
+        });
+
+        const savedAdmin = await newAdmin.save();
+        res.status(201).json(savedAdmin);
     } catch (error) {
-        handleError(res, 400, 'Error deleting admin: ' + error.message);
+        res.status(400).json({ error: error.message });
     }
 };
 
+exports.getInfo = async (req, res) => {
+    try {
+        const organisationCount = await Organisation.countDocuments();
+        const sousOrganisationCount = await SousOrganisation.countDocuments();
+        const totalProjects = await Project.countDocuments();
+        const chefProjectCount = await ChefProject.countDocuments();
+        const responsableCount = await Responsable.countDocuments();
+        const membreEquipeCount = await MembreEquipe.countDocuments();
+
+        const inProgressCount = await Project.countDocuments({ status: 'In Progress' });
+        const completedCount = await Project.countDocuments({ status: 'Completed' });
+        const delayedCount = await Project.countDocuments({ status: 'Delayed' });
+
+        const totalEmployees = chefProjectCount + responsableCount + membreEquipeCount;
+
+        const activeChefProjects = await ChefProject.countDocuments({ isLoggedIn: true });
+        const activeResponsables = await Responsable.countDocuments({ isLoggedIn: true });
+        const activeMembreEquipes = await MembreEquipe.countDocuments({ isLoggedIn: true });
+
+        const totalActiveUsers = activeChefProjects + activeResponsables + activeMembreEquipes;
+
+        res.status(200).json({
+            organisationCount,
+            sousOrganisationCount,
+            projectCount: totalProjects,
+            totalEmployees,
+            projectStatuses: {
+                inProgress: inProgressCount,
+                completed: completedCount,
+                delayed: delayedCount
+            },
+            activeUsers: totalActiveUsers 
+        });
+    } catch (error) {
+        console.error('Error in getInfo:', error);
+        res.status(500).json({ message: 'Error retrieving information: ' + error.message });
+    }
+};

@@ -1,3 +1,4 @@
+// ErrorBoundary.js
 import React from 'react';
 
 class ErrorBoundary extends React.Component {
@@ -11,7 +12,11 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    console.log(error, errorInfo);
+    if (error.message.includes('ResizeObserver')) {
+      console.log('Ignored ResizeObserver error');
+    } else {
+      console.error('Uncaught error:', error, errorInfo);
+    }
   }
 
   render() {

@@ -1,6 +1,4 @@
-const handleError = (err, res) => {
-    res.status(err.statusCode || 500).json({ message: err.message || 'Internal Server Error' });
-  };
-  
-  module.exports = handleError;
-  
+// utils/handleError.js
+module.exports = (res, statusCode, message) => {
+  res.status(statusCode).json({ error: message });
+};

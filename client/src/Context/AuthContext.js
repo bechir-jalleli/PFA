@@ -29,28 +29,35 @@ export const AuthProvider = ({ children }) => {
         },
         body: JSON.stringify({ email, mdp }),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Login failed');
       }
-
+  
       const data = await response.json();
-      const { accessToken, email: userEmail, role } = data;
-
-      setUser({ email: userEmail, role });
-      setIsAuthenticated(true);
+      console.log('Login response data:', data); // Debugging line
+  
+      const { accessToken, id, role } = data;
+  
+      if (!accessToken || !id || !role) {
+        throw new Error('Incomplete response data');
+      }
+  
       localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('user', JSON.stringify({ email: userEmail, role }));
+      localStorage.setItem('user', JSON.stringify({ id, role }));
       localStorage.setItem('accessToken', accessToken);
-
+  
+      setUser({ id, role });
+      setIsAuthenticated(true);
+  
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login error:', error.message);
       throw error;
     }
   };
-
-  // Logout function
+  
+  // Logout function remains unchanged
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
@@ -59,6 +66,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('accessToken');
     navigate('/login');
   };
+  
 
   // Check if user has a specific role
   const hasRole = (requiredRole) => {

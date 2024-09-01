@@ -1,15 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const adminController = require('../controllers/adminController');
-//const { verifyToken, checkRole } = require('../middleware/authorizationMiddleware');
+const { getAdmin, updateAdmin, createAdmin,getInfo } = require('../controllers/adminController');
 
-router.get('/', adminController.getAllAdmins);
-
-//router.use(verifyToken);
- //router.use(checkRole('admin'));
-
-router.get('/:id', adminController.getAdminById);
-router.put('/:id', adminController.updateAdmin);
-router.delete('/:id', adminController.deleteAdmin);
-
+router.get('/info', getInfo); 
+router.get('/:id', getAdmin);
+router.put('/:id', updateAdmin);
+router.post('/', createAdmin);
 module.exports = router;

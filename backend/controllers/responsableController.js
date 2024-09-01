@@ -1,37 +1,9 @@
 const Responsable = require('../models/responsable');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const searchRole = require('../utils/searchRole');
+const handleError = require('../utils/handleError'); // Make sure handleError is correctly imported
 
-const handleError = (res, status, message) => {
-    res.status(status).json({ error: message });
-};
-
-const generateAccessToken = (responsable) => {
-    return jwt.sign(
-        { UserInfo: { id: responsable._id, role: 'responsable' } },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '15m' }
-    );
-};
-
-const generateRefreshToken = (responsable) => {
-    return jwt.sign(
-        { UserInfo: { id: responsable._id, role: 'responsable' } },
-        process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: '7d' }
-    );
-};
-
-const verifyToken = (token, secret) => {
-    return new Promise((resolve, reject) => {
-        jwt.verify(token, secret, (err, decoded) => {
-            if (err) reject(err);
-            else resolve(decoded);
-        });
-    });
-};
-
-exports.register = async (req, res) => {
+exports.createResponsable = async (req, res) => {
     const { nom, prenom, email, phone, mdp } = req.body;
 
     if (!nom || !email || !mdp) {
@@ -39,9 +11,10 @@ exports.register = async (req, res) => {
     }
 
     try {
-        const foundResponsable = await Responsable.findOne({ email }).exec();
-        if (foundResponsable) {
-            return res.status(409).json({ error: 'Responsable already exists' });
+        const { user, role } = await searchRole(email);
+
+        if (user) {
+            return res.status(409).json({ error: `Email already exists for ${role}` });
         }
 
         const hashedPassword = await bcrypt.hash(mdp, 10);
@@ -60,78 +33,6 @@ exports.register = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Error registering responsable: ' + error.message });
     }
-};
-
-exports.login = async (req, res) => {
-    const { email, mdp } = req.body;
-
-    if (!email || !mdp) {
-        return handleError(res, 400, 'Email and password are required');
-    }
-
-    try {
-        const foundResponsable = await Responsable.findOne({ email }).exec();
-        if (!foundResponsable) {
-            return handleError(res, 401, 'Responsable does not exist');
-        }
-
-        const match = await bcrypt.compare(mdp, foundResponsable.mdp);
-        if (!match) {
-            return handleError(res, 401, 'Wrong password');
-        }
-
-        const accessToken = generateAccessToken(foundResponsable);
-        const refreshToken = generateRefreshToken(foundResponsable);
-
-        res.cookie('jwt', refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'None',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
-
-        res.json({
-            accessToken,
-            email: foundResponsable.email
-        });
-
-    } catch (error) {
-        handleError(res, 500, 'Error logging in: ' + error.message);
-    }
-};
-
-exports.refresh = async (req, res) => {
-    const cookies = req.cookies;
-
-    if (!cookies?.jwt) {
-        return handleError(res, 401, 'Unauthorized');
-    }
-
-    const refreshToken = cookies.jwt;
-    try {
-        const decoded = await verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-
-        const foundResponsable = await Responsable.findById(decoded.UserInfo.id).exec();
-        if (!foundResponsable) {
-            return handleError(res, 401, 'Unauthorized');
-        }
-
-        const accessToken = generateAccessToken(foundResponsable);
-
-        res.json({ accessToken });
-    } catch (error) {
-        handleError(res, 403, 'Forbidden: ' + error.message);
-    }
-};
-
-exports.logout = (req, res) => {
-    res.clearCookie('jwt', {
-        httpOnly: true,
-        sameSite: 'None',
-        secure: true
-    });
-
-    res.json({ message: 'Cookie cleared' });
 };
 
 exports.getAllResponsables = async (req, res) => {

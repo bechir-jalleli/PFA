@@ -3,7 +3,7 @@ const router = express.Router();
 const responsableController = require('../controllers/responsableController');
 const { verifyToken, checkRole } = require('../middleware/authorizationMiddleware');
 
-
+router.post('/', responsableController.createResponsable);
 router.get('/', responsableController.getAllResponsables);
 /*
 router.use(verifyToken);

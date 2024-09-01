@@ -19,6 +19,12 @@ const LoginPage = () => {
   const [form] = Form.useForm();
 
   useEffect(() => {
+    if (user) {
+      navigateBasedOnRole(user.role);
+    }
+  }, [user]);
+  
+  useEffect(() => {
     const rememberedUser = JSON.parse(localStorage.getItem('rememberedUser'));
     if (rememberedUser) {
       form.setFieldsValue(rememberedUser);
@@ -26,11 +32,7 @@ const LoginPage = () => {
     }
   }, [form]);
 
-  useEffect(() => {
-    if (user) {
-      navigateBasedOnRole(user.role);
-    }
-  }, [user]);
+
 
   const navigateBasedOnRole = (role) => {
     switch (role) {

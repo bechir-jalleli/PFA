@@ -7,11 +7,13 @@ const PrivateRoute = ({ element: Component, allowedRoles }) => {
   const { isAuthenticated, userRoles } = useAuth();
   const location = useLocation();
 
+  // تحقق من المصادقة
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (allowedRoles && !allowedRoles.some(role => userRoles.includes(role))) {
+  // تحقق من الأدوار المسموح بها
+  if (allowedRoles && Array.isArray(userRoles) && !allowedRoles.some(role => userRoles.includes(role))) {
     return <Navigate to="/" replace />;
   }
 
