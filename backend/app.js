@@ -12,7 +12,7 @@ const bodyParser = require('body-parser');
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 
-// Connect to the database
+// Connect DB
 connectDB();
 
 const app = express();
@@ -21,7 +21,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
-// Import routes
+//  routes
 const adminRoutes = require('./routes/adminRoutes');
 const responsableRoutes = require('./routes/responsableRoutes');
 const chefProjectRoutes = require('./routes/chefProjectRoutes');
@@ -32,7 +32,7 @@ const projectRoutes = require('./routes/projectRoutes');
 const tacheRoutes = require('./routes/tacheRoutes');
 const loginRouter = require('./routes/loginRoutes');
 
-// Use routes
+//  routes
 app.use('/admin', adminRoutes);
 app.use('/responsables', responsableRoutes);
 app.use('/chef-projects', chefProjectRoutes);
@@ -43,17 +43,14 @@ app.use('/projects', projectRoutes);
 app.use('/taches', tacheRoutes);
 app.use('/login', loginRouter);
 
-// Set up Swagger for API documentation
 const swaggerDocument = require(path.join(__dirname, 'swagger.json'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Global error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(err.statusCode || 500).json({ message: err.message || 'Something broke!' });
 });
 
-// Connect to MongoDB and start the server
 mongoose.connect(process.env.DATABASE_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log('Connected to MongoDB');

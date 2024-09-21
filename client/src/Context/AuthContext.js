@@ -1,92 +1,62 @@
-// src/Context/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios'; 
 import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // Check authentication status on component mount
-  const checkAuthStatus = () => {
-    const storedIsAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-    const storedUser = localStorage.getItem('user');
-    if (storedIsAuthenticated && storedUser) {
-      setIsAuthenticated(true);
-      setUser(JSON.parse(storedUser));
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
     }
-  };
+  }, []);
 
-  // Login function
-  const login = async (email, mdp) => {
+  const login = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:5000/login', {
-        method: 'POST',
+      const response = await axios.post('http://localhost:5000/login', {
+        email,
+        password,
+      }, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, mdp }),
       });
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Login failed');
-      }
-  
-      const data = await response.json();
-      console.log('Login response data:', data); // Debugging line
-  
-      const { accessToken, id, role } = data;
-  
+
+      const { accessToken, id, role } = response.data;
+
+      console.log('Login response data:', response.data);
+
       if (!accessToken || !id || !role) {
-        throw new Error('Incomplete response data');
+        throw new Error('Response data is not complete');
       }
-  
-      localStorage.setItem('isAuthenticated', 'true');
+
       localStorage.setItem('user', JSON.stringify({ id, role }));
       localStorage.setItem('accessToken', accessToken);
-  
+
       setUser({ id, role });
-      setIsAuthenticated(true);
-  
     } catch (error) {
-      console.error('Login error:', error.message);
-      throw error;
+      console.error('Login error:', error.response ? error.response.data : error.message);
+      throw error.response ? new Error(error.response.data.error) : new Error('Login failed');
     }
   };
-  
-  // Logout function remains unchanged
+
   const logout = () => {
-    setIsAuthenticated(false);
     setUser(null);
-    localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('user');
     localStorage.removeItem('accessToken');
     navigate('/login');
   };
-  
 
-  // Check if user has a specific role
-  const hasRole = (requiredRole) => {
-    if (user && user.role) {
-      return user.role === requiredRole;
-    }
-    return false;
-  };
+  const hasRole = (requiredRole) => user?.role === requiredRole;
 
-  // Check if the user is authenticated
-  const isLoggedIn = () => {
-    return isAuthenticated;
-  };
-
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
+  const isAuthenticated = !!user;
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, hasRole, isLoggedIn }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, hasRole }}>
       {children}
     </AuthContext.Provider>
   );

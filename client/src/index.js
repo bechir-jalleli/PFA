@@ -5,7 +5,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import App from './App';
 import 'antd/dist/reset.css';
 
-// Suppress ResizeObserver errors
 const consoleError = console.error;
 console.error = (...args) => {
   if (/ResizeObserver/.test(args[0])) return;

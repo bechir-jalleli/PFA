@@ -8,7 +8,6 @@ const handleError = (res, status, message) => {
     res.status(status).json({ error: message });
 };
 
-// Create a new sous-organisation
 exports.createSousOrganisation = async (req, res) => {
     const { title, description, organisation, responsable, projects } = req.body;
 
@@ -25,7 +24,6 @@ exports.createSousOrganisation = async (req, res) => {
     }
 };
 
-// Get all sous-organisations
 exports.getAllSousOrganisations = async (req, res) => {
     try {
         const sousOrganisations = await SousOrganisation.find({})
@@ -38,7 +36,6 @@ exports.getAllSousOrganisations = async (req, res) => {
     }
 };
 
-// Get sous-organisation by ID with additional details
 exports.getSousOrganisationById = async (req, res) => {
     const { id } = req.params;
 
@@ -65,7 +62,6 @@ exports.getSousOrganisationById = async (req, res) => {
     }
 };
 
-// Update a sous-organisation
 exports.updateSousOrganisation = async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
@@ -86,7 +82,6 @@ exports.updateSousOrganisation = async (req, res) => {
     }
 };
 
-// Delete a sous-organisation
 exports.deleteSousOrganisation = async (req, res) => {
     const { id } = req.params;
 

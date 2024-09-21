@@ -1,4 +1,4 @@
-const mongoose = require('mongoose'); // Ensure mongoose is imported
+const mongoose = require('mongoose'); 
 const Admin = require('../models/admin');
 const Organisation = require('../models/organisation');
 const SousOrganisation = require('../models/sousOrganisation');
@@ -23,7 +23,6 @@ exports.getAdmin = async (req, res) => {
     }
 };
 
-// Update admin by ID
 exports.updateAdmin = async (req, res) => {
     const { id } = req.params;
     const updates = { ...req.body };
@@ -85,6 +84,7 @@ exports.getInfo = async (req, res) => {
 
         const totalEmployees = chefProjectCount + responsableCount + membreEquipeCount;
 
+        // Corrected summation of active users
         const activeChefProjects = await ChefProject.countDocuments({ isLoggedIn: true });
         const activeResponsables = await Responsable.countDocuments({ isLoggedIn: true });
         const activeMembreEquipes = await MembreEquipe.countDocuments({ isLoggedIn: true });

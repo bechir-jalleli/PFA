@@ -1,7 +1,7 @@
 const Responsable = require('../models/responsable');
 const bcrypt = require('bcrypt');
 const searchRole = require('../utils/searchRole');
-const handleError = require('../utils/handleError'); // Make sure handleError is correctly imported
+const handleError = require('../utils/handleError');
 
 exports.createResponsable = async (req, res) => {
     const { nom, prenom, email, phone, mdp } = req.body;

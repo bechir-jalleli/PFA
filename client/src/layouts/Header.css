@@ -1,0 +1,49 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  background-color: #001529;
+  height: 64px;
+  }
+  
+  .logo {
+    height: 40px;
+  }
+  
+  .logo-text {
+    color: #fff;
+    margin-left: 8px;
+  }
+  
+  .theme-switch {
+    margin-right: 16px;
+  }
+  
+  .profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .sidebar-toggle {
+    display: none;
+  }
+  
+  @media (max-width: 768px) {
+    .sidebar-toggle {
+      display: block;
+    }
+  
+    .logo-link {
+      flex-grow: 1;
+      justify-content: center;
+    }
+  }
+  

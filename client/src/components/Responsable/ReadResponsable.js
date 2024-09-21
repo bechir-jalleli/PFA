@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal, Card, Space, Typography, notification } from 'antd';
+import { Table, Button, Modal, Card, Space, Typography, notification, Alert } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import UpdateResponsable from './UpdateResponsable';
 import DeleteResponsable from './DeleteResponsable';
@@ -13,13 +13,16 @@ const ReadResponsable = () => {
   const [visible, setVisible] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchResponsables = async () => {
     try {
+      setError(null);
       const response = await axios.get('http://localhost:5000/responsables');
       setResponsables(response.data);
     } catch (error) {
       console.error('Error fetching responsables:', error);
+      setError('Failed to fetch responsables. Please try again later.');
       notification.error({
         message: 'Error',
         description: 'Failed to fetch responsables',
@@ -112,6 +115,7 @@ const ReadResponsable = () => {
             Create Responsable
           </Button>
         </Space>
+        {error && <Alert message={error} type="error" />}
         <Table 
           dataSource={responsables} 
           columns={columns} 

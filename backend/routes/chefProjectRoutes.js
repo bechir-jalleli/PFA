@@ -1,14 +1,17 @@
-const express = require('express');
-const router = express.Router();
-const chefProjectController = require('../controllers/chefProjectController');
-//const { verifyToken, checkRole } = require('../middleware/authorizationMiddleware');
+    const express = require('express');
+    const router = express.Router();
+    const chefProjectController = require('../controllers/chefProjectController');
+    const { verifyToken, checkRole } = require('../middleware/authorizationMiddleware');
 
-router.get('/', /*checkRole('admin', 'responsable', 'chefProject'),*/ chefProjectController.getAllChefProjects);
+    router.get('/',  chefProjectController.getAllChefProjects);
 
-//router.use(verifyToken);
 
-router.get('/:id', /*checkRole('admin', 'responsable', 'chefProject'),*/ chefProjectController.getChefProjectById);
-router.put('/:id',/* checkRole('responsable', 'chefProject'),*/ chefProjectController.updateChefProject);
-router.delete('/:id', /*checkRole('responsable', 'chefProject'), */chefProjectController.deleteChefProject);
+    /*router.use(verifyToken);
+    router.use(checkRole('responsable', 'chefProject' ,'admin'));
+    */
+    router.post('/', chefProjectController.createChefProject);
+    router.get('/:id', chefProjectController.getChefProjectById);
+    router.put('/:id', chefProjectController.updateChefProject);
+    router.delete('/:id',chefProjectController.deleteChefProject);
 
-module.exports = router;
+    module.exports = router;

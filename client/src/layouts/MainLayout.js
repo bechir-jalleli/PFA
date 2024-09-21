@@ -1,51 +1,55 @@
-// MainLayout.js
 import React, { useState } from 'react';
-import { Layout, theme, Menu } from 'antd';
-import { Link, useLocation } from 'react-router-dom';
+import { Layout, Menu } from 'antd';
+import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import Sidebar from './SideBar';
 import Footer from './Footer';
 import { useTheme } from '../Context/ThemeContext';
-
 
 const { Content } = Layout;
 
 const MainLayout = ({ children }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { isDarkMode } = useTheme();
-  const { token } = theme.useToken();
   const location = useLocation();
 
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
   };
 
-  
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: '100vh', background: isDarkMode ? '#001529' : '#f0f2f5' }}>
       <Header toggleSidebar={toggleSidebar} />
-      <Layout hasSider>
+      <Layout style={{ marginTop: '64px' }}> {/* Add this style */}
         <Sidebar collapsed={sidebarCollapsed} onCollapse={setSidebarCollapsed} />
-        <Layout style={{ 
-          marginLeft: sidebarCollapsed ? '80px' : '250px',
-          transition: 'all 0.2s',
-        }}>
+        <Layout
+          style={{
+            marginLeft: sidebarCollapsed ? '80px' : '250px',
+            transition: 'margin-left 0.3s',
+            padding: '0 16px',
+          }}
+        >
           <Menu
             mode="horizontal"
-            selectedKeys={[location.pathname.split('/').pop()]}
-            style={{ 
-              background: token.colorBgContainer,
-              borderBottom: `1px solid ${token.colorBorderSecondary}`,
+            selectedKeys={[location.pathname]}
+            style={{
+              background: isDarkMode ? '#001529' : '#fff',
+              borderBottom: `1px solid ${isDarkMode ? '#fff' : '#e8e8e8'}`,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}
           >
+            {/* Add menu items if necessary */}
           </Menu>
-          <Content style={{
-            margin: '24px 16px',
-            padding: 24,
-            minHeight: 280,
-            background: token.colorBgContainer,
-            borderRadius: token.borderRadiusLG,
-          }}>
+          <Content
+            style={{
+              margin: '24px 0',
+              padding: 24,
+              background: isDarkMode ? '#141414' : '#fff',
+              borderRadius: 8,
+            }}
+          >
             {children}
           </Content>
           <Footer />

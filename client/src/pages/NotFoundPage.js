@@ -47,9 +47,7 @@ const NotFoundPage = () => {
                 title={<Title level={1}>404</Title>}
                 subTitle={<Title level={3}>Oops! Page not found</Title>}
               />
-              <Paragraph style={{ textAlign: 'center' }}>
-                The page you're looking for doesn't exist or has been moved.
-              </Paragraph>
+             
               <Space direction="vertical" size="large" style={{ width: '100%', textAlign: 'center' }}>
                 <Link to="/">
                   <Button type="primary" size="large">Back to Home</Button>

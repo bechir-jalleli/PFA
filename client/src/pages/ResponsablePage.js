@@ -1,103 +1,117 @@
-import React from 'react';
-import { Typography, Card, Space, Button, Row, Col, Statistic, List, Avatar, theme } from 'antd';
-import { 
+import React, { useEffect, useState } from 'react';
+import { Typography, Card, Space, Button, Row, Col, Statistic, List, Avatar, Progress, Timeline, theme } from 'antd';import { 
   UserOutlined, 
-  PlusCircleOutlined, 
-  SettingOutlined, 
-  FileTextOutlined, 
-  TeamOutlined, 
-  StarOutlined,
-  ProjectOutlined  // Add this import
+  ProjectOutlined,
+  ClockCircleOutlined,
+  CheckCircleOutlined,
+  WarningOutlined,
+  DollarOutlined,
+  FileTextOutlined,
+  TeamOutlined,
+  RiseOutlined
 } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
-import ReadResponsables from '../components/Responsable/ReadResponsable';
 import { useTheme } from '../Context/ThemeContext';
+import LoadingDots from '../components/Loading';
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 
 const ResponsablePage = () => {
   const { isDarkMode } = useTheme();
   const { token } = theme.useToken();
+  const navigate = useNavigate();
+  const [data, setData] = useState(null);
 
-  const pageStyle = {
-    padding: token.padding,
-    minHeight: '100vh',
-    backgroundColor: token.colorBgContainer,
-    color: token.colorText,
-  };
+  useEffect(() => {
+    fetch('http://localhost:5000/responsable')
+      .then(response => response.json())
+      .then(data => setData(data))
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
 
-  const iconStyle = {
-    fontSize: 48,
-    color: token.colorPrimary,
-  };
-
-  const cardStyle = {
-    marginBottom: token.marginMD,
-    boxShadow: token.boxShadow,
-    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
-  };
-
-  const topResponsables = [
-    { name: 'John Doe', projects: 5 },
-    { name: 'Jane Smith', projects: 4 },
-    { name: 'Bob Johnson', projects: 3 },
-  ];
+  if (!data) {
+    return <LoadingDots />; 
+  }
 
   return (
     <MainLayout>
-      <div style={pageStyle}>
-        <Space align="center" style={{ marginBottom: token.marginLG }}>
-          <UserOutlined style={iconStyle} />
-          <Title level={2} style={{ margin: 0, color: token.colorText }}>
-            Responsable Dashboard
-          </Title>
-        </Space>
+      <Space direction="vertical" size="large" style={{ width: '100%' }}>
+        <Row gutter={[16, 16]}>
+          <Col xs={24} sm={12} md={6}>
+            <Card>
+              <Statistic title="Total Projects" value={data.totalProjects} prefix={<ProjectOutlined />} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Card>
+              <Statistic title="Team Members" value={data.teamMembers} prefix={<TeamOutlined />} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Card>
+              <Statistic title="Budget Utilization" value={data.budgetUtilization} suffix="%" prefix={<DollarOutlined />} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Card>
+              <Statistic title="On-Time Delivery Rate" value={data.onTimeDeliveryRate} suffix="%" prefix={<RiseOutlined />} />
+            </Card>
+          </Col>
+        </Row>
 
         <Row gutter={[16, 16]}>
-          <Col xs={24} sm={12}>
-            <Card style={cardStyle}>
-              <Statistic title="Total Responsables" value={25} prefix={<TeamOutlined />} />
+          <Col xs={24} md={12}>
+            <Card title="Project Status">
+              <Row gutter={16}>
+                <Col span={8}>
+                  <Statistic title="In Progress" value={data.projectStatus.inProgress} prefix={<ClockCircleOutlined />} />
+                </Col>
+                <Col span={8}>
+                  <Statistic title="Completed" value={data.projectStatus.completed} prefix={<CheckCircleOutlined />} />
+                </Col>
+                <Col span={8}>
+                  <Statistic title="Delayed" value={data.projectStatus.delayed} prefix={<WarningOutlined />} />
+                </Col>
+              </Row>
             </Card>
           </Col>
-          <Col xs={24} sm={12}>
-            <Card style={cardStyle}>
-              <Statistic title="Active Projects" value={15} prefix={<ProjectOutlined />} />
+          <Col xs={24} md={12}>
+            <Card title="Team Performance">
+              <Progress percent={data.teamPerformance} status="active" />
             </Card>
           </Col>
-          <Col xs={24} lg={16}>
-            <Card title="Responsable List" style={cardStyle}>
-              <ReadResponsables />
+        </Row>
+
+        <Row gutter={[16, 16]}>
+          <Col xs={24} md={12}>
+            <Card title="Upcoming Deadlines">
+              <Timeline>
+                {data.upcomingDeadlines.map((deadline, index) => (
+                  <Timeline.Item key={index}>{deadline}</Timeline.Item>
+                ))}
+              </Timeline>
             </Card>
           </Col>
-          <Col xs={24} lg={8}>
-            <Card title="Top Responsables" style={cardStyle}>
+          <Col xs={24} md={12}>
+            <Card title="Recent Documents">
               <List
                 itemLayout="horizontal"
-                dataSource={topResponsables}
+                dataSource={data.recentDocuments}
                 renderItem={(item, index) => (
                   <List.Item>
                     <List.Item.Meta
-                      avatar={<Avatar icon={<UserOutlined />} />}
-                      title={item.name}
-                      description={`${item.projects} projects`}
+                      avatar={<Avatar icon={<FileTextOutlined />} />}
+                      title={item.title}
+                      description={item.updatedAt}
                     />
-                    {index === 0 && <StarOutlined style={{ color: token.colorWarning }} />}
                   </List.Item>
                 )}
               />
             </Card>
           </Col>
-          <Col xs={24}>
-            <Card title="Quick Actions" style={cardStyle}>
-              <Space wrap>
-                <Button type="primary" icon={<PlusCircleOutlined />}>Add New Responsable</Button>
-                <Button icon={<FileTextOutlined />}>Generate Report</Button>
-                <Button icon={<SettingOutlined />}>Responsable Settings</Button>
-              </Space>
-            </Card>
-          </Col>
         </Row>
-      </div>
+      </Space>
     </MainLayout>
   );
 };

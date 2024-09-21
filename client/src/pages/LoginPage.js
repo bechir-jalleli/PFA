@@ -7,7 +7,7 @@ import { useTheme } from '../Context/ThemeContext';
 import Footer from '../layouts/Footer';
 import Header from '../layouts/Header';
 
-const { Title, Paragraph, Text } = Typography;
+const { Title, Text } = Typography;
 const { Content } = Layout;
 
 const LoginPage = () => {
@@ -23,7 +23,7 @@ const LoginPage = () => {
       navigateBasedOnRole(user.role);
     }
   }, [user]);
-  
+
   useEffect(() => {
     const rememberedUser = JSON.parse(localStorage.getItem('rememberedUser'));
     if (rememberedUser) {
@@ -31,8 +31,6 @@ const LoginPage = () => {
       setRememberMe(true);
     }
   }, [form]);
-
-
 
   const navigateBasedOnRole = (role) => {
     switch (role) {
@@ -66,10 +64,23 @@ const LoginPage = () => {
       message.success('Login successful');
       navigateBasedOnRole(loggedInUser.role);
     } catch (error) {
-      message.error('Login failed: ' + error.message);
-    } finally {
+      } finally {
       setLoading(false);
     }
+  };
+
+  const validateEmail = (_, value) => {
+    if (!value) {
+      return Promise.reject(new Error('Please input your Email!'));
+    }
+    const validRoles = ['admin', 'responsable', 'chef', 'membre'];
+    const isRoleEmail = validRoles.includes(value); // Check if input is one of the roles
+    const isValidEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value); // Regex for general email format
+
+    if (!isRoleEmail && !isValidEmail) {
+      return Promise.reject(new Error('Please enter a valid email!'));
+    }
+    return Promise.resolve();
   };
 
   const containerStyle = {
@@ -105,15 +116,14 @@ const LoginPage = () => {
           <Row>
             <Col xs={24} md={12} style={{ padding: '40px', background: isDarkMode ? '#1f1f1f' : '#f6f8fa' }}>
               <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                <Title level={3} style={{ textAlign: 'center', margin: '0px 0px 50px 0px ' }}>Welcome to GRCWebsite</Title>
+
                 <img 
-                  src="https://undraw.co/illustrations/undraw_secure_login_pdn4.svg" 
+                  src="/image/login.png" 
                   alt="Login Illustration" 
                   style={{ width: '100%', maxWidth: '300px', marginBottom: '20px' }} 
                 />
-                <Title level={3} style={{ textAlign: 'center', marginBottom: '10px' }}>Welcome to GRCWebsite</Title>
-                <Paragraph style={{ textAlign: 'center' }}>
-                  Manage your Governance, Risk, and Compliance with ease.
-                </Paragraph>
+                
               </div>
             </Col>
             <Col xs={24} md={12} style={{ padding: '40px' }}>
@@ -128,10 +138,7 @@ const LoginPage = () => {
                 >
                   <Form.Item
                     name="email"
-                    rules={[
-                      { required: true, message: 'Please input your Email!' },
-                      { type: 'email', message: 'Please enter a valid email!' }
-                    ]}
+                    rules={[{ validator: validateEmail }]}
                   >
                     <Input prefix={<UserOutlined />} placeholder="Email" />
                   </Form.Item>

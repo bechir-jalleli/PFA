@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react';
+import { Layout, Menu } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Menu, Typography } from 'antd';
-import {
-  UserOutlined,
-  TeamOutlined,
-  ProjectOutlined,
-  BranchesOutlined,
-  CheckSquareOutlined,
-  CrownOutlined,
-  ApartmentOutlined,
-  DashboardOutlined,
-  PlusOutlined,
-  UnorderedListOutlined,
+import { 
+  UserOutlined, 
+  TeamOutlined, 
+  ProjectOutlined, 
+  BranchesOutlined, 
+  CheckSquareOutlined, 
+  CrownOutlined, 
+  ApartmentOutlined, 
+  DashboardOutlined, 
+  PlusOutlined, 
+  UnorderedListOutlined 
 } from '@ant-design/icons';
 import { useTheme } from '../Context/ThemeContext';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
-const { Title } = Typography;
 
 const Sidebar = ({ collapsed, onCollapse }) => {
   const navigate = useNavigate();
@@ -38,153 +37,106 @@ const Sidebar = ({ collapsed, onCollapse }) => {
 
   const menuItems = [
     {
-      key: '/admin',
-      icon: <CrownOutlined />,
-      label: 'Admin',
-      allowedRoles: ['admin'],
+      key: '/dashboard',
+      icon: <DashboardOutlined />,
+      label: 'Dashboard',
+      allowedRoles: ['admin', 'responsable', 'chef-project', 'membre-equipe'],
     },
     {
       key: '/responsables',
       icon: <UserOutlined />,
       label: 'Responsables',
-      allowedRoles: ['admin', 'responsable'],
-      children: [
-        { key: '/responsables/dashboard', icon: <DashboardOutlined />, label: 'Dashboard', allowedRoles: ['admin', 'responsable'] },
-        { key: '/responsables/create', icon: <PlusOutlined />, label: 'Create', allowedRoles: ['admin'] },
-        { key: '/responsables/list', icon: <UnorderedListOutlined />, label: 'List', allowedRoles: ['admin', 'responsable'] },
-      ],
+      allowedRoles: ['admin'],
+     
     },
     {
       key: '/chef-projects',
       icon: <TeamOutlined />,
       label: 'Chefs Project',
-      allowedRoles: ['admin', 'responsable', 'chef-project'],
-      children: [
-        { key: '/chef-projects/dashboard', icon: <DashboardOutlined />, label: 'Dashboard', allowedRoles: ['admin', 'responsable', 'chef-project'] },
-        { key: '/chef-projects/create', icon: <PlusOutlined />, label: 'Create', allowedRoles: ['admin', 'responsable'] },
-        { key: '/chef-projects/list', icon: <UnorderedListOutlined />, label: 'List', allowedRoles: ['admin', 'responsable', 'chef-project'] },
-      ],
+      allowedRoles: ['admin', 'responsable'],
+      
     },
     {
       key: '/membre-equipes',
       icon: <TeamOutlined />,
       label: 'Membres equipe',
-      allowedRoles: ['admin', 'responsable', 'chef-project', 'membre-equipe'],
-      children: [
-        { key: '/membre-equipes/dashboard', icon: <DashboardOutlined />, label: 'Dashboard', allowedRoles: ['admin', 'responsable', 'chef-project', 'membre-equipe'] },
-        { key: '/membre-equipes/create', icon: <PlusOutlined />, label: 'Create', allowedRoles: ['admin', 'responsable', 'chef-project'] },
-        { key: '/membre-equipes/list', icon: <UnorderedListOutlined />, label: 'List', allowedRoles: ['admin', 'responsable', 'chef-project', 'membre-equipe'] },
-      ],
+      allowedRoles: ['admin', 'responsable', 'chef-project'],
+      
     },
     {
       key: '/organisations',
       icon: <ApartmentOutlined />,
       label: 'Organisations',
-      allowedRoles: ['admin', 'responsable'],
-      children: [
-        { key: '/organisations/dashboard', icon: <DashboardOutlined />, label: 'Dashboard', allowedRoles: ['admin', 'responsable'] },
-        { key: '/organisations/create', icon: <PlusOutlined />, label: 'Create', allowedRoles: ['admin'] },
-        { key: '/organisations/list', icon: <UnorderedListOutlined />, label: 'List', allowedRoles: ['admin', 'responsable'] },
-      ],
+      allowedRoles: ['admin'],
+     
     },
     {
       key: '/sous-organisations',
       icon: <BranchesOutlined />,
       label: 'Sous Organisation',
-      allowedRoles: ['admin', 'responsable'],
-      children: [
-        { key: '/sous-organisations/dashboard', icon: <DashboardOutlined />, label: 'Dashboard', allowedRoles: ['admin', 'responsable'] },
-        { key: '/sous-organisations/create', icon: <PlusOutlined />, label: 'Create', allowedRoles: ['admin'] },
-        { key: '/sous-organisations/list', icon: <UnorderedListOutlined />, label: 'List', allowedRoles: ['admin', 'responsable'] },
-      ],
+      allowedRoles: ['admin'],
+      
     },
     {
       key: '/projects',
       icon: <ProjectOutlined />,
       label: 'Project',
-      allowedRoles: ['admin', 'responsable', 'chef-project','membre-equipe'],
-      children: [
-        { key: '/projects/dashboard', icon: <DashboardOutlined />, label: 'Dashboard', allowedRoles: ['admin', 'responsable', 'chef-project'] },
-        { key: '/projects/create', icon: <PlusOutlined />, label: 'Create', allowedRoles: ['admin', 'responsable'] },
-        { key: '/projects/list', icon: <UnorderedListOutlined />, label: 'List', allowedRoles: ['admin', 'responsable', 'chef-project'] },
-      ],
+      allowedRoles: ['admin', 'responsable', 'chef-project'],
+     
     },
+
     {
       key: '/taches',
       icon: <CheckSquareOutlined />,
       label: 'Taches',
-      allowedRoles: ['admin', 'responsable', 'chef-project', 'membre-equipe'],
-      children: [
-        { key: '/taches/dashboard', icon: <DashboardOutlined />, label: 'Dashboard', allowedRoles: ['admin', 'responsable', 'chef-project', 'membre-equipe'] },
-        { key: '/taches/create', icon: <PlusOutlined />, label: 'Create', allowedRoles: ['admin', 'responsable', 'chef-project', 'membre-equipe'] },
-        { key: '/taches/list', icon: <UnorderedListOutlined />, label: 'List', allowedRoles: ['admin', 'responsable', 'chef-project', 'membre-equipe'] },
-      ],
+      allowedRoles: ['admin', 'responsable', 'chef-project'],
+      
     },
   ];
-
-  const filterMenuItems = (items) => {
-    return items.filter(item => {
-      if (item.allowedRoles && item.allowedRoles.includes(userRole)) {
-        if (item.children) {
-          item.children = filterMenuItems(item.children);
-        }
-        return true;
-      }
-      return false;
-    });
-  };
-
-  const renderMenuItems = (items) => {
-    return items.map((item) => {
-      if (item.children && item.children.length > 0) {
-        return (
-          <SubMenu key={item.key} icon={item.icon} title={item.label}>
-            {renderMenuItems(item.children)}
-          </SubMenu>
-        );
-      }
-      return (
-        <Menu.Item key={item.key} icon={item.icon}>
-          {item.label}
-        </Menu.Item>
-      );
-    });
-  };
-
-  const filteredMenuItems = filterMenuItems(menuItems);
 
   return (
     <Sider
       collapsible
       collapsed={collapsed}
       onCollapse={onCollapse}
+      className="site-layout-sidebar"
       width={250}
-      theme={isDarkMode ? 'dark' : 'light'}
       style={{
-        overflow: 'auto',
         height: '100vh',
         position: 'fixed',
         left: 0,
-        top: 0,
-        bottom: 0,
+        top: 64,
+        background: isDarkMode ? '#001529' : '#fff',
+        overflow: 'auto',
+        transition: 'width 0.3s',
+        zIndex: 1000,
       }}
     >
-      <div style={{ padding: '16px', textAlign: 'center' }}>
-        <Title level={4} style={{ color: isDarkMode ? '#fff' : 'rgba(0, 0, 0, 0.85)', margin: 0 }}>
-          {collapsed ? 'App' : 'Menu'}
-        </Title>
-      </div>
       <Menu
         mode="inline"
         theme={isDarkMode ? 'dark' : 'light'}
-        defaultSelectedKeys={[location.pathname]}
-        defaultOpenKeys={[location.pathname.split('/')[1]]}
+        selectedKeys={[location.pathname]}
         onClick={handleMenuClick}
-        style={{ 
-          borderRight: 0,
-        }}
       >
-        {renderMenuItems(filteredMenuItems)}
+        {menuItems.map(item =>
+          item.allowedRoles.includes(userRole) ? (
+            item.children ? (
+              <SubMenu key={item.key} icon={item.icon} title={item.label}>
+                {item.children.map(subItem =>
+                  subItem.allowedRoles.includes(userRole) ? (
+                    <Menu.Item key={subItem.key} icon={subItem.icon}>
+                      {subItem.label}
+                    </Menu.Item>
+                  ) : null
+                )}
+              </SubMenu>
+            ) : (
+              <Menu.Item key={item.key} icon={item.icon}>
+                {item.label}
+              </Menu.Item>
+            )
+          ) : null
+        )}
       </Menu>
     </Sider>
   );

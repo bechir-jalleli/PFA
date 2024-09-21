@@ -6,16 +6,15 @@ const membreEquipeSchema = new Schema({
     prenom: { type: String },
     email: { type: String, required: true, unique: true },
     phone: { type: String },
-    role: { type: String ,default :'membre'},
-    loginAt: { type: Date } ,
+    role: { type: String, default: 'membre' },
+    lastLogin: { type: Date },
     isLoggedIn: { type: Boolean, default: false },
     mdp: { type: String, required: true },
     ChefProject: { type: Schema.Types.ObjectId, ref: 'ChefProject' },
-    projects: [{ type: Schema.Types.ObjectId, ref: 'Project' }]
-    
+    projects: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
+    salary: { type: Number }
 }, { timestamps: true });
 
-// Check if the model already exists
 const MembreEquipe = mongoose.models.MembreEquipe || mongoose.model('MembreEquipe', membreEquipeSchema);
 
 module.exports = MembreEquipe;

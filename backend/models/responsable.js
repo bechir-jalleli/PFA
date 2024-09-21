@@ -7,13 +7,14 @@ const responsableSchema = new Schema({
     email: { type: String, required: true, unique: true },
     phone: { type: String },
     mdp: { type: String, required: true },
-    role :{ type: String,default :'responsable'},
-    loginAt: { type: Date } ,
+    role: { type: String, default: 'responsable' },
+    lastLogin: { type: Date },
     isLoggedIn: { type: Boolean, default: false },
     organisation: { type: Schema.Types.ObjectId, ref: 'Organisation' },
     sousOrganisation: { type: Schema.Types.ObjectId, ref: 'SousOrganisation' },
     chefProjects: [{ type: Schema.Types.ObjectId, ref: 'ChefProject' }],
     projects: [{ type: Schema.Types.ObjectId, ref: 'Project', required: true }],
+    salary: { type: Number } 
 }, { timestamps: true });
 
 

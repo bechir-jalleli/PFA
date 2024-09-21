@@ -1,48 +1,23 @@
-// src/layouts/Footer.js
 import React from 'react';
-import { Layout, Row, Col, Typography, Space, theme } from 'antd';
-import { GithubOutlined, LinkedinOutlined, TwitterOutlined } from '@ant-design/icons';
+import { Layout, Typography } from 'antd';
 
 const { Footer: AntFooter } = Layout;
-const { Text, Link } = Typography;
+const { Text } = Typography;
 
 const Footer = () => {
-  const { token } = theme.useToken();
-
-  const iconStyle = {
-    fontSize: '24px',
-    color: token.colorTextSecondary,
-    '&:hover': {
-      color: token.colorPrimary,
-    },
-  };
-
   return (
     <AntFooter
       style={{
-        background: token.colorBgContainer,
-        color: token.colorTextSecondary,
-        padding: '24px',
+        textAlign: 'center',
+        background: '#f0f2f5',
+        borderTop: '1px solid #e8e8e8',
+        padding: '16px',
+        position: 'fixed',
+        width: '100%',
+        bottom: 0,
       }}
     >
-      <Row justify="space-between" align="middle" gutter={[0, 16]}>
-        <Col xs={24} sm={12}>
-          <Text>© PFA 2024/2025 Createt by Bechir Jalleli</Text>
-        </Col>
-        <Col xs={24} sm={12} style={{ textAlign: 'right' }}>
-          <Space size="large">
-            <Link href="https://github.com" target="_blank" rel="noopener noreferrer">
-              <GithubOutlined style={iconStyle} />
-            </Link>
-            <Link href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-              <LinkedinOutlined style={iconStyle} />
-            </Link>
-            <Link href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-              <TwitterOutlined style={iconStyle} />
-            </Link>
-          </Space>
-        </Col>
-      </Row>
+      <Text>©2024 GRC. All Rights Reserved.</Text>
     </AntFooter>
   );
 };

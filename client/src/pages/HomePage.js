@@ -3,26 +3,24 @@ import { Layout, Typography, Card, Row, Col, Button, Space, theme } from 'antd';
 import { RocketOutlined, SafetyOutlined, TeamOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
-import { useTheme } from '../Context/ThemeContext';
 import Footer from '../layouts/Footer';
 import Header from '../layouts/Header';
 const { Content} = Layout;
-const { Title, Paragraph, Text } = Typography;
+const { Title, Paragraph } = Typography;
 const { useToken } = theme;
 
 const HomePage = () => {
-  const { isDarkMode } = useTheme();
   const { token } = useToken();
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      navigateBasedOnRole(user.role);
+      navigatebyRole(user.role);
     }
   }, [isAuthenticated, user, navigate]);
 
-  const navigateBasedOnRole = (role) => {
+  const navigatebyRole = (role) => {
     switch (role) {
       case 'admin':
         navigate('/admin');
@@ -37,22 +35,20 @@ const HomePage = () => {
         navigate('/membre-equipes');
         break;
       default:
-        // If role is not recognized, stay on the home page
         break;
     }
   };
 
   const cardShadow = '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)';
 
-  // If the user is authenticated, don't render the home page content
   if (isAuthenticated && user) {
-    return null; // or you could return a loading spinner here
+    return null; 
   }
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Header />
-      <Content style={{ padding: '50px 50px' }}>
+      <Header style={{ marginBottom: '20px' }}/>
+      <Content style={{ padding: '80px 40px',margintop: '20px' }}>
         <Row gutter={[32, 32]} align="middle">
           <Col xs={24} md={12}>
             <Title>Welcome to GRCWebsite</Title>
@@ -66,7 +62,7 @@ const HomePage = () => {
             </Space>
           </Col>
           <Col xs={24} md={12}>
-            <img src="../assets/image/business-growth.jpg" alt="GRC Illustration" style={{ width: '100%', maxWidth: '500px' }} />
+            <img src="image/business-growth.jpg" alt="GRC Illustration" style={{ width: '100%', maxWidth: '500px' }} />
           </Col>
         </Row>
 

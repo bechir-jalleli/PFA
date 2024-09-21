@@ -7,17 +7,17 @@ const chefProjectSchema = new Schema({
     email: { type: String, required: true, unique: true },
     phone: { type: String },
     mdp: { type: String, required: true },
-    role :{ type: String,default :'chef'},
-    loginAt: { type: Date } ,
+    role: { type: String, default: 'chef' },
+    lastLogin: { type: Date },
     isLoggedIn: { type: Boolean, default: false },
     responsable: { type: Schema.Types.ObjectId, ref: 'Responsable' },
     membresEquipe: [{ type: Schema.Types.ObjectId, ref: 'MembreEquipe' }],
     organisation: { type: Schema.Types.ObjectId, ref: 'Organisation' },
     sousOrganisation: { type: Schema.Types.ObjectId, ref: 'SousOrganisation', default: null },
-    taches: [{ type: Schema.Types.ObjectId, ref: 'Tache' }]
+    taches: [{ type: Schema.Types.ObjectId, ref: 'Tache' }],
+    salary: { type: Number } 
 }, { timestamps: true });
 
-// Use this to avoid overwriting the model
 const ChefProject = mongoose.models.ChefProject || mongoose.model('ChefProject', chefProjectSchema);
 
 module.exports = ChefProject;
