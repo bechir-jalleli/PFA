@@ -57,7 +57,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div style={{ padding: '24px', backgroundColor: '#f0f2f5' }}>
+    <div style={{ padding: '24px' }}>
        <DashboardOutlined style={{ fontSize: 48,marginBottom : 10 }} />
           <Title level={2} style={{ marginBottom : 20 }}>
             Admin Panel
@@ -176,7 +176,7 @@ const AdminDashboard = () => {
 
         {/* Quick Actions Card */}
         <Col xs={24}>
-          <Card title="Quick Actions" hoverable style={{ backgroundColor: '#e6f7ff' }}>
+          <Card title="Quick Actions" hoverable >
             <Space size="large">
               <Button
                 type="primary"

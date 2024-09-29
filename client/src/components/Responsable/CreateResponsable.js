@@ -20,7 +20,7 @@ const CreateResponsable = ({ onClose, onCreateSuccess }) => {
 
   const onFinish = async (values) => {
     try {
-      await axios.post('http://localhost:5000/responsables/register', values);
+      await axios.post('http://localhost:5000/responsables/', values);
       notification.success({
         message: 'Success',
         description: 'Responsable created successfully',

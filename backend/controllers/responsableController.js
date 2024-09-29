@@ -1,4 +1,11 @@
 const Responsable = require('../models/responsable');
+const Project = require('../models/project');
+const ChefProject = require('../models/chefProject');
+const MembreEquipe = require('../models/membreEquipe');
+const Organisation = require('../models/organisation');
+const SousOrganisation = require('../models/sousOrganisation');
+
+const Tache = require('../models/tache');
 const bcrypt = require('bcrypt');
 const searchRole = require('../utils/searchRole');
 const handleError = require('../utils/handleError');
@@ -37,12 +44,15 @@ exports.createResponsable = async (req, res) => {
 
 exports.getAllResponsables = async (req, res) => {
     try {
-        const responsables = await Responsable.find({});
+        const responsables = await Responsable.find({})
+            .populate('organisation', 'title') 
+            .populate('sousOrganisation', 'title');
         res.status(200).json(responsables);
     } catch (error) {
         handleError(res, 400, 'Error fetching responsables: ' + error.message);
     }
 };
+
 
 exports.getResponsableById = async (req, res) => {
     const { id } = req.params;
@@ -89,3 +99,5 @@ exports.deleteResponsable = async (req, res) => {
         handleError(res, 400, 'Error deleting responsable: ' + error.message);
     }
 };
+
+

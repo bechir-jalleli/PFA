@@ -7,7 +7,7 @@ const CreateChefProject = ({ onClose, onCreateSuccess }) => {
 
   const onFinish = async (values) => {
     try {
-      await axios.post('http://localhost:5000/chef-projects/register', values);
+      await axios.post('http://localhost:5000/chef-projects/', values);
       notification.success({
         message: 'Success',
         description: 'Chef Project created successfully',

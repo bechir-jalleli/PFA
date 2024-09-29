@@ -1,28 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal, Card, Space, Typography, notification, Alert } from 'antd';
+import { Table, Button, Modal, Card, Space, Typography, notification, Input } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import UpdateResponsable from './UpdateResponsable';
 import DeleteResponsable from './DeleteResponsable';
 import CreateResponsable from './CreateResponsable';
+import { useTheme } from '../../Context/ThemeContext';
+import { theme } from 'antd';
 
 const { Title } = Typography;
+const { Search } = Input;
 
-const ReadResponsable = () => {
+const ListResponsable = () => {
   const [responsables, setResponsables] = useState([]);
+  const [filteredResponsables, setFilteredResponsables] = useState([]);
   const [visible, setVisible] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [searchText, setSearchText] = useState('');
 
   const fetchResponsables = async () => {
     try {
-      setError(null);
       const response = await axios.get('http://localhost:5000/responsables');
       setResponsables(response.data);
+      setFilteredResponsables(response.data);
     } catch (error) {
       console.error('Error fetching responsables:', error);
-      setError('Failed to fetch responsables. Please try again later.');
       notification.error({
         message: 'Error',
         description: 'Failed to fetch responsables',
@@ -51,14 +54,24 @@ const ReadResponsable = () => {
     fetchResponsables();
   };
 
+  const handleSearch = (value) => {
+    setSearchText(value);
+    const filtered = responsables.filter(
+      (responsable) =>
+        (responsable.nom && responsable.nom.toLowerCase().includes(value.toLowerCase())) ||
+        (responsable.prenom && responsable.prenom.toLowerCase().includes(value.toLowerCase()))
+    );
+    setFilteredResponsables(filtered);
+  };
+
   const columns = [
     {
-      title: 'Name',
+      title: 'Nom',
       dataIndex: 'nom',
       key: 'nom',
     },
     {
-      title: 'Surname',
+      title: 'Prénom',
       dataIndex: 'prenom',
       key: 'prenom',
     },
@@ -68,19 +81,26 @@ const ReadResponsable = () => {
       key: 'email',
     },
     {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
+      title: 'Active',
+      dataIndex: 'isLoggedIn',
+      key: 'isLoggedIn',
+      render: (isLoggedIn) => (
+        <span
+          style={{
+            display: 'inline-block',
+            width: '10px',
+            height: '10px',
+            borderRadius: '50%',
+            backgroundColor: isLoggedIn ? 'green' : 'red',
+          }}
+        />
+      ),
     },
     {
-      title: 'Organisation',
-      dataIndex: ['organisation', 'nom'],
-      key: 'organisation',
-    },
-    {
-      title: 'Sous-Organisation',
-      dataIndex: ['sousOrganisation', 'nom'],
-      key: 'sousOrganisation',
+      title: 'Number of Projects',
+      dataIndex: 'projects',
+      key: 'projects',
+      render: (projects) => projects.length,
     },
     {
       title: 'Actions',
@@ -102,11 +122,19 @@ const ReadResponsable = () => {
     },
   ];
 
+  const { isDarkMode } = useTheme();
+  const { token } = theme.useToken();
+  const cardStyle = {
+    marginBottom: token.marginMD,
+    boxShadow: token.boxShadow,
+    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
+  };
+
   return (
-    <Card>
+    <Card style={cardStyle}>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={2}>Responsables</Title>
+          <Title level={4}>Responsables</Title>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -115,9 +143,17 @@ const ReadResponsable = () => {
             Create Responsable
           </Button>
         </Space>
-        {error && <Alert message={error} type="error" />}
+        <Search
+          placeholder="Search by nom or prénom"
+          allowClear
+          enterButton="Search"
+          size="large"
+          onSearch={handleSearch}
+          onChange={(e) => handleSearch(e.target.value)}
+          style={{ marginBottom: 16 }}
+        />
         <Table 
-          dataSource={responsables} 
+          dataSource={filteredResponsables} 
           columns={columns} 
           rowKey="_id" 
           loading={loading}
@@ -149,4 +185,4 @@ const ReadResponsable = () => {
   );
 };
 
-export default ReadResponsable;
+export default ListResponsable;

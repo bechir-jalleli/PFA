@@ -1,11 +1,11 @@
 import React from 'react';
-import { Typography, Space, Card, Row, Col, Avatar, List, Button, theme } from 'antd';
-import { TeamOutlined, UserOutlined, ProjectOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { Typography, Space, Card, theme } from 'antd';
+import { TeamOutlined } from '@ant-design/icons';
 import MainLayout from '../layouts/MainLayout';
 import ReadMembreEquipe from '../components/MembreEquipe/ReadMembreEquipe';
 import { useTheme } from '../Context/ThemeContext';
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 
 const MembreEquipePage = () => {
   const { isDarkMode } = useTheme();
@@ -29,13 +29,7 @@ const MembreEquipePage = () => {
     backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
   };
 
-  const dummyTasks = [
-    'Complete project documentation',
-    'Review code changes',
-    'Attend team meeting',
-    'Update task board',
-  ];
-
+  
   return (
     <MainLayout>
       <div style={pageStyle}>
@@ -46,29 +40,11 @@ const MembreEquipePage = () => {
           </Title>
         </Space>
 
-        <Row gutter={[16, 16]}>
-          <Col xs={24} md={16}>
+          
             <Card style={cardStyle} title="Team Members">
               <ReadMembreEquipe />
             </Card>
-          </Col>
-          <Col xs={24} md={8}>
-            <Card style={cardStyle} title="My Tasks">
-              <List
-                itemLayout="horizontal"
-                dataSource={dummyTasks}
-                renderItem={(item) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<CheckCircleOutlined />}
-                      title={item}
-                    />
-                  </List.Item>
-                )}
-              />
-            </Card>
-          </Col>
-        </Row>
+        
       </div>
     </MainLayout>
   );

@@ -8,6 +8,7 @@ const projectSchema = new Schema({
     endDate: { type: Date },
     budget: { type: Number },
     revenue: { type: Number }, 
+    risque: { type: Object },
     status: { type: String, enum: ['In Progress', 'Completed', 'Delayed'], required: true },
     organisation: { type: Schema.Types.ObjectId, ref: 'Organisation', default: null },
     sousOrganisation: { type: Schema.Types.ObjectId, ref: 'SousOrganisation', default: null },

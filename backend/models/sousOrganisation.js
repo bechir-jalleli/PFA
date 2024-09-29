@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const sousOrganisationSchema = new Schema({
-    title: { type: String, required: true },  // Changed 'tittle' to 'title'
+    title: { type: String, required: true },  
     description: { type: String },
     chiffreAffaire: { type: Number },
     organisation: { type: Schema.Types.ObjectId, ref: 'Organisation', required: true },

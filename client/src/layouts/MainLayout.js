@@ -1,59 +1,30 @@
 import React, { useState } from 'react';
-import { Layout, Menu } from 'antd';
-import { useLocation } from 'react-router-dom';
-import Header from './Header';
+import { Layout } from 'antd';
 import Sidebar from './SideBar';
-import Footer from './Footer';
+import Header from './Header';
 import { useTheme } from '../Context/ThemeContext';
 
 const { Content } = Layout;
 
 const MainLayout = ({ children }) => {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const { isDarkMode } = useTheme();
-  const location = useLocation();
-
-  const toggleSidebar = () => {
-    setSidebarCollapsed(!sidebarCollapsed);
-  };
 
   return (
-    <Layout style={{ minHeight: '100vh', background: isDarkMode ? '#001529' : '#f0f2f5' }}>
-      <Header toggleSidebar={toggleSidebar} />
-      <Layout style={{ marginTop: '64px' }}> {/* Add this style */}
-        <Sidebar collapsed={sidebarCollapsed} onCollapse={setSidebarCollapsed} />
-        <Layout
+    <Layout style={{ minHeight: '100vh' }}>
+      <Sidebar collapsed={collapsed} onCollapse={setCollapsed} />
+      <Layout className="site-layout" style={{ marginLeft: collapsed ? 80 : 250, transition: 'all 0.2s' }}>
+        <Header collapsed={collapsed} onCollapse={setCollapsed} />
+        <Content
           style={{
-            marginLeft: sidebarCollapsed ? '80px' : '250px',
-            transition: 'margin-left 0.3s',
-            padding: '0 16px',
+            margin: '60px 16px',
+            padding: 24,
+            minHeight: 280,
+            background: isDarkMode ? '#141414' : '#fff',
           }}
         >
-          <Menu
-            mode="horizontal"
-            selectedKeys={[location.pathname]}
-            style={{
-              background: isDarkMode ? '#001529' : '#fff',
-              borderBottom: `1px solid ${isDarkMode ? '#fff' : '#e8e8e8'}`,
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            {/* Add menu items if necessary */}
-          </Menu>
-          <Content
-            style={{
-              margin: '24px 0',
-              padding: 24,
-              background: isDarkMode ? '#141414' : '#fff',
-              borderRadius: 8,
-            }}
-          >
-            {children}
-          </Content>
-          <Footer />
-        </Layout>
+          {children}
+        </Content>
       </Layout>
     </Layout>
   );

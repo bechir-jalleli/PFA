@@ -1,23 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Typography, Button, Space, notification, Modal, Card } from 'antd';
+import { Table, Typography, Button, Space, notification, Modal, Card, Input } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import UpdateChefProject from './UpdateChefProject';
 import DeleteChefProject from './DeleteChefProject';
 import CreateChefProject from './CreateChefProject';
+import { useTheme } from '../../Context/ThemeContext';
+import { theme } from 'antd';
 
 const { Title } = Typography;
+const { Search } = Input;
 
 const ReadChefProject = () => {
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [searchText, setSearchText] = useState('');
 
   const fetchData = async () => {
     try {
       const response = await axios.get('http://localhost:5000/chef-projects');
       setData(response.data);
+      setFilteredData(response.data);
     } catch (error) {
       notification.error({
         message: 'Error',
@@ -45,6 +51,16 @@ const ReadChefProject = () => {
 
   const handleDeleteSuccess = () => {
     fetchData();
+  };
+
+  const handleSearch = (value) => {
+    setSearchText(value);
+    const filtered = data.filter(
+      (chefProject) =>
+        (chefProject.nom && chefProject.nom.toLowerCase().includes(value.toLowerCase())) ||
+        (chefProject.prenom && chefProject.prenom.toLowerCase().includes(value.toLowerCase()))
+    );
+    setFilteredData(filtered);
   };
 
   const columns = [
@@ -88,11 +104,20 @@ const ReadChefProject = () => {
     },
   ];
 
+  const { isDarkMode } = useTheme();
+  const { token } = theme.useToken();
+
+  const cardStyle = {
+    marginBottom: token.marginMD,
+    boxShadow: token.boxShadow,
+    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
+  };
+
   return (
-    <Card>
+    <Card style={cardStyle}>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={2}>Chef Projects</Title>
+          <Title level={4}>Chef Projects</Title>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -101,9 +126,18 @@ const ReadChefProject = () => {
             Create Chef Project
           </Button>
         </Space>
+        <Search
+          placeholder="Search by nom or prénom"
+          allowClear
+          enterButton="Search"
+          size="large"
+          onSearch={handleSearch}
+          onChange={(e) => handleSearch(e.target.value)}
+          style={{ marginBottom: 16 }}
+        />
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={filteredData}
           rowKey="_id"
           loading={loading}
           pagination={{ pageSize: 10 }}

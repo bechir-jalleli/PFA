@@ -1,6 +1,6 @@
 import React from 'react';
-import { Typography, Card, Space, Button, Row, Col, Progress, List, Avatar, theme } from 'antd';
-import { ProjectOutlined, PlusCircleOutlined, SettingOutlined, FileTextOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { Typography, Card, Space, Button, Row, Col, Progress, theme } from 'antd';
+import { ProjectOutlined, PlusCircleOutlined, SettingOutlined, FileTextOutlined } from '@ant-design/icons';
 import MainLayout from '../layouts/MainLayout';
 import ReadProject from '../components/Project/ReadProjects';
 import { useTheme } from '../Context/ThemeContext';
