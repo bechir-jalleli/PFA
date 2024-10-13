@@ -5,7 +5,12 @@ import { Button, notification, Popconfirm } from 'antd';
 const DeleteResponsable = ({ id, onDeleteSuccess }) => {
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/responsables/${id}`);
+      const token = localStorage.getItem('accessToken');
+      await axios.delete(`http://localhost:5000/responsables/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       notification.success({
         message: 'Success',
         description: 'Responsable deleted successfully',

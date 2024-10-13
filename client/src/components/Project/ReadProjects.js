@@ -1,23 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal, Card, Space, Typography, notification } from 'antd';
+import { Table, Button, Modal, Card, Space, Typography, notification, Input } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import UpdateProject from './UpdateProject';
 import DeleteProject from './DeleteProject';
 import CreateProject from './CreateProject';
+import { useTheme } from '../../Context/ThemeContext';
+import { theme } from 'antd';
 
 const { Title } = Typography;
+const { Search } = Input;
 
 const ReadProjects = () => {
   const [projects, setProjects] = useState([]);
+  const [filteredProjects, setFilteredProjects] = useState([]);
   const [visible, setVisible] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState('');
 
   const fetchProjects = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/projects');
+      const token = localStorage.getItem('accessToken');
+      const response = await axios.get('http://localhost:5000/projects', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       setProjects(response.data);
+      setFilteredProjects(response.data);
     } catch (error) {
       console.error('Error fetching projects:', error);
       notification.error({
@@ -46,6 +57,17 @@ const ReadProjects = () => {
 
   const handleDeleteSuccess = () => {
     fetchProjects();
+  };
+
+  const handleSearch = (value) => {
+    setSearchText(value);
+    const filtered = projects.filter(
+      (project) =>
+        project.name.toLowerCase().includes(value.toLowerCase()) ||
+        project.description.toLowerCase().includes(value.toLowerCase()) ||
+        project.organisation.nom.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredProjects(filtered);
   };
 
   const columns = [
@@ -101,11 +123,19 @@ const ReadProjects = () => {
     },
   ];
 
+  const { isDarkMode } = useTheme();
+  const { token } = theme.useToken();
+  const cardStyle = {
+    marginBottom: token.marginMD,
+    boxShadow: token.boxShadow,
+    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
+  };
+
   return (
-    <Card>
+    <Card style={cardStyle}>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={2}>Projects</Title>
+          <Title level={4}>Projects</Title>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -114,8 +144,17 @@ const ReadProjects = () => {
             Create Project
           </Button>
         </Space>
+        <Search
+          placeholder="Search by name, description or organisation"
+          allowClear
+          enterButton="Search"
+          size="large"
+          onSearch={handleSearch}
+          onChange={(e) => handleSearch(e.target.value)}
+          style={{ marginBottom: 16 }}
+        />
         <Table 
-          dataSource={projects} 
+          dataSource={filteredProjects} 
           columns={columns} 
           rowKey="_id" 
           loading={loading}

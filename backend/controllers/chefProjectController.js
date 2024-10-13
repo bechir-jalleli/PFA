@@ -18,14 +18,14 @@ exports.createChefProject = async (req, res) => {
     }
 };
 
-exports.getAllChefProjects = async (req, res) => {
-    try {
-        const chefProjects = await ChefProject.find({});
-        res.status(200).json(chefProjects);
-    } catch (error) {
-        handleError(res, 400, `Error fetching chef projects: ${error.message}`);
-    }
-};
+    exports.getAllChefProjects = async (req, res) => {
+        try {
+            const chefProjects = await ChefProject.find({});
+            res.status(200).json(chefProjects);
+        } catch (error) {
+            handleError(res, 400, `Error fetching chef projects: ${error.message}`);
+        }
+    };
 
 exports.getChefProjectById = async (req, res) => {
     const { id } = req.params;

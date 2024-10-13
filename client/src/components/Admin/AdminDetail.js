@@ -6,14 +6,14 @@ import { UserOutlined, MailOutlined, PhoneOutlined, IdcardOutlined, CrownOutline
 
 const { Title, Text } = Typography;
 
-const AdminInfo = () => {
+const AdminDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAdminInfo = async () => {
+    const fetchAdminDetail = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/admin/${id}`);
         setAdmin(response.data);
@@ -28,7 +28,7 @@ const AdminInfo = () => {
       }
     };
 
-    fetchAdminInfo();
+    fetchAdminDetail();
   }, [id]);
 
   if (loading) {
@@ -129,4 +129,4 @@ const InfoItem = ({ icon, label, value }) => (
   </div>
 );
 
-export default AdminInfo;
+export default AdminDetail;

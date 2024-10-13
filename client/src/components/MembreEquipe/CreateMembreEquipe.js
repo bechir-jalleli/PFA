@@ -20,7 +20,12 @@ const CreateMembreEquipe = ({ onClose, onCreateSuccess }) => {
 
   const onFinish = async (values) => {
     try {
-      const response = await axios.post('http://localhost:5000/membre-equipes', values);
+      const token = localStorage.getItem('accessToken');
+      const response = await axios.post('http://localhost:5000/membre-equipes', values, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       console.log('Create response:', response);
       notification.success({
         message: 'Success',

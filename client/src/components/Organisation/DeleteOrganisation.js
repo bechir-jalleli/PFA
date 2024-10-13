@@ -2,15 +2,20 @@ import React from 'react';
 import axios from 'axios';
 import { Button, notification, Popconfirm } from 'antd';
 
-const DeleteOrganisation = ({ id, onDelete }) => {
+const DeleteOrganisation = ({ id, onDeleteSuccess }) => {
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/organisations/${id}`);
+      const token = localStorage.getItem('accessToken');
+      await axios.delete(`http://localhost:5000/organisations/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       notification.success({
         message: 'Success',
         description: 'Organisation deleted successfully',
       });
-      if (onDelete) onDelete();
+      if (onDeleteSuccess) onDeleteSuccess();
     } catch (error) {
       notification.error({
         message: 'Error',

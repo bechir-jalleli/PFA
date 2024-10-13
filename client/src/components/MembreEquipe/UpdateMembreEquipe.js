@@ -10,7 +10,12 @@ const UpdateMembreEquipe = ({ id, onUpdateSuccess }) => {
   useEffect(() => {
     const fetchMembre = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/membre-equipes/${id}`);
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get(`http://localhost:5000/membre-equipes/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         setMembre(response.data);
         form.setFieldsValue(response.data);
       } catch (error) {
@@ -24,7 +29,12 @@ const UpdateMembreEquipe = ({ id, onUpdateSuccess }) => {
   const handleOk = async () => {
     try {
       await form.validateFields();
-      await axios.put(`http://localhost:5000/membre-equipes/${id}`, form.getFieldsValue());
+      const token = localStorage.getItem('accessToken');
+      await axios.put(`http://localhost:5000/membre-equipes/${id}`, form.getFieldsValue(), {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       notification.success({
         message: 'Success',
         description: 'Membre equipe updated successfully',

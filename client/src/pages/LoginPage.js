@@ -159,14 +159,7 @@ const LoginPage = () => {
                     </Button>
                   </Form.Item>
                 </Form>
-                <Space direction="vertical" size="small" style={{ width: '100%' }}>
-                  <Text>
-                    <Link to="/forgot-password">Forgot password?</Link>
-                  </Text>
-                  <Text>
-                    Don't have an account? <Link to="/register">Register now!</Link>
-                  </Text>
-                </Space>
+                
               </Space>
             </Col>
           </Row>

@@ -29,11 +29,7 @@ const ProjectPage = React.memo(() => {
     backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
   };
 
-  const dummyProjects = [
-    { name: 'Website Redesign', progress: 75 },
-    { name: 'Mobile App Development', progress: 30 },
-    { name: 'Database Migration', progress: 90 },
-  ];
+  
 
   return (
     <MainLayout>
@@ -45,22 +41,13 @@ const ProjectPage = React.memo(() => {
           </Title>
         </Space>
 
-        <Row gutter={[16, 16]}>
-          <Col xs={24} lg={16}>
+        <Row gutter={[16, 24]}>
+          <Col xs={24} lg={24}>
             <Card title="Project List" style={cardStyle}>
               <ReadProject />
             </Card>
           </Col>
-          <Col xs={24} lg={8}>
-            <Card title="Project Progress" style={cardStyle}>
-              {dummyProjects.map((project, index) => (
-                <div key={index} style={{ marginBottom: token.marginMD }}>
-                  <Paragraph>{project.name}</Paragraph>
-                  <Progress percent={project.progress} status="active" />
-                </div>
-              ))}
-            </Card>
-          </Col>
+          
           <Col xs={24}>
             <Card title="Quick Actions" style={cardStyle}>
               <Space wrap>

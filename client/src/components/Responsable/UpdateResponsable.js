@@ -10,7 +10,12 @@ const UpdateResponsable = ({ id, onUpdateSuccess }) => {
   useEffect(() => {
     const fetchResponsable = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/responsables/${id}`);
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get(`http://localhost:5000/responsables/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         setResponsable(response.data);
         form.setFieldsValue(response.data);
       } catch (error) {
@@ -24,7 +29,12 @@ const UpdateResponsable = ({ id, onUpdateSuccess }) => {
   const handleOk = async () => {
     try {
       await form.validateFields();
-      await axios.put(`http://localhost:5000/responsables/${id}`, form.getFieldsValue());
+      const token = localStorage.getItem('accessToken');
+      await axios.put(`http://localhost:5000/responsables/${id}`, form.getFieldsValue(), {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       notification.success({
         message: 'Success',
         description: 'Responsable updated successfully',
@@ -58,8 +68,6 @@ const UpdateResponsable = ({ id, onUpdateSuccess }) => {
         visible={visible}
         onOk={handleOk}
         onCancel={handleCancel}
-        okText="Update"
-        cancelText="Cancel"
       >
         {responsable && (
           <Form 

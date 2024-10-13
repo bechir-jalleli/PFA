@@ -7,8 +7,11 @@ import DeleteResponsable from './DeleteResponsable';
 import CreateResponsable from './CreateResponsable';
 import { useTheme } from '../../Context/ThemeContext';
 import { theme } from 'antd';
-
+import styled from 'styled-components';
+import { EyeOutlined } from '@ant-design/icons';
+import { useNavigate } from "react-router-dom";
 const { Title } = Typography;
+
 const { Search } = Input;
 
 const ListResponsable = () => {
@@ -21,8 +24,13 @@ const ListResponsable = () => {
 
   const fetchResponsables = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/responsables');
-      setResponsables(response.data);
+      const token = localStorage.getItem('accessToken');
+
+      const response = await axios.get('http://localhost:5000/responsables', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });      setResponsables(response.data);
       setFilteredResponsables(response.data);
     } catch (error) {
       console.error('Error fetching responsables:', error);
@@ -107,6 +115,17 @@ const ListResponsable = () => {
       key: 'actions',
       render: (_, record) => (
         <Space>
+           <Button
+        icon={<EyeOutlined />}
+        onClick={() => navigate(`/responsables/info/${record._id}`)}
+      />
+          <Button 
+            icon={<EditOutlined />} 
+            onClick={() => {
+              setSelectedId(record._id);
+              setVisible(true);
+            }}
+          />
           <Button 
             icon={<EditOutlined />} 
             onClick={() => {
@@ -121,7 +140,7 @@ const ListResponsable = () => {
       ),
     },
   ];
-
+  const navigate = useNavigate();
   const { isDarkMode } = useTheme();
   const { token } = theme.useToken();
   const cardStyle = {
@@ -161,25 +180,25 @@ const ListResponsable = () => {
           scroll={{ x: 'max-content' }}
         />
         <Modal
-          title={selectedId ? "Update Responsable" : "Create Responsable"}
-          visible={visible}
-          onCancel={() => {
-            setVisible(false);
-            setSelectedId(null);
-          }}
-          footer={null}
-        >
-          {selectedId ? (
-            <UpdateResponsable 
-              id={selectedId}
-              onUpdateSuccess={handleUpdateSuccess}
-            />
-          ) : (
-            <CreateResponsable 
-              onCreateSuccess={handleCreateSuccess}
-            />
-          )}
-        </Modal>
+  title={selectedId ? "Update Responsable" : "Create Responsable"}
+  visible={visible}
+  onCancel={() => {
+    setVisible(false);
+    setSelectedId(null);
+  }}
+  footer={null}
+>
+  {selectedId ? (
+    <UpdateResponsable
+      id={selectedId}
+      onUpdateSuccess={handleUpdateSuccess}
+    />
+  ) : (
+    <CreateResponsable
+      onCreateSuccess={handleCreateSuccess}
+    />
+  )}
+</Modal>
       </Space>
     </Card>
   );

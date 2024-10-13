@@ -31,6 +31,7 @@ const sousOrganisationRoutes = require('./routes/sousOrganisationRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const tacheRoutes = require('./routes/tacheRoutes');
 const loginRouter = require('./routes/loginRoutes');
+const riskRoutes = require('./routes/riskRoutes'); 
 
 //  routes
 app.use('/admin', adminRoutes);
@@ -42,6 +43,8 @@ app.use('/sous-organisations', sousOrganisationRoutes);
 app.use('/projects', projectRoutes);
 app.use('/taches', tacheRoutes);
 app.use('/login', loginRouter);
+app.use('/risque', riskRoutes);
+
 
 const swaggerDocument = require(path.join(__dirname, 'swagger.json'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

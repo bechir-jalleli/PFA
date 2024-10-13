@@ -20,7 +20,12 @@ const CreateResponsable = ({ onClose, onCreateSuccess }) => {
 
   const onFinish = async (values) => {
     try {
-      await axios.post('http://localhost:5000/responsables/', values);
+      const token = localStorage.getItem('accessToken');
+      await axios.post('http://localhost:5000/responsables/', values, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       notification.success({
         message: 'Success',
         description: 'Responsable created successfully',

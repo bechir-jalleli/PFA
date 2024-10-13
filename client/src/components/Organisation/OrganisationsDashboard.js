@@ -58,7 +58,6 @@ const OrganisationsDashboard = () => {
       <Card 
         title="Organisations List" 
         style={cardStyle}
-        extra={<Button type="primary" icon={<PlusOutlined />}>Add Organisation</Button>}
       >
         <ReadOrganisations />
       </Card>

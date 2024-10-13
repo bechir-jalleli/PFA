@@ -70,37 +70,11 @@ const TachesPage = () => {
               <Statistic title="Pending Tasks" value={20} prefix={<ClockCircleOutlined />} />
             </Card>
           </Col>
-          <Col xs={24} lg={16}>
-            <Card 
-              title="Task List" 
-              style={cardStyle}
-              extra={<Button type="primary" icon={<PlusOutlined />}>Add New Task</Button>}
-            >
+          <Col xs={24} lg={24 }>
+            
               <ReadTache />
-            </Card>
           </Col>
-          <Col xs={24} lg={8}>
-            <Card title="Recent Tasks" style={cardStyle}>
-              <List
-                itemLayout="horizontal"
-                dataSource={recentTasks}
-                renderItem={(item) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<UserOutlined />}
-                      title={item.title}
-                      description={
-                        <Space>
-                          <Tag color={getStatusColor(item.status)}>{item.status}</Tag>
-                          <span>{item.assignee}</span>
-                        </Space>
-                      }
-                    />
-                  </List.Item>
-                )}
-              />
-            </Card>
-          </Col>
+         
         </Row>
       </div>
     </MainLayout>

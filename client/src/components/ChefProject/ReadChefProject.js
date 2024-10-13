@@ -7,7 +7,8 @@ import DeleteChefProject from './DeleteChefProject';
 import CreateChefProject from './CreateChefProject';
 import { useTheme } from '../../Context/ThemeContext';
 import { theme } from 'antd';
-
+import { EyeOutlined } from '@ant-design/icons';
+import { useNavigate } from "react-router-dom";
 const { Title } = Typography;
 const { Search } = Input;
 
@@ -21,7 +22,12 @@ const ReadChefProject = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/chef-projects');
+      const token = localStorage.getItem('accessToken');
+      const response = await axios.get('http://localhost:5000/chef-projects', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       setData(response.data);
       setFilteredData(response.data);
     } catch (error) {
@@ -89,6 +95,10 @@ const ReadChefProject = () => {
       key: 'actions',
       render: (_, record) => (
         <Space>
+          <Button
+        icon={<EyeOutlined />}
+        onClick={() => navigate(`/chef-projects/info/${record._id}`)}
+      />
           <Button 
             icon={<EditOutlined />} 
             onClick={() => {
@@ -112,13 +122,13 @@ const ReadChefProject = () => {
     boxShadow: token.boxShadow,
     backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
   };
-
+  const navigate = useNavigate();
   return (
     <Card style={cardStyle}>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space style={{ justifyContent: 'space-between', width: '100%' }}>
           <Title level={4}>Chef Projects</Title>
-          <Button
+          <Button 
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => setVisible(true)}

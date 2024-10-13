@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, Statistic, Space, Button, Typography, Divider, message } from 'antd';
 import {
   UserOutlined,
-  TeamOutlined,
   ProjectOutlined,
   BankOutlined,
   BranchesOutlined,
@@ -10,7 +9,6 @@ import {
   CheckCircleOutlined,
   WarningOutlined,
   PlusOutlined,
-  EyeOutlined,
   DollarOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -63,7 +61,6 @@ const AdminDashboard = () => {
             Admin Panel
           </Title>
       <Row gutter={[16, 16]}>
-        {/* Statistics Cards */}
         <Col xs={24} sm={12} lg={6}>
           <Card hoverable onClick={() => navigate('/responsables/list')}>
             <Statistic
@@ -106,7 +103,7 @@ const AdminDashboard = () => {
         </Col>
 
         {/* Project Status Card */}
-        <Col xs={24} lg={12}>
+        <Col xs={24} lg={24}>
           <Card hoverable title="Project Status" style={{ marginTop: '16px' }} onClick={() => navigate('/projects/list')}>
             <Row gutter={16}>
               <Col span={8}>
@@ -137,44 +134,14 @@ const AdminDashboard = () => {
           </Card>
         </Col>
 
-        {/* Performance Metrics Card */}
-        <Col xs={24} lg={12}>
-          <Card hoverable title="Performance Metrics" style={{ marginTop: '16px' }}>
-            <Row gutter={16}>
-              <Col span={8}>
-                <Statistic
-                  title="Total Revenue"
-                  value={data.totalRevenue || 0}
-                  prefix={<DollarOutlined />}
-                  valueStyle={{ color: '#1890ff' }}
-                />
-              </Col>
-              <Col span={8}>
-                <Statistic
-                  title="Active Users"
-                  value={data.activeUsers}
-                  prefix={<UserOutlined />}
-                  valueStyle={{ color: '#52c41a' }}
-                />
-              </Col>
-              <Col span={8}>
-                <Statistic
-                  title="Pending Tasks"
-                  value={data.pendingTasks || 0}
-                  prefix={<ClockCircleOutlined />}
-                  valueStyle={{ color: '#faad14' }}
-                />
-              </Col>
-            </Row>
-          </Card>
-        </Col>
 
-        {/* Divider */}
+        
+
         <Col xs={24}>
           <Divider />
         </Col>
 
-        {/* Quick Actions Card */}
+
         <Col xs={24}>
           <Card title="Quick Actions" hoverable >
             <Space size="large">
@@ -195,6 +162,7 @@ const AdminDashboard = () => {
                 Add New Organisation
               </Button>
               <Button
+               type="primary"
                 icon={<ProjectOutlined />}
                 style={{ borderRadius: '8px' }}
                 onClick={() => navigate('/projects/create')}

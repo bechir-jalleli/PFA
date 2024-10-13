@@ -8,17 +8,21 @@ const { TextArea } = Input;
 const CreateTache = ({ onClose, onCreateSuccess }) => {
   const [form] = Form.useForm();
   const [projects, setProjects] = useState([]);
-  const [chefProjects, setChefProjects] = useState([]);
+  const [membreEquipes, setMembreEquipes] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [projectsResponse, chefProjectsResponse] = await Promise.all([
-          axios.get('http://localhost:5000/projects'),
-          axios.get('http://localhost:5000/chef-projects'),
+        const token = localStorage.getItem('accessToken');
+        const headers = { 'Authorization': `Bearer ${token}` };
+        
+        const [projectsResponse, membreEquipesResponse] = await Promise.all([
+          axios.get('http://localhost:5000/projects', { headers }),
+          axios.get('http://localhost:5000/membre-equipes', { headers }),
         ]);
+
         setProjects(projectsResponse.data);
-        setChefProjects(chefProjectsResponse.data);
+        setMembreEquipes(membreEquipesResponse.data);
       } catch (error) {
         notification.error({
           message: 'Error',
@@ -32,7 +36,21 @@ const CreateTache = ({ onClose, onCreateSuccess }) => {
 
   const onFinish = async (values) => {
     try {
-      await axios.post('http://localhost:5000/taches', values);
+      const token = localStorage.getItem('accessToken');
+      const headers = { 'Authorization': `Bearer ${token}` };
+
+      const formattedValues = {
+        titre: values.titre,
+        description: values.description,
+        status: values.status,
+        project: values.project,
+        membreEquipe: values.membreEquipe,
+        startDate: values.startDate.toISOString(),
+        endDate: values.endDate ? values.endDate.toISOString() : null,
+        priority: values.priority,
+      };
+     
+      await axios.post('http://localhost:5000/taches', formattedValues, { headers });
       notification.success({
         message: 'Success',
         description: 'Task created successfully',
@@ -43,7 +61,7 @@ const CreateTache = ({ onClose, onCreateSuccess }) => {
     } catch (error) {
       notification.error({
         message: 'Error',
-        description: 'Failed to create task',
+        description: 'Failed to create task: ' + (error.response?.data?.message || error.message),
       });
     }
   };
@@ -69,9 +87,9 @@ const CreateTache = ({ onClose, onCreateSuccess }) => {
         rules={[{ required: true, message: 'Please select the status!' }]}
       >
         <Select placeholder="Select status">
-          <Option value="To Do">To Do</Option>
+          <Option value="Not Started">Not Started</Option>
           <Option value="In Progress">In Progress</Option>
-          <Option value="Done">Done</Option>
+          <Option value="Completed">Completed</Option>
         </Select>
       </Form.Item>
       <Form.Item
@@ -81,33 +99,44 @@ const CreateTache = ({ onClose, onCreateSuccess }) => {
       >
         <Select placeholder="Select a project">
           {projects.map(project => (
-            <Option key={project._id} value={project._id}>{project.name}</Option>
+            <Option key={project._id} value={project._id}>{project.tittle}</Option>
           ))}
         </Select>
       </Form.Item>
       <Form.Item
-        name="chefProject"
-        label="Chef Project"
-        rules={[{ required: true, message: 'Please select a chef project!' }]}
+        name="membreEquipe"
+        label="Team Member"
+        rules={[{ required: true, message: 'Please select a team member!' }]}
       >
-        <Select placeholder="Select a chef project">
-          {chefProjects.map(chef => (
-            <Option key={chef._id} value={chef._id}>{`${chef.nom} ${chef.prenom}`}</Option>
+        <Select placeholder="Select a team member">
+          {membreEquipes.map(membre => (
+            <Option key={membre._id} value={membre._id}>{`${membre.nom} ${membre.prenom}`}</Option>
           ))}
         </Select>
       </Form.Item>
       <Form.Item
-        name="dateDebut"
+        name="startDate"
         label="Start Date"
         rules={[{ required: true, message: 'Please select the start date!' }]}
       >
         <DatePicker style={{ width: '100%' }} />
       </Form.Item>
       <Form.Item
-        name="dateFin"
+        name="endDate"
         label="End Date"
       >
         <DatePicker style={{ width: '100%' }} />
+      </Form.Item>
+      <Form.Item
+        name="priority"
+        label="Priority"
+        rules={[{ required: true, message: 'Please select the priority!' }]}
+      >
+        <Select placeholder="Select priority">
+          <Option value="Low">Low</Option>
+          <Option value="Medium">Medium</Option>
+          <Option value="High">High</Option>
+        </Select>
       </Form.Item>
       <Form.Item>
         <Space>

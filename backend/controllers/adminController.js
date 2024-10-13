@@ -69,42 +69,42 @@ exports.createAdmin = async (req, res) => {
     }
 };
 
-exports.getInfo = async (req, res) => {
-    try {
-        const organisationCount = await Organisation.countDocuments();
-        const sousOrganisationCount = await SousOrganisation.countDocuments();
-        const totalProjects = await Project.countDocuments();
-        const chefProjectCount = await ChefProject.countDocuments();
-        const responsableCount = await Responsable.countDocuments();
-        const membreEquipeCount = await MembreEquipe.countDocuments();
+    exports.getInfo = async (req, res) => {
+        try {
+            const organisationCount = await Organisation.countDocuments();
+            const sousOrganisationCount = await SousOrganisation.countDocuments();
+            const totalProjects = await Project.countDocuments();
+            const chefProjectCount = await ChefProject.countDocuments();
+            const responsableCount = await Responsable.countDocuments();
+            const membreEquipeCount = await MembreEquipe.countDocuments();
 
-        const inProgressCount = await Project.countDocuments({ status: 'In Progress' });
-        const completedCount = await Project.countDocuments({ status: 'Completed' });
-        const delayedCount = await Project.countDocuments({ status: 'Delayed' });
+            const inProgressCount = await Project.countDocuments({ status: 'In Progress' });
+            const completedCount = await Project.countDocuments({ status: 'Completed' });
+            const delayedCount = await Project.countDocuments({ status: 'Delayed' });
 
-        const totalEmployees = chefProjectCount + responsableCount + membreEquipeCount;
+            const totalEmployees = chefProjectCount + responsableCount + membreEquipeCount;
 
-        // Corrected summation of active users
-        const activeChefProjects = await ChefProject.countDocuments({ isLoggedIn: true });
-        const activeResponsables = await Responsable.countDocuments({ isLoggedIn: true });
-        const activeMembreEquipes = await MembreEquipe.countDocuments({ isLoggedIn: true });
+            // Corrected summation of active users
+            const activeChefProjects = await ChefProject.countDocuments({ isLoggedIn: true });
+            const activeResponsables = await Responsable.countDocuments({ isLoggedIn: true });
+            const activeMembreEquipes = await MembreEquipe.countDocuments({ isLoggedIn: true });
 
-        const totalActiveUsers = activeChefProjects + activeResponsables + activeMembreEquipes;
+            const totalActiveUsers = activeChefProjects + activeResponsables + activeMembreEquipes;
 
-        res.status(200).json({
-            organisationCount,
-            sousOrganisationCount,
-            projectCount: totalProjects,
-            totalEmployees,
-            projectStatuses: {
-                inProgress: inProgressCount,
-                completed: completedCount,
-                delayed: delayedCount
-            },
-            activeUsers: totalActiveUsers 
-        });
-    } catch (error) {
-        console.error('Error in getInfo:', error);
-        res.status(500).json({ message: 'Error retrieving information: ' + error.message });
-    }
-};
+            res.status(200).json({
+                organisationCount,
+                sousOrganisationCount,
+                projectCount: totalProjects,
+                totalEmployees,
+                projectStatuses: {
+                    inProgress: inProgressCount,
+                    completed: completedCount,
+                    delayed: delayedCount
+                },
+                activeUsers: totalActiveUsers 
+            });
+        } catch (error) {
+            console.error('Error in getInfo:', error);
+            res.status(500).json({ message: 'Error retrieving information: ' + error.message });
+        }
+    };

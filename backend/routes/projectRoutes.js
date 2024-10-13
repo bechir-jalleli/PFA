@@ -8,8 +8,8 @@ router.use(verifyToken);
 router.get('/',checkRole('responsable','admin'), projectController.getAllProjects);
 router.get('/:id',checkRole('responsable','admin'), projectController.getProjectById);
 
-router.post('/', checkRole('responsable'),projectController.createProject);
-router.put('/:id',checkRole('responsable'),projectController.updateProject);
-router.delete('/:id',checkRole('responsable'),projectController.deleteProject);
+router.post('/', checkRole('responsable','admin'),projectController.createProject);
+router.put('/:id',checkRole('responsable','admin'),projectController.updateProject);
+router.delete('/:id',checkRole('responsable','admin'),projectController.deleteProject);
 
 module.exports = router;

@@ -5,24 +5,49 @@ const handleError = (res, status, message) => {
 };
 
 exports.createTache = async (req, res) => {
-    const { titre, description, status, chefProject } = req.body;
+    const {
+        titre,
+        description,
+        status,
+        priority,
+        startDate,
+        endDate,
+        membreEquipe,
+        project
+    } = req.body;
 
-    if (!titre || !chefProject) {
-        return handleError(res, 400, 'Title and chefProject are required');
+    if (!titre || !startDate || !membreEquipe || !project) {
+        return res.status(400).json({
+            message: 'Title, startDate, membreEquipe, and project are required.'
+        });
     }
 
     try {
-        const tache = new Tache({ titre, description, status, chefProject });
+        const tache = new Tache({
+            titre,
+            description,
+            status,
+            priority,
+            startDate,
+            endDate,
+            membreEquipe,
+            project
+        });
+
         const createdTache = await tache.save();
-        res.status(201).json(createdTache);
+        return res.status(201).json(createdTache);
     } catch (error) {
-        handleError(res, 400, 'Error creating task: ' + error.message);
+        return res.status(400).json({
+            message: 'Error creating task: ' + error.message
+        });
     }
 };
 
 exports.getAllTaches = async (req, res) => {
     try {
         const taches = await Tache.find({})
+            .populate('project', '_id tittle')
+            .populate('membreEquipe', '_id nom prenom');
         res.status(200).json(taches);
     } catch (error) {
         handleError(res, 400, 'Error fetching tasks: ' + error.message);
@@ -33,7 +58,9 @@ exports.getTacheById = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const tache = await Tache.findById(id).populate('chefProject');
+        const tache = await Tache.findById(id)
+            .populate('project', '_id tittle')
+            .populate('membreEquipe', '_id nom prenom');
         if (tache) {
             res.status(200).json(tache);
         } else {
@@ -44,12 +71,22 @@ exports.getTacheById = async (req, res) => {
     }
 };
 
+
 exports.updateTache = async (req, res) => {
     const { id } = req.params;
-    const updates = req.body;
+    const { titre, description, status, priority, membreEquipe } = req.body; // Destructure the necessary fields
 
     try {
-        const updatedTache = await Tache.findByIdAndUpdate(id, updates, { new: true }).populate('chefProject');
+        const updatedTache = await Tache.findByIdAndUpdate(id, {
+            titre,
+            description,
+            status,
+            priority,
+            membreEquipe, // Ensure this matches the schema
+        }, { new: true })
+        .populate('membreEquipe') // Populate as needed
+        .populate('project'); // Populate project if necessary
+
         if (updatedTache) {
             res.status(200).json(updatedTache);
         } else {
@@ -59,6 +96,7 @@ exports.updateTache = async (req, res) => {
         handleError(res, 400, 'Error updating task: ' + error.message);
     }
 };
+
 
 exports.deleteTache = async (req, res) => {
     const { id } = req.params;

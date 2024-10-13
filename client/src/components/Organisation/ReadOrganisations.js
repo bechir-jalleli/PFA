@@ -1,25 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal, Card, Row, Col, Typography, Space, notification } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Table, Button, Modal, Card, Space, Typography, notification, Input } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import UpdateOrganisation from './UpdateOrganisation';
 import DeleteOrganisation from './DeleteOrganisation';
 import CreateOrganisation from './CreateOrganisation';
+import { useTheme } from '../../Context/ThemeContext';
+import { theme } from 'antd';
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
+const { Search } = Input;
 
 const ReadOrganisation = () => {
-  const [organisations, setOrganisations] = useState([]);
-  const [visible, setVisible] = useState(false);
-  const [selectedOrganisationId, setSelectedOrganisationId] = useState(null);
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [visible, setVisible] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  const [searchText, setSearchText] = useState('');
 
-  const fetchOrganisations = async () => {
+  const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/organisations');
-      setOrganisations(response.data);
+      const token = localStorage.getItem('accessToken');
+      const response = await axios.get('http://localhost:5000/organisations', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      setData(response.data);
+      setFilteredData(response.data);
     } catch (error) {
-      console.error('Error fetching organisations:', error);
       notification.error({
         message: 'Error',
         description: 'Failed to fetch organisations',
@@ -30,29 +41,39 @@ const ReadOrganisation = () => {
   };
 
   useEffect(() => {
-    fetchOrganisations();
+    fetchData();
   }, []);
 
   const handleCreateSuccess = () => {
-    fetchOrganisations();
+    fetchData();
     setVisible(false);
   };
 
   const handleUpdateSuccess = () => {
-    fetchOrganisations();
-    setSelectedOrganisationId(null);
+    fetchData();
     setVisible(false);
+    setSelectedId(null);
   };
 
   const handleDeleteSuccess = () => {
-    fetchOrganisations();
+    fetchData();
+  };
+
+  const handleSearch = (value) => {
+    setSearchText(value);
+    const filtered = data.filter(
+      (organisation) =>
+        organisation.nom.toLowerCase().includes(value.toLowerCase()) ||
+        organisation.description.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredData(filtered);
   };
 
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'nom',
-      key: 'nom',
+      title: 'title',
+      dataIndex: 'title',
+      key: 'title',
     },
     {
       title: 'Description',
@@ -60,16 +81,14 @@ const ReadOrganisation = () => {
       key: 'description',
     },
     {
-      title: 'Created At',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (text) => new Date(text).toLocaleDateString(),
+      title: "Chiffre d'Affaire",
+      dataIndex: 'chiffreAffaire',
+      key: 'chiffreAffaire',
     },
     {
-      title: 'Updated At',
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      render: (text) => new Date(text).toLocaleDateString(),
+      title: 'Responsable',
+      dataIndex: 'responsable',
+      key: 'responsable',
     },
     {
       title: 'Actions',
@@ -77,9 +96,13 @@ const ReadOrganisation = () => {
       render: (_, record) => (
         <Space>
           <Button
-            icon={<EditOutlined />}
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`/organisations/info/${record._id}`)}
+          />
+          <Button 
+            icon={<EditOutlined />} 
             onClick={() => {
-              setSelectedOrganisationId(record._id);
+              setSelectedId(record._id);
               setVisible(true);
             }}
           />
@@ -91,13 +114,22 @@ const ReadOrganisation = () => {
     },
   ];
 
+  const { isDarkMode } = useTheme();
+  const { token } = theme.useToken();
+
+  const cardStyle = {
+    marginBottom: token.marginMD,
+    boxShadow: token.boxShadow,
+    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
+  };
+
+  const navigate = useNavigate();
+
   return (
-    <Card>
-      <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
-        <Col>
+    <Card style={cardStyle}>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <Space style={{ justifyContent: 'space-between', width: '100%' }}>
           <Title level={4}>Organisations</Title>
-        </Col>
-        <Col>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -105,41 +137,45 @@ const ReadOrganisation = () => {
           >
             Create Organisation
           </Button>
-        </Col>
-      </Row>
-      <Table
-        dataSource={organisations}
-        columns={columns}
-        rowKey="_id"
-        loading={loading}
-        pagination={{ pageSize: 10 }}
-        scroll={{ x: 'max-content' }}
-      />
-      <Modal
-        title={selectedOrganisationId ? "Update Organisation" : "Create Organisation"}
-        visible={visible}
-        onCancel={() => {
-          setVisible(false);
-          setSelectedOrganisationId(null);
-        }}
-        footer={null}
-      >
-        {selectedOrganisationId ? (
-          <UpdateOrganisation
-            id={selectedOrganisationId}
-            onUpdateSuccess={handleUpdateSuccess}
-            onCancel={() => {
-              setVisible(false);
-              setSelectedOrganisationId(null);
-            }}
-          />
-        ) : (
-          <CreateOrganisation
-            onCreateSuccess={handleCreateSuccess}
-            onCancel={() => setVisible(false)}
-          />
-        )}
-      </Modal>
+        </Space>
+        <Search
+          placeholder="Search by name or description"
+          allowClear
+          enterButton="Search"
+          size="large"
+          onSearch={handleSearch}
+          onChange={(e) => handleSearch(e.target.value)}
+          style={{ marginBottom: 16 }}
+        />
+        <Table
+          columns={columns}
+          dataSource={filteredData}
+          rowKey="_id"
+          loading={loading}
+          pagination={{ pageSize: 10 }}
+          scroll={{ x: 'max-content' }}
+        />
+        <Modal
+          title={selectedId ? "Update Organisation" : "Create Organisation"}
+          visible={visible}
+          onCancel={() => {
+            setVisible(false);
+            setSelectedId(null);
+          }}
+          footer={null}
+        >
+          {selectedId ? (
+            <UpdateOrganisation 
+              id={selectedId}
+              onUpdateSuccess={handleUpdateSuccess}
+            />
+          ) : (
+            <CreateOrganisation 
+              onCreateSuccess={handleCreateSuccess}
+            />
+          )}
+        </Modal>
+      </Space>
     </Card>
   );
 };

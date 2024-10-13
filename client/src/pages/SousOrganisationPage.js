@@ -74,7 +74,7 @@ const SousOrganisationPage = () => {
               <Statistic title="Employees" value={500} prefix={<TeamOutlined />} />
             </Card>
           </Col>
-          <Col xs={24} lg={16}>
+          <Col xs={24} lg={24}>
             <Card 
               title="Sous-Organisation List" 
               style={cardStyle}
@@ -83,15 +83,7 @@ const SousOrganisationPage = () => {
               <ReadSousOrganisation />
             </Card>
           </Col>
-          <Col xs={24} lg={8}>
-            <Card title="Organization Structure" style={cardStyle}>
-              <Tree
-                showLine
-                defaultExpandedKeys={['0-0-0']}
-                treeData={treeData}
-              />
-            </Card>
-          </Col>
+          
         </Row>
       </div>
     </MainLayout>
