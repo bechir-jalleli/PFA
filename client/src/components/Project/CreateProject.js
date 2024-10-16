@@ -19,10 +19,24 @@ const CreateProject = ({ onClose, onCreateSuccess }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = localStorage.getItem('accessToken');
+
         const [organisationsResponse, sousOrganisationsResponse, chefProjectsResponse] = await Promise.all([
-          axios.get('http://localhost:5000/organisations'),
-          axios.get('http://localhost:5000/sous-organisations'),
-          axios.get('http://localhost:5000/chef-projects'),
+          axios.get('http://localhost:5000/organisations', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }),
+          axios.get('http://localhost:5000/sous-organisations', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }),
+          axios.get('http://localhost:5000/chef-projects', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }),
         ]);
 
         setOrganisations(organisationsResponse.data);
@@ -46,8 +60,13 @@ const CreateProject = ({ onClose, onCreateSuccess }) => {
         startDate: formatDate(values.startDate),
         endDate: formatDate(values.endDate),
       };
+      const token = localStorage.getItem('accessToken');
 
-      await axios.post('http://localhost:5000/projects', formattedValues);
+      await axios.post('http://localhost:5000/projects', formattedValues, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       notification.success({
         message: 'Success',
         description: 'Project created successfully',

@@ -14,7 +14,8 @@ const { Search } = Input;
 const ReadProjects = () => {
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
-  const [visible, setVisible] = useState(false);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
@@ -46,12 +47,12 @@ const ReadProjects = () => {
 
   const handleCreateSuccess = () => {
     fetchProjects();
-    setVisible(false);
+    setCreateModalVisible(false);
   };
 
   const handleUpdateSuccess = () => {
     fetchProjects();
-    setVisible(false);
+    setUpdateModalVisible(false);
     setSelectedId(null);
   };
 
@@ -112,7 +113,7 @@ const ReadProjects = () => {
             icon={<EditOutlined />} 
             onClick={() => {
               setSelectedId(record._id);
-              setVisible(true);
+              setUpdateModalVisible(true);
             }}
           />
           <DeleteProject id={record._id} onDeleteSuccess={handleDeleteSuccess}>
@@ -139,7 +140,7 @@ const ReadProjects = () => {
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={() => setVisible(true)}
+            onClick={() => setCreateModalVisible(true)}
           >
             Create Project
           </Button>
@@ -162,22 +163,28 @@ const ReadProjects = () => {
           scroll={{ x: 'max-content' }}
         />
         <Modal
-          title={selectedId ? "Update Project" : "Create Project"}
-          visible={visible}
+          title="Create Project"
+          visible={createModalVisible}
+          onCancel={() => setCreateModalVisible(false)}
+          footer={null}
+        >
+          <CreateProject 
+            onCreateSuccess={handleCreateSuccess}
+          />
+        </Modal>
+        <Modal
+          title="Update Project"
+          visible={updateModalVisible}
           onCancel={() => {
-            setVisible(false);
+            setUpdateModalVisible(false);
             setSelectedId(null);
           }}
           footer={null}
         >
-          {selectedId ? (
+          {selectedId && (
             <UpdateProject 
               id={selectedId}
               onUpdateSuccess={handleUpdateSuccess}
-            />
-          ) : (
-            <CreateProject 
-              onCreateSuccess={handleCreateSuccess}
             />
           )}
         </Modal>

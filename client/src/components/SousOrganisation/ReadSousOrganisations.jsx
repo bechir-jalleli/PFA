@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Table, Button, Modal, Card, Space, Typography, notification, Input } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import UpdateSousOrganisation from './UpdateSousOrganisation';
 import DeleteSousOrganisation from './DeleteSousOrganisation';
 import CreateSousOrganisation from './CreateSousOrganisation';
 import { useTheme } from '../../Context/ThemeContext';
 import { theme } from 'antd';
-import { EyeOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
+
 const { Title } = Typography;
 const { Search } = Input;
 
 const ReadSousOrganisations = () => {
   const [sousOrganisations, setSousOrganisations] = useState([]);
   const [filteredSousOrganisations, setFilteredSousOrganisations] = useState([]);
-  const [organisationOptions, setOrganisationOptions] = useState([]);
-  const [visible, setVisible] = useState(false);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
 
-  const fetchSousOrganisations = async () => {
+  const fetchSousOrganisations = useCallback(async () => {
     try {
       const token = localStorage.getItem('accessToken');
       const response = await axios.get('http://localhost:5000/sous-organisations', {
@@ -40,43 +40,23 @@ const ReadSousOrganisations = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const fetchOrganisations = async () => {
-    try {
-      const token = localStorage.getItem('accessToken');
-      const response = await axios.get('http://localhost:5000/organisations', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      setOrganisationOptions(response.data);
-    
-    } catch (error) {
-      console.error('Error fetching organisations:', error);
-      notification.error({
-        message: 'Error',
-        description: 'Failed to fetch organisations',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  }, []);
 
   useEffect(() => {
     fetchSousOrganisations();
-    fetchOrganisations();
-  }, []);
+
+    const intervalId = setInterval(fetchSousOrganisations, 30000);
+    return () => clearInterval(intervalId);
+  }, [fetchSousOrganisations]);
 
   const handleCreateSuccess = () => {
     fetchSousOrganisations();
-    setVisible(false);
+    setCreateModalVisible(false);
   };
 
   const handleUpdateSuccess = () => {
     fetchSousOrganisations();
-    setVisible(false);
+    setUpdateModalVisible(false);
     setSelectedId(null);
   };
 
@@ -88,29 +68,45 @@ const ReadSousOrganisations = () => {
     setSearchText(value);
     const filtered = sousOrganisations.filter(
       (sousOrganisation) =>
-        sousOrganisation.nom.toLowerCase().includes(value.toLowerCase()) ||
-        sousOrganisation.description.toLowerCase().includes(value.toLowerCase()) ||
-        sousOrganisation.organisation?.nom.toLowerCase().includes(value.toLowerCase())
+        sousOrganisation.title.toLowerCase().includes(value.toLowerCase()) ||
+        sousOrganisation.organisation?.title.toLowerCase().includes(value.toLowerCase()) ||
+        sousOrganisation.responsable?.nom.toLowerCase().includes(value.toLowerCase()) ||
+        sousOrganisation.responsable?.prenom.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredSousOrganisations(filtered);
   };
+
   const navigate = useNavigate();
+
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'nom',
-      key: 'nom',
+      title: 'Title',
+      dataIndex: 'title',
+      key: 'title',
     },
     {
-      title: 'Details',
-      dataIndex: 'description',
-      key: 'description',
+      title: 'Chiffre d\'Affaire',
+      dataIndex: 'chiffreAffaire',
+      key: 'chiffreAffaire',
+      render: (chiffreAffaire) => `$${chiffreAffaire?.toLocaleString() || 'N/A'}`,
     },
     {
       title: 'Organisation',
       dataIndex: 'organisation',
       key: 'organisation',
-      render: (organisation) => organisation?.nom || 'N/A',
+      render: (organisation) => organisation?.title || 'N/A',
+    },
+    {
+      title: 'Responsable',
+      dataIndex: 'responsable',
+      key: 'responsable',
+      render: (responsable) => responsable ? `${responsable.nom} ${responsable.prenom}` : 'N/A',
+    },
+    {
+      title: 'Nombre de Projets',
+      dataIndex: 'projects',
+      key: 'projects',
+      render: (projects) => projects?.length || 0,
     },
     {
       title: 'Actions',
@@ -118,14 +114,14 @@ const ReadSousOrganisations = () => {
       render: (_, record) => (
         <Space>
           <Button
-        icon={<EyeOutlined />}
-        onClick={() => navigate(`/responsables/info/${record._id}`)}
-      />
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`/sous-organisations/info/${record._id}`)}
+          />
           <Button 
             icon={<EditOutlined />} 
             onClick={() => {
               setSelectedId(record._id);
-              setVisible(true);
+              setUpdateModalVisible(true);
             }}
           />
           <DeleteSousOrganisation
@@ -155,13 +151,13 @@ const ReadSousOrganisations = () => {
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={() => setVisible(true)}
+            onClick={() => setCreateModalVisible(true)}
           >
             Create Sous-Organisation
           </Button>
         </Space>
         <Search
-          placeholder="Search by name, details or organisation"
+          placeholder="Search by title, organisation, or responsable"
           allowClear
           enterButton="Search"
           size="large"
@@ -178,26 +174,30 @@ const ReadSousOrganisations = () => {
           scroll={{ x: 'max-content' }}
         />
         <Modal
-          title={selectedId ? "Update Sous-Organisation" : "Create Sous-Organisation"}
-          visible={visible}
-          onCancel={() => {
-            setVisible(false);
-            setSelectedId(null);
-          }}
+          title="Create Sous-Organisation"
+          visible={createModalVisible}
+          onCancel={() => setCreateModalVisible(false)}
           footer={null}
         >
-          {selectedId ? (
-            <UpdateSousOrganisation
-              id={selectedId}
-              onUpdateSuccess={handleUpdateSuccess}
-              organisationOptions={organisationOptions}
-            />
-          ) : (
-            <CreateSousOrganisation
-              onCreateSuccess={handleCreateSuccess}
-              organisationOptions={organisationOptions}
-            />
-          )}
+          <CreateSousOrganisation
+            onCreateSuccess={handleCreateSuccess}
+          />
+        </Modal>
+        <Modal
+              title="Update Sous-Organisation"
+              visible={updateModalVisible}
+              onCancel={() => {
+                setUpdateModalVisible(false);
+                setSelectedId(null);
+              }}
+              footer={null}
+            >
+              {selectedId && (
+                <UpdateSousOrganisation
+                  id={selectedId}
+                  onUpdateSuccess={handleUpdateSuccess}
+                />
+              )}
         </Modal>
       </Space>
     </Card>

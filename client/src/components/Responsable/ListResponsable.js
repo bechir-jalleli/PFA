@@ -1,36 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, Button, Modal, Card, Space, Typography, notification, Input } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import UpdateResponsable from './UpdateResponsable';
 import DeleteResponsable from './DeleteResponsable';
 import CreateResponsable from './CreateResponsable';
 import { useTheme } from '../../Context/ThemeContext';
 import { theme } from 'antd';
-import styled from 'styled-components';
-import { EyeOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
-const { Title } = Typography;
 
+const { Title } = Typography;
 const { Search } = Input;
 
 const ListResponsable = () => {
   const [responsables, setResponsables] = useState([]);
   const [filteredResponsables, setFilteredResponsables] = useState([]);
-  const [visible, setVisible] = useState(false);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
 
+  const navigate = useNavigate();
+
   const fetchResponsables = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-
       const response = await axios.get('http://localhost:5000/responsables', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
-      });      setResponsables(response.data);
+      });
+      setResponsables(response.data);
       setFilteredResponsables(response.data);
     } catch (error) {
       console.error('Error fetching responsables:', error);
@@ -49,12 +50,12 @@ const ListResponsable = () => {
 
   const handleCreateSuccess = () => {
     fetchResponsables();
-    setVisible(false);
+    setCreateModalVisible(false);
   };
 
   const handleUpdateSuccess = () => {
     fetchResponsables();
-    setVisible(false);
+    setUpdateModalVisible(false);
     setSelectedId(null);
   };
 
@@ -115,22 +116,15 @@ const ListResponsable = () => {
       key: 'actions',
       render: (_, record) => (
         <Space>
-           <Button
-        icon={<EyeOutlined />}
-        onClick={() => navigate(`/responsables/info/${record._id}`)}
-      />
-          <Button 
-            icon={<EditOutlined />} 
-            onClick={() => {
-              setSelectedId(record._id);
-              setVisible(true);
-            }}
+          <Button
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`/responsables/info/${record._id}`)}
           />
           <Button 
             icon={<EditOutlined />} 
             onClick={() => {
               setSelectedId(record._id);
-              setVisible(true);
+              setUpdateModalVisible(true);
             }}
           />
           <DeleteResponsable id={record._id} onDeleteSuccess={handleDeleteSuccess}>
@@ -140,7 +134,7 @@ const ListResponsable = () => {
       ),
     },
   ];
-  const navigate = useNavigate();
+
   const { isDarkMode } = useTheme();
   const { token } = theme.useToken();
   const cardStyle = {
@@ -157,7 +151,7 @@ const ListResponsable = () => {
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={() => setVisible(true)}
+            onClick={() => setCreateModalVisible(true)}
           >
             Create Responsable
           </Button>
@@ -180,25 +174,31 @@ const ListResponsable = () => {
           scroll={{ x: 'max-content' }}
         />
         <Modal
-  title={selectedId ? "Update Responsable" : "Create Responsable"}
-  visible={visible}
-  onCancel={() => {
-    setVisible(false);
-    setSelectedId(null);
-  }}
-  footer={null}
->
-  {selectedId ? (
-    <UpdateResponsable
-      id={selectedId}
-      onUpdateSuccess={handleUpdateSuccess}
-    />
-  ) : (
-    <CreateResponsable
-      onCreateSuccess={handleCreateSuccess}
-    />
-  )}
-</Modal>
+          title="Create Responsable"
+          visible={createModalVisible}
+          onCancel={() => setCreateModalVisible(false)}
+          footer={null}
+        >
+          <CreateResponsable
+            onCreateSuccess={handleCreateSuccess}
+          />
+        </Modal>
+        <Modal
+          title="Update Responsable"
+          visible={updateModalVisible}
+          onCancel={() => {
+            setUpdateModalVisible(false);
+            setSelectedId(null);
+          }}
+          footer={null}
+        >
+          {selectedId && (
+            <UpdateResponsable
+              id={selectedId}
+              onUpdateSuccess={handleUpdateSuccess}
+            />
+          )}
+        </Modal>
       </Space>
     </Card>
   );

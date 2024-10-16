@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal, Card, Space, Typography, notification, Input } from 'antd';
+import { Table, Typography, Button, Space, notification, Modal, Card, Input } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
-import UpdateOrganisation from './UpdateOrganisation';
-import DeleteOrganisation from './DeleteOrganisation';
-import CreateOrganisation from './CreateOrganisation';
+import UpdateMembreEquipe from './UpdateMembreEquipe';
+import DeleteMembreEquipe from './DeleteMembreEquipe';
+import CreateMembreEquipe from './CreateMembreEquipe';
 import { useTheme } from '../../Context/ThemeContext';
 import { theme } from 'antd';
 import { useNavigate } from "react-router-dom";
@@ -12,18 +12,21 @@ import { useNavigate } from "react-router-dom";
 const { Title } = Typography;
 const { Search } = Input;
 
-const ReadOrganisation = () => {
+const ReadMembreEquipe = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [visible, setVisible] = useState(false);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [searchText, setSearchText] = useState('');
+
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get('http://localhost:5000/organisations', {
+      const response = await axios.get('http://localhost:5000/membre-equipes', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -33,7 +36,7 @@ const ReadOrganisation = () => {
     } catch (error) {
       notification.error({
         message: 'Error',
-        description: 'Failed to fetch organisations',
+        description: 'Failed to fetch Membre Equipes',
       });
     } finally {
       setLoading(false);
@@ -46,12 +49,12 @@ const ReadOrganisation = () => {
 
   const handleCreateSuccess = () => {
     fetchData();
-    setVisible(false);
+    setCreateModalVisible(false);
   };
 
   const handleUpdateSuccess = () => {
     fetchData();
-    setVisible(false);
+    setUpdateModalVisible(false);
     setSelectedId(null);
   };
 
@@ -62,33 +65,33 @@ const ReadOrganisation = () => {
   const handleSearch = (value) => {
     setSearchText(value);
     const filtered = data.filter(
-      (organisation) =>
-        organisation.nom.toLowerCase().includes(value.toLowerCase()) ||
-        organisation.description.toLowerCase().includes(value.toLowerCase())
+      (membreEquipe) =>
+        (membreEquipe.nom && membreEquipe.nom.toLowerCase().includes(value.toLowerCase())) ||
+        (membreEquipe.prenom && membreEquipe.prenom.toLowerCase().includes(value.toLowerCase()))
     );
     setFilteredData(filtered);
   };
 
   const columns = [
     {
-      title: 'title',
-      dataIndex: 'title',
-      key: 'title',
+      title: 'Name',
+      dataIndex: 'nom',
+      key: 'name',
     },
     {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
+      title: 'Surname',
+      dataIndex: 'prenom',
+      key: 'surname',
     },
     {
-      title: "Chiffre d'Affaire",
-      dataIndex: 'chiffreAffaire',
-      key: 'chiffreAffaire',
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
     },
     {
-      title: 'Responsable',
-      dataIndex: 'responsable',
-      key: 'responsable',
+      title: 'Phone',
+      dataIndex: 'phone',
+      key: 'phone',
     },
     {
       title: 'Actions',
@@ -97,18 +100,18 @@ const ReadOrganisation = () => {
         <Space>
           <Button
             icon={<EyeOutlined />}
-            onClick={() => navigate(`/organisations/info/${record._id}`)}
+            onClick={() => navigate(`/membre-equipes/info/${record._id}`)}
           />
           <Button 
             icon={<EditOutlined />} 
             onClick={() => {
               setSelectedId(record._id);
-              setVisible(true);
+              setUpdateModalVisible(true);
             }}
           />
-          <DeleteOrganisation id={record._id} onDeleteSuccess={handleDeleteSuccess}>
+          <DeleteMembreEquipe id={record._id} onDeleteSuccess={handleDeleteSuccess}>
             <Button icon={<DeleteOutlined />} danger />
-          </DeleteOrganisation>
+          </DeleteMembreEquipe>
         </Space>
       ),
     },
@@ -123,23 +126,21 @@ const ReadOrganisation = () => {
     backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
   };
 
-  const navigate = useNavigate();
-
   return (
     <Card style={cardStyle}>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={4}>Organisations</Title>
+          <Title level={4}>Membre Equipes</Title>
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={() => setVisible(true)}
+            onClick={() => setCreateModalVisible(true)}
           >
-            Create Organisation
+            Create Membre Equipe
           </Button>
         </Space>
         <Search
-          placeholder="Search by name or description"
+          placeholder="Search by nom or prénom"
           allowClear
           enterButton="Search"
           size="large"
@@ -156,22 +157,28 @@ const ReadOrganisation = () => {
           scroll={{ x: 'max-content' }}
         />
         <Modal
-          title={selectedId ? "Update Organisation" : "Create Organisation"}
-          visible={visible}
+          title="Create Membre Equipe"
+          visible={createModalVisible}
+          onCancel={() => setCreateModalVisible(false)}
+          footer={null}
+        >
+          <CreateMembreEquipe 
+            onCreateSuccess={handleCreateSuccess}
+          />
+        </Modal>
+        <Modal
+          title="Update Membre Equipe"
+          visible={updateModalVisible}
           onCancel={() => {
-            setVisible(false);
+            setUpdateModalVisible(false);
             setSelectedId(null);
           }}
           footer={null}
         >
-          {selectedId ? (
-            <UpdateOrganisation 
+          {selectedId && (
+            <UpdateMembreEquipe 
               id={selectedId}
               onUpdateSuccess={handleUpdateSuccess}
-            />
-          ) : (
-            <CreateOrganisation 
-              onCreateSuccess={handleCreateSuccess}
             />
           )}
         </Modal>
@@ -180,4 +187,4 @@ const ReadOrganisation = () => {
   );
 };
 
-export default ReadOrganisation;
+export default ReadMembreEquipe;

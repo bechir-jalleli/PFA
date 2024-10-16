@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Table, Typography, Button, Space, notification, Modal, Card, Input } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
-import UpdateMembreEquipe from './UpdateMembreEquipe';
-import DeleteMembreEquipe from './DeleteMembreEquipe';
-import CreateMembreEquipe from './CreateMembreEquipe';
+import UpdateChefProject from './UpdateChefProject';
+import DeleteChefProject from './DeleteChefProject';
+import CreateChefProject from './CreateChefProject';
 import { useTheme } from '../../Context/ThemeContext';
 import { theme } from 'antd';
 import { useNavigate } from "react-router-dom";
@@ -12,28 +12,31 @@ import { useNavigate } from "react-router-dom";
 const { Title } = Typography;
 const { Search } = Input;
 
-const ReadMembreEquipe = () => {
+const ReadChefProject = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [visible, setVisible] = useState(false);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [searchText, setSearchText] = useState('');
+
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get('http://localhost:5000/membre-equipes', {
+      const response = await axios.get('http://localhost:5000/chef-projects', {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          'Authorization': `Bearer ${token}`,
+        },
       });
       setData(response.data);
       setFilteredData(response.data);
     } catch (error) {
       notification.error({
         message: 'Error',
-        description: 'Failed to fetch Membre Equipes',
+        description: 'Failed to fetch Chef Projects',
       });
     } finally {
       setLoading(false);
@@ -46,12 +49,12 @@ const ReadMembreEquipe = () => {
 
   const handleCreateSuccess = () => {
     fetchData();
-    setVisible(false);
+    setCreateModalVisible(false);
   };
 
   const handleUpdateSuccess = () => {
     fetchData();
-    setVisible(false);
+    setUpdateModalVisible(false);
     setSelectedId(null);
   };
 
@@ -62,9 +65,9 @@ const ReadMembreEquipe = () => {
   const handleSearch = (value) => {
     setSearchText(value);
     const filtered = data.filter(
-      (membreEquipe) =>
-        (membreEquipe.nom && membreEquipe.nom.toLowerCase().includes(value.toLowerCase())) ||
-        (membreEquipe.prenom && membreEquipe.prenom.toLowerCase().includes(value.toLowerCase()))
+      (chefProject) =>
+        (chefProject.nom && chefProject.nom.toLowerCase().includes(value.toLowerCase())) ||
+        (chefProject.prenom && chefProject.prenom.toLowerCase().includes(value.toLowerCase()))
     );
     setFilteredData(filtered);
   };
@@ -97,18 +100,18 @@ const ReadMembreEquipe = () => {
         <Space>
           <Button
             icon={<EyeOutlined />}
-            onClick={() => navigate(`/membre-equipes/info/${record._id}`)}
+            onClick={() => navigate(`/chef-projects/info/${record._id}`)}
           />
           <Button 
             icon={<EditOutlined />} 
             onClick={() => {
               setSelectedId(record._id);
-              setVisible(true);
+              setUpdateModalVisible(true);
             }}
           />
-          <DeleteMembreEquipe id={record._id} onDeleteSuccess={handleDeleteSuccess}>
+          <DeleteChefProject id={record._id} onDeleteSuccess={handleDeleteSuccess}>
             <Button icon={<DeleteOutlined />} danger />
-          </DeleteMembreEquipe>
+          </DeleteChefProject>
         </Space>
       ),
     },
@@ -123,19 +126,17 @@ const ReadMembreEquipe = () => {
     backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
   };
 
-  const navigate = useNavigate();
-
   return (
     <Card style={cardStyle}>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={4}>Membre Equipes</Title>
-          <Button
+          <Title level={4}>Chef Projects</Title>
+          <Button 
             type="primary"
             icon={<PlusOutlined />}
-            onClick={() => setVisible(true)}
+            onClick={() => setCreateModalVisible(true)}
           >
-            Create Membre Equipe
+            Create Chef Project
           </Button>
         </Space>
         <Search
@@ -156,22 +157,28 @@ const ReadMembreEquipe = () => {
           scroll={{ x: 'max-content' }}
         />
         <Modal
-          title={selectedId ? "Update Membre Equipe" : "Create Membre Equipe"}
-          visible={visible}
+          title="Create Chef Project"
+          visible={createModalVisible}
+          onCancel={() => setCreateModalVisible(false)}
+          footer={null}
+        >
+          <CreateChefProject 
+            onCreateSuccess={handleCreateSuccess}
+          />
+        </Modal>
+        <Modal
+          title="Update Chef Project"
+          visible={updateModalVisible}
           onCancel={() => {
-            setVisible(false);
+            setUpdateModalVisible(false);
             setSelectedId(null);
           }}
           footer={null}
         >
-          {selectedId ? (
-            <UpdateMembreEquipe 
+          {selectedId && (
+            <UpdateChefProject 
               id={selectedId}
               onUpdateSuccess={handleUpdateSuccess}
-            />
-          ) : (
-            <CreateMembreEquipe 
-              onCreateSuccess={handleCreateSuccess}
             />
           )}
         </Modal>
@@ -180,4 +187,4 @@ const ReadMembreEquipe = () => {
   );
 };
 
-export default ReadMembreEquipe;
+export default ReadChefProject;

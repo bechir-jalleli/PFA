@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const sousOrganisationController = require('../controllers/sousOrganisationController'); // Ensure this path is correct
+const sousOrganisationController = require('../controllers/sousOrganisationController');
 
 const { verifyToken, checkRole } = require('../middleware/authorizationMiddleware');
 

@@ -9,32 +9,38 @@ const handleError = (res, status, message) => {
 };
 
 exports.createSousOrganisation = async (req, res) => {
-    const { title, description, organisation, responsable, projects } = req.body;
+    const { title, description, organisation, responsable, chiffreAffaire } = req.body;
 
-    if (!title || !organisation || !responsable) {
-        return handleError(res, 400, 'Title, organisation, and responsable are required');
+    if (!title || !organisation || !responsable || !chiffreAffaire) {
+        return handleError(res, 400, 'Title, organisation, responsable, and chiffreAffaire are required');
     }
 
     try {
-        const sousOrganisation = new SousOrganisation({ title, description, organisation, responsable, projects });
+        const sousOrganisation = new SousOrganisation({ 
+            title, 
+            description, 
+            organisation, 
+            responsable, 
+            chiffreAffaire 
+        });
         const createdSousOrganisation = await sousOrganisation.save();
         res.status(201).json(createdSousOrganisation);
     } catch (error) {
         handleError(res, 400, 'Error creating sous-organisation: ' + error.message);
     }
 };
-
 exports.getAllSousOrganisations = async (req, res) => {
     try {
         const sousOrganisations = await SousOrganisation.find({})
-            .populate('organisation')
-            .populate('responsable')
+            .populate('organisation', 'title')
+            .populate('responsable', 'nom prenom')
             .populate('projects');
         res.status(200).json(sousOrganisations);
     } catch (error) {
         handleError(res, 400, 'Error fetching sous-organisations: ' + error.message);
     }
 };
+
 
 exports.getSousOrganisationById = async (req, res) => {
     const { id } = req.params;

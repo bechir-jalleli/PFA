@@ -2,33 +2,33 @@ const Project = require('../models/project');
 const MembreEquipe = require('../models/membreEquipe');
 
 exports.createProject = async (req, res) => {
-    const { tittle, description, organisation, sousOrganisation, chefProject, responsable, startDate, endDate, budget, revenue, status } = req.body;
-
-    if (!tittle || !status) {
-        return handleError(res, 400, 'Tittle, one of Organisation or SousOrganisation, ChefProject, and Status are required');
+    const { title, description, organisation, sousOrganisation, chefProject, responsable, startDate, endDate, budget, revenue, status } = req.body;
+  
+    if (!title || !status) {
+      return res.status(400).json({ error: 'Title and Status are required' });
     }
-
+  
     try {
-        const project = new Project({
-            tittle,
-            description,
-            organisation: organisation || null,
-            sousOrganisation: sousOrganisation || null,
-            chefProject,
-            responsable: responsable || null,
-            startDate,
-            endDate,
-            budget,
-            revenue: revenue || 0,
-            status
-        });
-
-        const createdProject = await project.save();
-        res.status(201).json(createdProject);
+      const project = new Project({
+        title,
+        description,
+        organisation: organisation || null,
+        sousOrganisation: sousOrganisation || null,
+        chefProject,
+        responsable: responsable || null,
+        startDate,
+        endDate,
+        budget,
+        revenue: revenue || 0,
+        status
+      });
+  
+      const createdProject = await project.save();
+      res.status(201).json(createdProject);
     } catch (error) {
-        handleError(res, 400, 'Error creating project: ' + error.message);
+      res.status(400).json({ error: 'Error creating project: ' + error.message });
     }
-};
+  };
 
 exports.getAllProjects = async (req, res) => {
     try {

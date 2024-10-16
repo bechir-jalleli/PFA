@@ -1,57 +1,74 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Form, Input, notification, Select } from 'antd';
+import { Form, Input, Button, notification, Select, DatePicker } from 'antd';
+import moment from 'moment';
 
 const { Option } = Select;
 
 function UpdateTache({ id, onUpdateSuccess }) {
   const [form] = Form.useForm();
   const [membreEquipes, setMembreEquipes] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTache = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/taches/${id}`);
-        form.setFieldsValue(response.data); 
-      } catch (error) {
-        console.error('Error fetching task:', error);
-      }
-    };
+        const token = localStorage.getItem('accessToken');
+        const [tacheResponse, membreEquipesResponse, projectsResponse] = await Promise.all([
+          axios.get(`http://localhost:5000/taches/${id}`, {
+            headers: { 'Authorization': `Bearer ${token}` },
+          }),
+          axios.get('http://localhost:5000/membre-equipes', {
+            headers: { 'Authorization': `Bearer ${token}` },
+          }),
+          axios.get('http://localhost:5000/projects', {
+            headers: { 'Authorization': `Bearer ${token}` },
+          }),
+        ]);
 
-    const fetchMembreEquipes = async () => {
-      const token = localStorage.getItem('accessToken');
-      try {
-        const response = await axios.get('http://localhost:5000/membre-equipes', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
+        const tacheData = tacheResponse.data;
+        form.setFieldsValue({
+          ...tacheData,
+          startDate: moment(tacheData.startDate),
+          endDate: tacheData.endDate ? moment(tacheData.endDate) : null,
+          membreEquipe: tacheData.membreEquipe?._id,
+          project: tacheData.project?._id,
         });
-        setMembreEquipes(response.data);
+
+        setMembreEquipes(membreEquipesResponse.data);
+        setProjects(projectsResponse.data);
       } catch (error) {
-        console.error('Error fetching team members:', error);
+        console.error('Error fetching data:', error);
+        notification.error({
+          message: 'Error',
+          description: 'Failed to fetch data',
+        });
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchTache();
-    fetchMembreEquipes();
+    fetchData();
   }, [id, form]);
 
-  const handleOk = async () => {
-    const token = localStorage.getItem('accessToken');
+  const handleSubmit = async (values) => {
     try {
-      await form.validateFields();
-      await axios.put(`http://localhost:5000/taches/${id}`, form.getFieldsValue(), {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+      const token = localStorage.getItem('accessToken');
+      await axios.put(`http://localhost:5000/taches/${id}`, {
+        ...values,
+        startDate: values.startDate.toISOString(),
+        endDate: values.endDate ? values.endDate.toISOString() : null,
+      }, {
+        headers: { 'Authorization': `Bearer ${token}` },
       });
       notification.success({
         message: 'Success',
         description: 'Task updated successfully',
       });
-      form.resetFields();
-      if (onUpdateSuccess) onUpdateSuccess(); 
+      if (onUpdateSuccess) onUpdateSuccess();
     } catch (error) {
+      console.error('Error updating task:', error);
       notification.error({
         message: 'Error',
         description: 'Failed to update task',
@@ -59,8 +76,12 @@ function UpdateTache({ id, onUpdateSuccess }) {
     }
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <Form form={form} layout="vertical">
+    <Form form={form} onFinish={handleSubmit} layout="vertical">
       <Form.Item
         name="titre"
         label="Title"
@@ -109,6 +130,37 @@ function UpdateTache({ id, onUpdateSuccess }) {
             </Option>
           ))}
         </Select>
+      </Form.Item>
+      <Form.Item
+        name="project"
+        label="Project"
+        rules={[{ required: true, message: 'Please select a project!' }]}
+      >
+        <Select placeholder="Select a project">
+          {projects.map(project => (
+            <Option key={project._id} value={project._id}>
+              {project.tittle}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+      <Form.Item
+        name="startDate"
+        label="Start Date"
+        rules={[{ required: true, message: 'Please select the start date!' }]}
+      >
+        <DatePicker />
+      </Form.Item>
+      <Form.Item
+        name="endDate"
+        label="End Date"
+      >
+        <DatePicker />
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" htmlType="submit">
+          Update Task
+        </Button>
       </Form.Item>
     </Form>
   );

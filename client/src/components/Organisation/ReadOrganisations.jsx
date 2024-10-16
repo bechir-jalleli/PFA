@@ -1,39 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Typography, Button, Space, notification, Modal, Card, Input } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import UpdateChefProject from './UpdateChefProject';
-import DeleteChefProject from './DeleteChefProject';
-import CreateChefProject from './CreateChefProject';
+import { Table, Button, Modal, Card, Space, Typography, notification, Input } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import UpdateOrganisation from './UpdateOrganisation';
+import DeleteOrganisation from './DeleteOrganisation';
+import CreateOrganisation from './CreateOrganisation';
 import { useTheme } from '../../Context/ThemeContext';
 import { theme } from 'antd';
-import { EyeOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
+
 const { Title } = Typography;
 const { Search } = Input;
 
-const ReadChefProject = () => {
+const ReadOrganisation = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [visible, setVisible] = useState(false);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [searchText, setSearchText] = useState('');
+
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get('http://localhost:5000/chef-projects', {
+      const response = await axios.get('http://localhost:5000/organisations', {
         headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+          'Authorization': `Bearer ${token}`
+        }
       });
       setData(response.data);
       setFilteredData(response.data);
     } catch (error) {
       notification.error({
         message: 'Error',
-        description: 'Failed to fetch Chef Projects',
+        description: 'Failed to fetch organisations',
       });
     } finally {
       setLoading(false);
@@ -46,12 +49,12 @@ const ReadChefProject = () => {
 
   const handleCreateSuccess = () => {
     fetchData();
-    setVisible(false);
+    setCreateModalVisible(false);
   };
 
   const handleUpdateSuccess = () => {
     fetchData();
-    setVisible(false);
+    setUpdateModalVisible(false);
     setSelectedId(null);
   };
 
@@ -62,33 +65,34 @@ const ReadChefProject = () => {
   const handleSearch = (value) => {
     setSearchText(value);
     const filtered = data.filter(
-      (chefProject) =>
-        (chefProject.nom && chefProject.nom.toLowerCase().includes(value.toLowerCase())) ||
-        (chefProject.prenom && chefProject.prenom.toLowerCase().includes(value.toLowerCase()))
+      (organisation) =>
+        organisation.title.toLowerCase().includes(value.toLowerCase()) ||
+        organisation.description.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredData(filtered);
   };
 
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'nom',
-      key: 'name',
+      title: 'Title',
+      dataIndex: 'title',
+      key: 'title',
     },
     {
-      title: 'Surname',
-      dataIndex: 'prenom',
-      key: 'surname',
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: "Chiffre d'Affaire",
+      dataIndex: 'chiffreAffaire',
+      key: 'chiffreAffaire',
     },
     {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
+      title: 'Responsable',
+      dataIndex: 'responsable',
+      key: 'responsable',
+      render: (responsable) => responsable.nom,
     },
     {
       title: 'Actions',
@@ -96,19 +100,19 @@ const ReadChefProject = () => {
       render: (_, record) => (
         <Space>
           <Button
-        icon={<EyeOutlined />}
-        onClick={() => navigate(`/chef-projects/info/${record._id}`)}
-      />
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`/organisations/info/${record._id}`)}
+          />
           <Button 
             icon={<EditOutlined />} 
             onClick={() => {
               setSelectedId(record._id);
-              setVisible(true);
+              setUpdateModalVisible(true);
             }}
           />
-          <DeleteChefProject id={record._id} onDeleteSuccess={handleDeleteSuccess}>
+          <DeleteOrganisation id={record._id} onDeleteSuccess={handleDeleteSuccess}>
             <Button icon={<DeleteOutlined />} danger />
-          </DeleteChefProject>
+          </DeleteOrganisation>
         </Space>
       ),
     },
@@ -122,22 +126,22 @@ const ReadChefProject = () => {
     boxShadow: token.boxShadow,
     backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
   };
-  const navigate = useNavigate();
+
   return (
     <Card style={cardStyle}>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={4}>Chef Projects</Title>
-          <Button 
+          <Title level={4}>Organisations</Title>
+          <Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={() => setVisible(true)}
+            onClick={() => setCreateModalVisible(true)}
           >
-            Create Chef Project
+            Create Organisation
           </Button>
         </Space>
         <Search
-          placeholder="Search by nom or prénom"
+          placeholder="Search by title or description"
           allowClear
           enterButton="Search"
           size="large"
@@ -154,22 +158,28 @@ const ReadChefProject = () => {
           scroll={{ x: 'max-content' }}
         />
         <Modal
-          title={selectedId ? "Update Chef Project" : "Create Chef Project"}
-          visible={visible}
+          title="Create Organisation"
+          visible={createModalVisible}
+          onCancel={() => setCreateModalVisible(false)}
+          footer={null}
+        >
+          <CreateOrganisation 
+            onCreateSuccess={handleCreateSuccess}
+          />
+        </Modal>
+        <Modal
+          title="Update Organisation"
+          visible={updateModalVisible}
           onCancel={() => {
-            setVisible(false);
+            setUpdateModalVisible(false);
             setSelectedId(null);
           }}
           footer={null}
         >
-          {selectedId ? (
-            <UpdateChefProject 
+          {selectedId && (
+            <UpdateOrganisation 
               id={selectedId}
               onUpdateSuccess={handleUpdateSuccess}
-            />
-          ) : (
-            <CreateChefProject 
-              onCreateSuccess={handleCreateSuccess}
             />
           )}
         </Modal>
@@ -178,4 +188,4 @@ const ReadChefProject = () => {
   );
 };
 
-export default ReadChefProject;
+export default ReadOrganisation;

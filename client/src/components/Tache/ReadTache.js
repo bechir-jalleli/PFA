@@ -15,12 +15,13 @@ const { Search } = Input;
 const ReadTaches = () => {
   const [taches, setTaches] = useState([]);
   const [filteredTaches, setFilteredTaches] = useState([]);
-  const [visible, setVisible] = useState(false);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const fetchTaches = async () => {
     try {
@@ -49,12 +50,12 @@ const ReadTaches = () => {
 
   const handleCreateSuccess = () => {
     fetchTaches();
-    setVisible(false);
+    setCreateModalVisible(false);
   };
 
   const handleUpdateSuccess = () => {
     fetchTaches();
-    setVisible(false);
+    setUpdateModalVisible(false);
     setSelectedId(null);
   };
 
@@ -184,7 +185,7 @@ const ReadTaches = () => {
             icon={<EditOutlined />}
             onClick={() => {
               setSelectedId(record._id);
-              setVisible(true);
+              setUpdateModalVisible(true);
             }}
           />
           <DeleteTache id={record._id} onDeleteSuccess={handleDeleteSuccess}>
@@ -211,7 +212,7 @@ const ReadTaches = () => {
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={() => setVisible(true)}
+            onClick={() => setCreateModalVisible(true)}
           >
             Create Task
           </Button>
@@ -234,18 +235,27 @@ const ReadTaches = () => {
           scroll={{ x: 'max-content' }}
         />
         <Modal
-          title={selectedId ? 'Update Task' : 'Create Task'}
-          visible={visible}
+          title="Create Task"
+          visible={createModalVisible}
+          onCancel={() => setCreateModalVisible(false)}
+          footer={null}
+        >
+          <CreateTache onCreateSuccess={handleCreateSuccess} />
+        </Modal>
+        <Modal
+          title="Update Task"
+          visible={updateModalVisible}
           onCancel={() => {
-            setVisible(false);
+            setUpdateModalVisible(false);
             setSelectedId(null);
           }}
           footer={null}
         >
-          {selectedId ? (
-            <UpdateTache id={selectedId} onUpdateSuccess={handleUpdateSuccess} />
-          ) : (
-            <CreateTache onCreateSuccess={handleCreateSuccess} />
+          {selectedId && (
+            <UpdateTache 
+              id={selectedId} 
+              onUpdateSuccess={handleUpdateSuccess}
+            />
           )}
         </Modal>
       </Space>

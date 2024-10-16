@@ -84,7 +84,7 @@ const CreateOrganisation = ({ onClose, onCreateSuccess }) => {
       >
         <Select placeholder="Select a responsable">
           {responsables.map(resp => (
-            <Option key={resp._id} value={resp._id}>{resp.nom}</Option>
+            <Option key={resp._id} value={resp._id}>{resp.nom}  {resp.prenom}</Option>
           ))}
         </Select>
       </Form.Item>

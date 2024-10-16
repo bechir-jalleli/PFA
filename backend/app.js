@@ -43,7 +43,7 @@ app.use('/sous-organisations', sousOrganisationRoutes);
 app.use('/projects', projectRoutes);
 app.use('/taches', tacheRoutes);
 app.use('/login', loginRouter);
-app.use('/risque', riskRoutes);
+app.use('/risks', riskRoutes);
 
 
 const swaggerDocument = require(path.join(__dirname, 'swagger.json'));

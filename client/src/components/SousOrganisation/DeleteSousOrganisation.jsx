@@ -5,7 +5,12 @@ import { Button, notification, Popconfirm } from 'antd';
 const DeleteSousOrganisation = ({ id, onDelete }) => {
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/sous-organisations/${id}`);
+      const token = localStorage.getItem('accessToken');
+      await axios.delete(`http://localhost:5000/sous-organisations/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       notification.success({
         message: 'Success',
         description: 'Sous-organisation deleted successfully',

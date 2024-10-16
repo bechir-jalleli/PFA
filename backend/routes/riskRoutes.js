@@ -1,13 +1,12 @@
-
 const express = require('express');
 const router = express.Router();
-const { createRisks, getRiskById } = require('../controllers/riskController');
+const riskController = require('../controllers/riskController');
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 const { verifyToken, checkRole } = require('../middleware/authorizationMiddleware');
 
-router.use(verifyToken);
-router.use(checkRole('admin'));
-
-router.post('/', createRisks);
-router.get('/:id', getRiskById);
+router.post('/', upload.single('file'), riskController.createRisk);
+router.get('/', riskController.getAllRisks);
+router.get('/:id', riskController.getRisk);
 
 module.exports = router;
