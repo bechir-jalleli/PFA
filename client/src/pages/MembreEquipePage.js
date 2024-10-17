@@ -41,7 +41,7 @@ const MembreEquipePage = () => {
         </Space>
 
           
-            <Card style={cardStyle} title="Team Members">
+            <Card style={cardStyle} >
               <ReadMembreEquipe />
             </Card>
         

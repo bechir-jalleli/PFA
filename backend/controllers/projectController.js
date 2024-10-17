@@ -12,29 +12,27 @@ exports.createProject = async (req, res) => {
       const project = new Project({
         title,
         description,
-        organisation: organisation || null,
-        sousOrganisation: sousOrganisation || null,
         chefProject,
-        responsable: responsable || null,
         startDate,
         endDate,
         budget,
-        revenue: revenue || 0,
         status
       });
   
       const createdProject = await project.save();
       res.status(201).json(createdProject);
     } catch (error) {
+        console.log( 'Error creating project: ' + error.message )
       res.status(400).json({ error: 'Error creating project: ' + error.message });
+
     }
   };
 
 exports.getAllProjects = async (req, res) => {
     try {
         const projects = await Project.find()
-            .populate('organisation', 'name')
-            .populate('sousOrganisation', 'name')
+            .populate('organisation', 'title')
+            .populate('sousOrganisation', 'title')
             .populate('chefProject', 'nom prenom')
             .populate('responsable', 'nom prenom');
 

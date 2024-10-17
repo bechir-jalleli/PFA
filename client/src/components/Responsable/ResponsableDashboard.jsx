@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, Statistic, Space, Button, Typography, Divider, message } from 'antd';
 import {
@@ -9,7 +10,7 @@ import {
   CheckCircleOutlined,
   WarningOutlined,
   PlusOutlined,
-  
+
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import LoadingDots from '../Loading';
@@ -17,7 +18,7 @@ import { DashboardOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
 
-const AdminDashboard = () => {
+const ResponsableDashboard = () => {
   const [data, setData] = useState(null);
   const navigate = useNavigate();
 
@@ -56,41 +57,30 @@ const AdminDashboard = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-       <DashboardOutlined style={{ fontSize: 48,marginBottom : 10 }} />
-          <Title level={2} style={{ marginBottom : 20 }}>
-            Admin Panel
-          </Title>
+         
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} lg={6}>
-          <Card hoverable onClick={() => navigate('/responsables/list')}>
+          <Card hoverable onClick={() => navigate('/chef-projects/list')}>
             <Statistic
-              title="Responsables"
-              value={data.totalEmployees}
+              title="Nombre Chef Projet"
+              value={data.chefProjectCount}
               prefix={<UserOutlined />}
               valueStyle={{ color: '#1890ff' }}
             />
           </Card>
         </Col>
+        
         <Col xs={24} sm={12} lg={6}>
-          <Card hoverable onClick={() => navigate('/organisations/list')}>
+          <Card hoverable onClick={() => navigate('/membre-equipes/list')}>
             <Statistic
-              title="Organisations"
-              value={data.organisationCount}
-              prefix={<BankOutlined />}
-              valueStyle={{ color: '#722ed1' }}
+              title="Nombre Membre Equipe"
+              value={data.membreEquipeCount}
+              prefix={<UserOutlined />}
+              valueStyle={{ color: '#1890ff' }}
             />
           </Card>
         </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card hoverable onClick={() => navigate('/sous-organisations/list')}>
-            <Statistic
-              title="Sous-organisations"
-              value={data.sousOrganisationCount}
-              prefix={<BranchesOutlined />}
-              valueStyle={{ color: '#fa8c16' }}
-            />
-          </Card>
-        </Col>
+        
         <Col xs={24} sm={12} lg={6}>
           <Card hoverable onClick={() => navigate('/projects/list')}>
             <Statistic
@@ -142,39 +132,10 @@ const AdminDashboard = () => {
         </Col>
 
 
-        <Col xs={24}>
-          <Card title="Quick Actions" hoverable >
-            <Space size="large">
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                style={{ borderRadius: '8px' }}
-                onClick={() => navigate('/responsables/create')}
-              >
-                Add New Responsables
-              </Button>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                style={{ borderRadius: '8px' }}
-                onClick={() => navigate('/organisations/create')}
-              >
-                Add New Organisation
-              </Button>
-              <Button
-               type="primary"
-                icon={<ProjectOutlined />}
-                style={{ borderRadius: '8px' }}
-                onClick={() => navigate('/projects/create')}
-              >
-                Create Project
-              </Button>
-            </Space>
-          </Card>
-        </Col>
+        
       </Row>
     </div>
   );
 };
 
-export default AdminDashboard;
+export default ResponsableDashboard;

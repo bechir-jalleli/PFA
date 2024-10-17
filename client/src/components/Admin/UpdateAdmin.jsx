@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Form, Input, Button, Modal, notification, Spin } from 'antd';
+import { Form, Input, Button, notification, Spin } from 'antd';
 import { useParams } from 'react-router-dom';
 
 const UpdateAdmin = () => {

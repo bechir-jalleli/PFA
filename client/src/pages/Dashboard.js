@@ -18,8 +18,8 @@ const Dashboard = () => {
         case 'chef-project':
           navigate('/chef-projects/dashboard');
           break;
-        case 'Membre':
-          navigate('/membre-equipes/dashboard');
+        case 'membreEquipe':
+          navigate('/membre-equipes');
           break;
         default:
           navigate('/');

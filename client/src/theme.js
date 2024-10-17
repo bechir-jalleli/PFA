@@ -15,7 +15,6 @@ const theme = createTheme({
       main: '#f50057',
     },
   },
-  // Add other theme customizations here
 });
 
 export default theme;

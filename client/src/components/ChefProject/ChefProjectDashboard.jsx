@@ -1,9 +1,8 @@
 import React from 'react';
 import { Typography, Card, Row, Col, Progress, List, Avatar, theme } from 'antd';
-import { ProjectOutlined, TeamOutlined, ClockCircleOutlined, FileOutlined } from '@ant-design/icons';
-import ReadChefProject from './ReadChefProject';
+import {  TeamOutlined, ClockCircleOutlined, FileOutlined } from '@ant-design/icons';
 
-const { Title, Paragraph } = Typography;
+const {  Paragraph } = Typography;
 
 function ChefProjectDashboard() {
   const { token } = theme.useToken();
@@ -14,10 +13,6 @@ function ChefProjectDashboard() {
     color: token.colorText,
   };
 
-  const iconStyle = {
-    fontSize: 48,
-    color: token.colorPrimary,
-  };
 
   const cardStyle = {
     marginBottom: token.marginMD,
@@ -32,22 +27,11 @@ function ChefProjectDashboard() {
 
   return (
     <div style={pageStyle}>
-      <Row gutter={[16, 16]} align="middle" style={{ marginBottom: token.marginLG }}>
-        <Col>
-          <ProjectOutlined style={iconStyle} />
-        </Col>
-        <Col>
-          <Title level={2} style={{ margin: 0, color: token.colorText }}>
-            Chef Project Dashboard
-          </Title>
-        </Col>
-      </Row>
+     
 
       <Row gutter={[16, 16]}>
-        <Col xs={24} lg={16}>
-          <ReadChefProject />
-        </Col>
-        <Col xs={24} lg={8}>
+        
+        <Col xs={16} lg={16}>
           <Card style={cardStyle} title="Project Progress">
             {dummyProjects.map((project, index) => (
               <div key={index} style={{ marginBottom: token.marginMD }}>

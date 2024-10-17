@@ -96,6 +96,9 @@ exports.createAdmin = async (req, res) => {
                 sousOrganisationCount,
                 projectCount: totalProjects,
                 totalEmployees,
+                chefProjectCount,
+                responsableCount,
+                membreEquipeCount,
                 projectStatuses: {
                     inProgress: inProgressCount,
                     completed: completedCount,

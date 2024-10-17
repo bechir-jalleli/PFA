@@ -43,20 +43,12 @@ const ProjectPage = React.memo(() => {
 
         <Row gutter={[16, 24]}>
           <Col xs={24} lg={24}>
-            <Card title="Project List" style={cardStyle}>
+            
               <ReadProject />
-            </Card>
+            
           </Col>
           
-          <Col xs={24}>
-            <Card title="Quick Actions" style={cardStyle}>
-              <Space wrap>
-                <Button type="primary" icon={<PlusCircleOutlined />}>Add New Project</Button>
-                <Button icon={<FileTextOutlined />}>Generate Report</Button>
-                <Button icon={<SettingOutlined />}>Project Settings</Button>
-              </Space>
-            </Card>
-          </Col>
+       
         </Row>
       </div>
     </MainLayout>

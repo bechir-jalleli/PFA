@@ -4,12 +4,12 @@ const projectController = require('../controllers/projectController');
 const { verifyToken, checkRole } = require('../middleware/authorizationMiddleware');
 
 router.use(verifyToken);
+router.use(checkRole('responsable','admin','chefProject'));
+router.get('/', projectController.getAllProjects);
+router.get('/:id', projectController.getProjectById);
 
-router.get('/',checkRole('responsable','admin'), projectController.getAllProjects);
-router.get('/:id',checkRole('responsable','admin'), projectController.getProjectById);
-
-router.post('/', checkRole('responsable','admin'),projectController.createProject);
-router.put('/:id',checkRole('responsable','admin'),projectController.updateProject);
-router.delete('/:id',checkRole('responsable','admin'),projectController.deleteProject);
+router.post('/',projectController.createProject);
+router.put('/:id',projectController.updateProject);
+router.delete('/:id',projectController.deleteProject);
 
 module.exports = router;

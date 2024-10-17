@@ -40,7 +40,7 @@ const LoginPage = () => {
       case 'responsable':
         navigate('/responsables');
         break;
-      case 'chef-project':
+      case 'chefProject':
         navigate('/chef-projects');
         break;
       case 'membre-equipe':

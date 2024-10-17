@@ -35,10 +35,10 @@ const Sidebar = ({ collapsed, onCollapse }) => {
 
   const menuItems = [
     {
-      key: '/dashboard',
+      key: '/Dashboard',
       icon: <DashboardOutlined />,
       label: 'Dashboard',
-      allowedRoles: ['admin', 'responsable', 'chef-project', 'membre-equipe'],
+      allowedRoles: ['admin', 'responsable', 'chefProject', 'membreEquipe'],
     },
     {
       key: '/responsables',
@@ -56,7 +56,7 @@ const Sidebar = ({ collapsed, onCollapse }) => {
       key: '/membre-equipes',
       icon: <TeamOutlined />,
       label: 'Membres equipe',
-      allowedRoles: ['admin', 'responsable', 'chef-project'],
+      allowedRoles: ['admin', 'responsable', 'chefProject'],
     },
     {
       key: '/organisations',
@@ -74,13 +74,13 @@ const Sidebar = ({ collapsed, onCollapse }) => {
       key: '/projects',
       icon: <ProjectOutlined />,
       label: 'Project',
-      allowedRoles: ['admin', 'responsable', 'chef-project'],
+      allowedRoles: ['admin', 'responsable', 'chefProject'],
     },
     {
       key: '/taches',
       icon: <CheckSquareOutlined />,
       label: 'Taches',
-      allowedRoles: ['admin', 'responsable', 'chef-project'],
+      allowedRoles: ['admin', 'responsable', 'chefProject','membreEquipe'],
     },
   ];
 

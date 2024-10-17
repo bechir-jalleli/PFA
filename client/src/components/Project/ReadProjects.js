@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, Button, Modal, Card, Space, Typography, notification, Input } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import UpdateProject from './UpdateProject';
 import DeleteProject from './DeleteProject';
 import CreateProject from './CreateProject';
 import { useTheme } from '../../Context/ThemeContext';
 import { theme } from 'antd';
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -19,7 +20,7 @@ const ReadProjects = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
-
+  const navigate = useNavigate();
   const fetchProjects = async () => {
     try {
       const token = localStorage.getItem('accessToken');
@@ -64,18 +65,20 @@ const ReadProjects = () => {
     setSearchText(value);
     const filtered = projects.filter(
       (project) =>
-        project.name.toLowerCase().includes(value.toLowerCase()) ||
+        project.tittle.toLowerCase().includes(value.toLowerCase()) ||
         project.description.toLowerCase().includes(value.toLowerCase()) ||
-        project.organisation.nom.toLowerCase().includes(value.toLowerCase())
+        project.organisation.title.toLowerCase().includes(value.toLowerCase()) ||
+        project.sousOrganisation.title.toLowerCase().includes(value.toLowerCase())
+
     );
     setFilteredProjects(filtered);
   };
 
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'Title',
+      dataIndex: 'tittle',
+      key: 'tittle',
     },
     {
       title: 'Description',
@@ -101,14 +104,19 @@ const ReadProjects = () => {
     },
     {
       title: 'Organisation',
-      dataIndex: ['organisation', 'nom'],
+      dataIndex: ['organisation', 'title'],
       key: 'organisation',
     },
     {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
+      
         <Space>
+          <Button
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`/project/info/${record._id}`)}
+          />
           <Button 
             icon={<EditOutlined />} 
             onClick={() => {
@@ -116,6 +124,7 @@ const ReadProjects = () => {
               setUpdateModalVisible(true);
             }}
           />
+          
           <DeleteProject id={record._id} onDeleteSuccess={handleDeleteSuccess}>
             <Button icon={<DeleteOutlined />} danger />
           </DeleteProject>
@@ -146,7 +155,7 @@ const ReadProjects = () => {
           </Button>
         </Space>
         <Search
-          placeholder="Search by name, description or organisation"
+          placeholder="Search by title, description or organisation"
           allowClear
           enterButton="Search"
           size="large"
