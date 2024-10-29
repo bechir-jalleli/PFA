@@ -5,6 +5,8 @@ import NotFoundPage from '../pages/NotFoundPage';
 import LoginPage from '../pages/LoginPage';
 import HomePage from '../pages/HomePage';
 import Dashboard from '../pages/Dashboard';
+import Profil from '../components/Profile';
+
 
 // Admin components
 import AdminPage from '../pages/AdminPage';
@@ -103,7 +105,7 @@ function AppRoutes() {
 
       {/* chef-project  */}
       <Route path="/chef-projects" element={<PrivateRoute element={ChefProjectPage} allowedRoles={['admin', 'responsable', 'chef-project']} />}>
-      <Route index element={<Navigate to="dashboard" />} /> 
+      <Route index element={<Navigate to="list" />} /> 
       <Route path="dashboard" element={<PrivateRoute element={ChefProjectDashboard} allowedRoles={[ 'chef-project']} />} />
         <Route path="create" element={<PrivateRoute element={CreateChefProject} allowedRoles={['admin', 'responsable']} />} />
         <Route path="update/:id" element={<PrivateRoute element={UpdateChefProject} allowedRoles={['admin', 'responsable', 'chef-project']} />} />
@@ -114,6 +116,7 @@ function AppRoutes() {
 
       {/* Membre Equipe  */}
       <Route path="/membre-equipes" element={<PrivateRoute element={MembreEquipePage} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />}>
+      <Route index element={<Navigate to="list" />} /> 
         <Route path="dashboard" element={<PrivateRoute element={MembreEquipeDashboard} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
         <Route path="create" element={<PrivateRoute element={CreateMembreEquipe} allowedRoles={['admin', 'responsable', 'chef-project']} />} />
         <Route path="update/:id" element={<PrivateRoute element={UpdateMembreEquipe} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
@@ -162,7 +165,10 @@ function AppRoutes() {
         <Route path="list" element={<PrivateRoute element={ReadTache} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
         <Route path="info/:id" element={<PrivateRoute element={TacheDetail} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
       </Route>
+      
       <Route path="/dashboard"  element={<PrivateRoute element={Dashboard}  allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
+      
+      <Route path="/profil" element={<Profil/>} />
 
       <Route path="/login" element={<LoginPage />} />
       <Route path="*" element={<NotFoundPage />} />

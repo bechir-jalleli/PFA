@@ -1,14 +1,10 @@
 import React from 'react';
-import { Typography, Space, theme } from 'antd';
-import { DashboardOutlined } from '@ant-design/icons';
+import {  Space, theme } from 'antd';
 import MainLayout from '../layouts/MainLayout';
-import { useTheme } from '../Context/ThemeContext';
-import { Outlet } from 'react-router-dom'; // Import Outlet for nested routes
+import { Outlet } from 'react-router-dom'; 
 
-const { Title } = Typography;
 
 const AdminPage = () => {
-  const { isDarkMode } = useTheme();
   const { token } = theme.useToken();
 
   const pageStyle = {

@@ -4,6 +4,7 @@ import { ProjectOutlined, PlusCircleOutlined, SettingOutlined, FileTextOutlined 
 import MainLayout from '../layouts/MainLayout';
 import ReadProject from '../components/Project/ReadProjects';
 import { useTheme } from '../Context/ThemeContext';
+import { Outlet } from 'react-router-dom';
 
 const { Title, Paragraph } = Typography;
 
@@ -51,6 +52,7 @@ const ProjectPage = React.memo(() => {
        
         </Row>
       </div>
+      <Outlet />
     </MainLayout>
   );
 });

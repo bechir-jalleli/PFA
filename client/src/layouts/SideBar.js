@@ -91,20 +91,20 @@ const Sidebar = ({ collapsed, onCollapse }) => {
       collapsed={collapsed}
       className="site-layout-sidebar"
       width={250}
+      theme={isDarkMode ? 'dark' : 'light'}
       style={{
         height: '100vh',
         position: 'fixed',
         left: 0,
         top: 0,
-        background: isDarkMode ? '#001529' : '#fff',
+        
         overflow: 'auto',
         transition: 'all 0.3s',
         zIndex: 1000,
         boxShadow: '2px 0 8px 0 rgba(29,35,41,.05)',
       }}
     >
-      <div className="logo" style={{ height: '64px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        {collapsed ? 'Logo' : 'Your Logo Here'}
+      <div  style={{ height: '64px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       </div>
       <Button
         type="text"

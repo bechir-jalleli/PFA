@@ -11,12 +11,13 @@ exports.createProject = async (req, res) => {
     try {
       const project = new Project({
         title,
-        description,
-        chefProject,
-        startDate,
-        endDate,
-        budget,
-        status
+    description,
+    chefProject,
+    startDate,
+    endDate,
+    budget,
+    revenue,
+    status
       });
   
       const createdProject = await project.save();

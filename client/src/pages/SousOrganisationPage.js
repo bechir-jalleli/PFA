@@ -4,6 +4,7 @@ import { ApartmentOutlined, PlusOutlined, BranchesOutlined, TeamOutlined } from 
 import MainLayout from '../layouts/MainLayout';
 import ReadSousOrganisation from '../components/SousOrganisation/ReadSousOrganisations';
 import { useTheme } from '../Context/ThemeContext';
+import { Outlet } from 'react-router-dom';
 
 const { Title, Paragraph } = Typography;
 
@@ -86,6 +87,7 @@ const SousOrganisationPage = () => {
           
         </Row>
       </div>
+      <Outlet />
     </MainLayout>
   );
 };

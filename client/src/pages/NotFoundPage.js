@@ -6,7 +6,7 @@ import AppHeader from '../layouts/Header';
 import AppFooter from '../layouts/Footer';
 
 const { Content } = Layout;
-const { Title, Paragraph, Text } = Typography;
+const { Title } = Typography;
 
 const NotFoundPage = () => {
   const { isDarkMode } = useTheme();
@@ -41,7 +41,7 @@ const NotFoundPage = () => {
       <Content style={contentStyle}>
         <div style={notFoundBoxStyle}>
           <Row gutter={[32, 32]} align="middle">
-            <Col xs={24} md={12} order={2} md={{ order: 1 }}>
+            <Col xs={24} md={12} order={2} >
               <Result
                 status="404"
                 title={<Title level={1}>404</Title>}

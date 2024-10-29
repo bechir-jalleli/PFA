@@ -5,6 +5,7 @@ import { CheckSquareOutlined, ClockCircleOutlined, UserOutlined, FileDoneOutline
 import MainLayout from '../layouts/MainLayout';
 import ReadTache from '../components/Tache/ReadTache';
 import { useTheme } from '../Context/ThemeContext';
+import { Outlet } from 'react-router-dom';
 
 const { Title, Paragraph } = Typography;
 
@@ -107,6 +108,7 @@ const TachesPage = () => {
           </Col>
         </Row>
       </div>
+      <Outlet />
     </MainLayout>
   );
 };

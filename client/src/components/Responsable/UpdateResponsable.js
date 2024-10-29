@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Form, Input, Button, notification } from 'antd';
+import { Form, Input, Button, notification ,Card} from 'antd';
 
 const UpdateResponsable = ({ id, onUpdateSuccess }) => {
   const [form] = Form.useForm();
@@ -56,6 +56,8 @@ const UpdateResponsable = ({ id, onUpdateSuccess }) => {
   }
 
   return (
+    <Card hoverable style={{backgroundColor:'#fff',maxWidth: '500px',margin: '0 auto'}}>
+    <div style={{ maxWidth: '500px', margin: '0 auto' }}>
     <Form 
       form={form} 
       onFinish={handleSubmit}
@@ -106,6 +108,8 @@ const UpdateResponsable = ({ id, onUpdateSuccess }) => {
         </Button>
       </Form.Item>
     </Form>
+    </div>
+    </Card>
   );
 };
 

@@ -1,18 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Form, Input, Button, notification, Spin } from 'antd';
+import { Form, Input, Button, notification, Spin, Card, Typography } from 'antd';
 import { useParams } from 'react-router-dom';
+import { useTheme } from '../../Context/ThemeContext';
+import { theme } from 'antd';
+
+const { Title } = Typography;
 
 const UpdateAdmin = () => {
   const [form] = Form.useForm();
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
+  const token = localStorage.getItem('accessToken');
+
+  const { isDarkMode } = useTheme();
+  const { token: themeToken } = theme.useToken();
 
   useEffect(() => {
     const fetchAdmin = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/admin/${id}`);
+        const response = await axios.get(`http://localhost:5000/admin/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
         setAdmin(response.data);
         form.setFieldsValue({
           nom: response.data.nom,
@@ -32,11 +44,15 @@ const UpdateAdmin = () => {
     };
 
     fetchAdmin();
-  }, [id, form]);
+  }, [id, form, token]);
 
   const handleUpdate = async (values) => {
     try {
-      await axios.put(`http://localhost:5000/admin/${id}`, values);
+      await axios.put(`http://localhost:5000/admin/${id}`, values, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       notification.success({
         message: 'Success',
         description: 'Admin updated successfully',
@@ -49,13 +65,24 @@ const UpdateAdmin = () => {
     }
   };
 
+  const cardStyle = {
+    maxWidth: '500px',
+    margin: '0 auto',
+    backgroundColor: isDarkMode ? themeToken.colorBgElevated : themeToken.colorBgContainer,
+    boxShadow: themeToken.boxShadow,
+  };
+
   if (loading) {
-    return <Spin size="large" />;
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Spin size="large" />
+      </div>
+    );
   }
 
   return (
-    <div style={{ maxWidth: '500px', margin: '0 auto' }}>
-      <h2>Update Admin</h2>
+    <Card hoverable style={cardStyle}>
+      <Title level={2} style={{ textAlign: 'center', marginBottom: '24px' }}>Update Admin</Title>
       <Form 
         form={form} 
         layout="vertical"
@@ -78,27 +105,22 @@ const UpdateAdmin = () => {
         <Form.Item 
           name="email" 
           label="Email"
-          rules={[
-            { required: true, message: 'Please input the email!' },
-            { type: 'email', message: 'Please enter a valid email!' }
-          ]}
         >
           <Input />
         </Form.Item>
         <Form.Item 
           name="phone" 
           label="Phone"
-          rules={[{ required: true, message: 'Please input the phone number!' }]}
         >
           <Input />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" block>
             Update
           </Button>
         </Form.Item>
       </Form>
-    </div>
+    </Card>
   );
 };
 

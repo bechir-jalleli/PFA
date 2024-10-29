@@ -65,7 +65,7 @@ const ReadProjects = () => {
     setSearchText(value);
     const filtered = projects.filter(
       (project) =>
-        project.tittle.toLowerCase().includes(value.toLowerCase()) ||
+        project.title.toLowerCase().includes(value.toLowerCase()) ||
         project.description.toLowerCase().includes(value.toLowerCase()) ||
         project.organisation.title.toLowerCase().includes(value.toLowerCase()) ||
         project.sousOrganisation.title.toLowerCase().includes(value.toLowerCase())
@@ -77,8 +77,8 @@ const ReadProjects = () => {
   const columns = [
     {
       title: 'Title',
-      dataIndex: 'tittle',
-      key: 'tittle',
+      dataIndex: 'title',
+      key: 'title',
     },
     {
       title: 'Description',

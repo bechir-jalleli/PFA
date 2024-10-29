@@ -16,6 +16,7 @@ exports.getAdmin = async (req, res) => {
             return res.status(400).json({ error: 'Invalid admin ID' });
         }
         const admin = await Admin.findById(id);
+        console.log(admin.nom)
         if (!admin) return handleError(res, 404, 'Admin not found');
         res.status(200).json(admin);
     } catch (error) {

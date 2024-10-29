@@ -10,7 +10,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import { useTheme } from '../Context/ThemeContext';
-import './Header.css'; // Import the CSS file
+import './Header.css'; 
 
 const { Header: AntHeader } = Layout;
 const { Text } = Typography;
@@ -28,10 +28,11 @@ const Header = ({ toggleSidebar }) => {
   const userMenu = (
     <Menu>
       <Menu.Item key="profile" icon={<UserOutlined />}>
-        {user && <Link to={`/${user.role}/info/${user.id}`}>Profile</Link>}
+        <a href='http://localhost:3000/profil'>Profile</a>
       </Menu.Item>
       <Menu.Item key="settings" icon={<SettingOutlined />}>
-        <Link to="/">Settings</Link>
+      {user && <Link to={`http://localhost:3000/${user.role}/update/${user.id}`}>Settingx</Link>}
+
       </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout}>

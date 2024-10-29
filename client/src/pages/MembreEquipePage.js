@@ -4,6 +4,7 @@ import { TeamOutlined } from '@ant-design/icons';
 import MainLayout from '../layouts/MainLayout';
 import ReadMembreEquipe from '../components/MembreEquipe/ReadMembreEquipe';
 import { useTheme } from '../Context/ThemeContext';
+import { Outlet } from 'react-router-dom';
 
 const { Title } = Typography;
 
@@ -42,10 +43,11 @@ const MembreEquipePage = () => {
 
           
             <Card style={cardStyle} >
-              <ReadMembreEquipe />
+            <Outlet />
             </Card>
         
       </div>
+      
     </MainLayout>
   );
 };

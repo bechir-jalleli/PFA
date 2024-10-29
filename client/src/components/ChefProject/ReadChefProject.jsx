@@ -34,6 +34,7 @@ const ReadChefProject = () => {
       setData(response.data);
       setFilteredData(response.data);
     } catch (error) {
+      console.error('Error fetching Chef Projects:', error);
       notification.error({
         message: 'Error',
         description: 'Failed to fetch Chef Projects',

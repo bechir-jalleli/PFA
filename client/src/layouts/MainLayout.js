@@ -11,7 +11,7 @@ const MainLayout = ({ children }) => {
   const { isDarkMode } = useTheme();
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout >
       <Sidebar collapsed={collapsed} onCollapse={setCollapsed} />
       <Layout className="site-layout" style={{ marginLeft: collapsed ? 80 : 250, transition: 'all 0.2s' }}>
         <Header collapsed={collapsed} onCollapse={setCollapsed} />
@@ -19,7 +19,6 @@ const MainLayout = ({ children }) => {
           style={{
             margin: '60px 16px',
             padding: 24,
-            minHeight: 280,
             background: isDarkMode ? '#141414' : '#fff',
           }}
         >

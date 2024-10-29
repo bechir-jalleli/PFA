@@ -1,15 +1,13 @@
 import React from 'react';
-import { Typography, Space, Card, Row, Col, Progress, List, Avatar, Button, theme } from 'antd';
-import { ProjectOutlined, TeamOutlined, ClockCircleOutlined, FileOutlined } from '@ant-design/icons';
+import { Typography, Space, theme } from 'antd';
+import {  TeamOutlined } from '@ant-design/icons';
 import MainLayout from '../layouts/MainLayout';
 import ReadChefProject from '../components/ChefProject/ReadChefProject';
-import { useTheme } from '../Context/ThemeContext';
 import { Outlet } from 'react-router-dom';
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 
 const ChefProjectPage = () => {
-  const { isDarkMode } = useTheme();
   const { token } = theme.useToken();
 
   const pageStyle = {
@@ -37,7 +35,7 @@ const ChefProjectPage = () => {
       </Space>
 
         
-            <Outlet />
+           <Outlet />
       
     </div>
     </MainLayout>
