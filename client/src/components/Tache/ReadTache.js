@@ -179,8 +179,8 @@ const ReadTaches = () => {
         <Space>
           <Button
             icon={<EyeOutlined />}
-            onClick={() => navigate(`/taches/info/${record._id}`)} 
-          />
+            onClick={() => navigate(`/taches/info/${record._id}`)}
+            />
           <Button
             icon={<EditOutlined />}
             onClick={() => {

@@ -1,28 +1,50 @@
 .header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 24px;
-  background-color: #001529;
-  height: 64px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   }
   
   .logo {
     height: 40px;
+    transition: transform 0.3s ease;
+    border-radius: 8px;
+    background: linear-gradient(45deg, #1890ff, #36cfc9);
+    padding: 2px;
+  }
+  
+  .logo:hover {
+    transform: scale(1.05);
   }
   
   .logo-text {
     color: #fff;
-    margin-left: 8px;
+    margin-left: 12px;
+    font-size: 1.2rem;
+    background: linear-gradient(45deg, #1890ff, #36cfc9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: transform 0.3s ease;
   }
   
   .theme-switch {
     margin-right: 16px;
+    transform: scale(0.9);
+    transition: all 0.3s ease;
+  }
+  
+  .theme-switch:hover {
+    transform: scale(1);
   }
   
   .profile-img {
@@ -30,10 +52,57 @@
     height: 40px;
     border-radius: 50%;
     cursor: pointer;
+    border: 2px solid transparent;
+    background: linear-gradient(45deg, #1890ff, #36cfc9) border-box;
+    transition: all 0.3s ease;
+  }
+  
+  .profile-img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(24, 144, 255, 0.3);
   }
   
   .sidebar-toggle {
     display: none;
+    color: #fff;
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .sidebar-toggle:hover {
+    transform: rotate(180deg);
+  }
+  
+  /* Dropdown Menu Styling */
+  :global(.ant-dropdown-menu) {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+  }
+  
+  :global(.ant-dropdown-menu-item) {
+    transition: all 0.3s ease;
+  }
+  
+  :global(.ant-dropdown-menu-item:hover) {
+    background: linear-gradient(45deg, rgba(24, 144, 255, 0.1), rgba(54, 207, 201, 0.1));
+    transform: translateX(5px);
+  }
+  
+  /* Login Button Styling */
+  .ant-btn-primary {
+    background: linear-gradient(45deg, #1890ff, #36cfc9);
+    border: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .ant-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(24, 144, 255, 0.3);
   }
   
   @media (max-width: 768px) {
@@ -44,6 +113,10 @@
     .logo-link {
       flex-grow: 1;
       justify-content: center;
+    }
+    
+    .header {
+      padding: 0 16px;
     }
   }
   

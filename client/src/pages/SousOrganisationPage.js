@@ -1,93 +1,132 @@
 import React from 'react';
-import { Typography, Card, Space, Button, Row, Col, Statistic, Tree, theme } from 'antd';
-import { ApartmentOutlined, PlusOutlined, BranchesOutlined, TeamOutlined } from '@ant-design/icons';
+import { Space } from 'antd';
+import { ApartmentOutlined } from '@ant-design/icons';
 import MainLayout from '../layouts/MainLayout';
-import ReadSousOrganisation from '../components/SousOrganisation/ReadSousOrganisations';
-import { useTheme } from '../Context/ThemeContext';
 import { Outlet } from 'react-router-dom';
+import { useTheme } from '../Context/ThemeContext';
+import styled, { keyframes, createGlobalStyle } from 'styled-components';
 
-const { Title, Paragraph } = Typography;
+// Global Styles
+const GlobalStyle = createGlobalStyle`
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #2196F3, #00BCD4);
+    border-radius: 4px;
+  }
+`;
+
+// Animations
+const float = keyframes`
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+`;
+
+const SousOrganisationContainer = styled.div`
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: ${props => props.isDarkMode ? 
+    'linear-gradient(135deg, #1a1a1a 0%, #0a192f 100%)' : 
+    'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'};
+  color: ${props => props.isDarkMode ? '#ffffff' : '#2c3e50'};
+  transition: background 0.3s ease;
+`;
+
+const GlassCard = styled.div`
+  background: ${props => props.isDarkMode ? 
+    'rgba(255, 255, 255, 0.05)' : 
+    'rgba(255, 255, 255, 0.7)'};
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2rem;
+  margin: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+`;
+
+const FloatingShape = styled.div`
+  position: absolute;
+  background: linear-gradient(45deg, ${props => props.color1}, ${props => props.color2});
+  border-radius: 50%;
+  animation: ${float} 6s ease-in-out infinite;
+  opacity: 0.5;
+  z-index: 0;
+  filter: blur(3px);
+`;
+
+const ContentWrapper = styled.div`
+  position: relative;
+  z-index: 1;
+  padding: 2rem;
+  animation: fadeIn 0.5s ease-in;
+`;
+
+const GradientText = styled.h1`
+  background: linear-gradient(45deg, #2196F3, #00BCD4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1.5rem;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+`;
 
 const SousOrganisationPage = () => {
   const { isDarkMode } = useTheme();
-  const { token } = theme.useToken();
 
-  const pageStyle = {
-    padding: token.padding,
-    minHeight: '100vh',
-    backgroundColor: token.colorBgContainer,
-    color: token.colorText,
-  };
-
-  const iconStyle = {
-    fontSize: 48,
-    color: token.colorPrimary,
-  };
-
-  const cardStyle = {
-    marginBottom: token.marginMD,
-    boxShadow: token.boxShadow,
-    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
-  };
-
-  const treeData = [
-    {
-      title: 'Main Organization',
-      key: '0-0',
-      children: [
-        { title: 'Sub-Org 1', key: '0-0-0' },
-        { title: 'Sub-Org 2', key: '0-0-1' },
-        {
-          title: 'Sub-Org 3',
-          key: '0-0-2',
-          children: [
-            { title: 'Department 1', key: '0-0-2-0' },
-            { title: 'Department 2', key: '0-0-2-1' },
-          ],
-        },
-      ],
-    },
+  const shapes = [
+    { size: '100px', top: '10%', left: '10%', color1: '#2196F3', color2: '#00BCD4', delay: '0s' },
+    { size: '150px', top: '60%', right: '10%', color1: '#00BCD4', color2: '#4CAF50', delay: '2s' },
+    { size: '80px', bottom: '10%', left: '20%', color1: '#4CAF50', color2: '#2196F3', delay: '4s' },
+    { size: '120px', top: '30%', right: '25%', color1: '#2196F3', color2: '#00BCD4', delay: '1s' },
   ];
 
   return (
     <MainLayout>
-      <div style={pageStyle}>
-        <Space align="center" style={{ marginBottom: token.marginLG }}>
-          <ApartmentOutlined style={iconStyle} />
-          <Title level={2} style={{ margin: 0, color: token.colorText }}>
-            Sous-Organisation Dashboard
-          </Title>
-        </Space>
+      <GlobalStyle />
+      <SousOrganisationContainer isDarkMode={isDarkMode}>
+        {shapes.map((shape, index) => (
+          <FloatingShape
+            key={index}
+            style={{
+              width: shape.size,
+              height: shape.size,
+              top: shape.top,
+              left: shape.left,
+              right: shape.right,
+              bottom: shape.bottom,
+              animationDelay: shape.delay,
+            }}
+            color1={shape.color1}
+            color2={shape.color2}
+          />
+        ))}
 
-        <Row gutter={[16, 16]}>
-          <Col xs={24} sm={8}>
-            <Card style={cardStyle}>
-              <Statistic title="Total Sub-Organizations" value={15} prefix={<BranchesOutlined />} />
-            </Card>
-          </Col>
-          <Col xs={24} sm={8}>
-            <Card style={cardStyle}>
-              <Statistic title="Departments" value={30} prefix={<ApartmentOutlined />} />
-            </Card>
-          </Col>
-          <Col xs={24} sm={8}>
-            <Card style={cardStyle}>
-              <Statistic title="Employees" value={500} prefix={<TeamOutlined />} />
-            </Card>
-          </Col>
-          <Col xs={24} lg={24}>
-            <Card 
-              title="Sous-Organisation List" 
-              style={cardStyle}
-              extra={<Button type="primary" icon={<PlusOutlined />}>Add Sub-Organization</Button>}
-            >
-              <ReadSousOrganisation />
-            </Card>
-          </Col>
-          
-        </Row>
-      </div>
-      <Outlet />
+        <ContentWrapper>
+          <Space align="center" style={{ width: '100%', justifyContent: 'center', marginBottom: '2rem' }}>
+            <ApartmentOutlined style={{ fontSize: '48px', color: '#2196F3' }} />
+            <GradientText>Sous-Organisation Dashboard</GradientText>
+          </Space>
+
+          <GlassCard isDarkMode={isDarkMode}>
+            <Outlet />
+          </GlassCard>
+        </ContentWrapper>
+      </SousOrganisationContainer>
     </MainLayout>
   );
 };

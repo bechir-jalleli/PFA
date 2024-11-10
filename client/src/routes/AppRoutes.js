@@ -138,6 +138,7 @@ function AppRoutes() {
 
       {/* Sous Organisation  */}
       <Route path="/sous-organisations" element={<PrivateRoute element={SousOrganisationPage} allowedRoles={['admin', 'responsable']} />}>
+      <Route index element={<Navigate to="dashboard" />} /> 
         <Route path="dashboard" element={<PrivateRoute element={SousOrganisationDashboard} allowedRoles={['admin', 'responsable']} />} />
         <Route path="create" element={<PrivateRoute element={CreateSousOrganisation} allowedRoles={['admin', 'responsable']} />} />
         <Route path="update/:id" element={<PrivateRoute element={UpdateSousOrganisation} allowedRoles={['admin', 'responsable']} />} />
@@ -148,23 +149,29 @@ function AppRoutes() {
 
       {/* Project  */}
       <Route path="/projects" element={<PrivateRoute element={ProjectPage} allowedRoles={['admin', 'responsable', 'chef-project']} />}>
+      <Route index element={<Navigate to="dashboard" />} /> 
+
         <Route path="dashboard" element={<PrivateRoute element={ProjectDashboard} allowedRoles={['admin', 'responsable', 'chef-project']} />} />
         <Route path="create" element={<PrivateRoute element={CreateProject} allowedRoles={['admin', 'responsable']} />} />
         <Route path="update/:id" element={<PrivateRoute element={UpdateProject} allowedRoles={['admin', 'responsable', 'chef-project']} />} />
         <Route path="delete/:id" element={<PrivateRoute element={DeleteProject} allowedRoles={['admin', 'responsable']} />} />
         <Route path="list" element={<PrivateRoute element={ReadProject} allowedRoles={['admin', 'responsable', 'chef-project']} />} />
         <Route path="info/:id" element={<PrivateRoute element={ProjectDetail} allowedRoles={['admin', 'responsable', 'chef-project']} />} />
-      </Route>
+      </Route>  
 
       {/* Taches  */}
-      <Route path="/taches" element={<PrivateRoute element={TachesPage} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />}>
-        <Route path="dashboard" element={<PrivateRoute element={TachesDashboard} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
-        <Route path="create" element={<PrivateRoute element={CreateTache} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
-        <Route path="update/:id" element={<PrivateRoute element={UpdateTache} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
-        <Route path="delete/:id" element={<PrivateRoute element={DeleteTache} allowedRoles={['admin', 'responsable', 'chef-project']} />} />
-        <Route path="list" element={<PrivateRoute element={ReadTache} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
-        <Route path="info/:id" element={<PrivateRoute element={TacheDetail} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
+      <Route>
+          <Route path="/taches" element={<PrivateRoute element={TachesPage} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />}>
+            <Route index element={<Navigate to="dashboard" />} />
+            <Route path="dashboard" element={TachesDashboard} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']}/>
+            <Route path="create" element={CreateTache } allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']}/>
+            <Route path="update/:id" element={UpdateTache} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']}/>
+            <Route path="delete/:id" element={DeleteTache} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />
+            <Route path="list" element={ReadTache} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']}/>
+            <Route path="info/:id" element={TacheDetail } allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']}/>
+          </Route>
       </Route>
+
       
       <Route path="/dashboard"  element={<PrivateRoute element={Dashboard}  allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
       

@@ -33,6 +33,7 @@
     exports.getAllOrganisations = async (req, res) => {
         try {
             const organisations = await Organisation.find({});
+            console.log(organisations)
             res.status(200).json(organisations);
         } catch (error) {
             handleError(res, 400, 'Error fetching organisations: ' + error.message);
