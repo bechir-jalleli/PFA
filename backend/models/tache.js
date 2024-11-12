@@ -12,5 +12,5 @@ const tacheSchema = new Schema({
     project: { type: Schema.Types.ObjectId, ref: 'Project', required: true }
 }, { timestamps: true });
 
-const Tache = mongoose.model('Tache', tacheSchema);
+const Tache = mongoose.models.Tache || mongoose.model('Tache', tacheSchema);
 module.exports = Tache;

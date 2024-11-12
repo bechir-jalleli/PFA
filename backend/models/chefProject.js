@@ -12,10 +12,9 @@ const chefProjectSchema = new Schema({
     isLoggedIn: { type: Boolean, default: false },
     responsable: { type: Schema.Types.ObjectId, ref: 'Responsable' },
     membresEquipe: [{ type: Schema.Types.ObjectId, ref: 'MembreEquipe' }],
-    organisation: { type: Schema.Types.ObjectId, ref: 'Organisation' },
-    sousOrganisation: { type: Schema.Types.ObjectId, ref: 'SousOrganisation', default: null },
     taches: [{ type: Schema.Types.ObjectId, ref: 'Tache' }],
-    salary: { type: Number } 
+    salary: { type: Number },
+    project: { type: Schema.Types.ObjectId, ref: 'Project', unique: true } 
 }, { timestamps: true });
 
 const ChefProject = mongoose.models.ChefProject || mongoose.model('ChefProject', chefProjectSchema);

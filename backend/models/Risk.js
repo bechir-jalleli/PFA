@@ -8,4 +8,5 @@ const riskSchema = new Schema({
   note: { type: String },
 }, { timestamps: true });
 
-module.exports = mongoose.models.Risk || mongoose.model('Risk', riskSchema);
+const Risk = mongoose.models.Risk || mongoose.model('Risk', riskSchema);
+module.exports = Risk;

@@ -13,10 +13,8 @@ const responsableSchema = new Schema({
     organisation: { type: Schema.Types.ObjectId, ref: 'Organisation' },
     sousOrganisation: { type: Schema.Types.ObjectId, ref: 'SousOrganisation' },
     projects: [{ type: Schema.Types.ObjectId, ref: 'Project', required: true }],
-    salary: { type: Number } 
+    salary: { type: Number }
 }, { timestamps: true });
 
-
 const Responsable = mongoose.models.Responsable || mongoose.model('Responsable', responsableSchema);
-
 module.exports = Responsable;

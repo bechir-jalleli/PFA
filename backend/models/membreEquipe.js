@@ -10,11 +10,10 @@ const membreEquipeSchema = new Schema({
     lastLogin: { type: Date },
     isLoggedIn: { type: Boolean, default: false },
     mdp: { type: String, required: true },
-    ChefProject: { type: Schema.Types.ObjectId, ref: 'ChefProject' },
+    chefProject: { type: Schema.Types.ObjectId, ref: 'ChefProject' },
     projects: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
     salary: { type: Number }
 }, { timestamps: true });
 
 const MembreEquipe = mongoose.models.MembreEquipe || mongoose.model('MembreEquipe', membreEquipeSchema);
-
 module.exports = MembreEquipe;

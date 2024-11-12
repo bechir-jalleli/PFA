@@ -10,11 +10,13 @@ const GlobalStyle = createGlobalStyle`
   ::-webkit-scrollbar {
     width: 8px;
   }
+
   ::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.1);
   }
+
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(45deg, #ff4d4f, #ff7875);
+    background: linear-gradient(45deg, #2196F3, #00BCD4);
     border-radius: 4px;
   }
 `;
@@ -71,7 +73,7 @@ const ContentWrapper = styled.div`
 `;
 
 const GradientText = styled.h1`
-  background: linear-gradient(45deg, #ff4d4f, #ff7875);
+  background: linear-gradient(45deg, #2196F3, #00BCD4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 1.5rem;
@@ -84,10 +86,10 @@ const RisquesPage = () => {
   const { isDarkMode } = useTheme();
 
   const shapes = [
-    { size: '100px', top: '10%', left: '10%', color1: '#ff4d4f', color2: '#ff7875', delay: '0s' },
-    { size: '150px', top: '60%', right: '10%', color1: '#ff7875', color2: '#ffa39e', delay: '2s' },
-    { size: '80px', bottom: '10%', left: '20%', color1: '#ffa39e', color2: '#ff4d4f', delay: '4s' },
-    { size: '120px', top: '30%', right: '25%', color1: '#ff4d4f', color2: '#ff7875', delay: '1s' },
+    { size: '100px', top: '10%', left: '10%', color1: '#2196F3', color2: '#00BCD4', delay: '0s' },
+    { size: '150px', top: '60%', right: '10%', color1: '#00BCD4', color2: '#4CAF50', delay: '2s' },
+    { size: '80px', bottom: '10%', left: '20%', color1: '#4CAF50', color2: '#2196F3', delay: '4s' },
+    { size: '120px', top: '30%', right: '25%', color1: '#2196F3', color2: '#00BCD4', delay: '1s' },
   ];
 
   return (
@@ -114,7 +116,7 @@ const RisquesPage = () => {
         <ContentWrapper>
           <GlassCard isDarkMode={isDarkMode} style={{ padding: '2rem', margin: '0 0 2rem 0' }}>
             <Space align="center" style={{ width: '100%', justifyContent: 'center', margin: 0 }}>
-              <AlertOutlined style={{ fontSize: '48px', color: '#ff4d4f' }} />
+              <AlertOutlined style={{ fontSize: '48px', color: '#2196F3' }} />
               <GradientText style={{ margin: 0, fontSize: '2rem' }}>Risk Management</GradientText>
             </Space>
           </GlassCard>

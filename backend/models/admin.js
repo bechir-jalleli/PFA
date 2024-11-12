@@ -8,7 +8,6 @@ const adminSchema = new Schema({
     phone: { type: String },
     mdp: { type: String, default: 'admin' },
     role: { type: String, default: 'admin' },
-    image: { type: Buffer }, 
 }, { timestamps: true });
 
 const Admin = mongoose.model('Admin', adminSchema);
