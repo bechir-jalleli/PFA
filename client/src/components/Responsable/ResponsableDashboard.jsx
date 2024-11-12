@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, Statistic, Space, Button, Typography, Divider, message } from 'antd';
 import {
@@ -10,11 +9,10 @@ import {
   CheckCircleOutlined,
   WarningOutlined,
   PlusOutlined,
-
+  DashboardOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import LoadingDots from '../Loading';
-import { DashboardOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
 
@@ -57,7 +55,6 @@ const ResponsableDashboard = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-         
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} lg={6}>
           <Card hoverable onClick={() => navigate('/chef-projects/list')}>
@@ -92,7 +89,6 @@ const ResponsableDashboard = () => {
           </Card>
         </Col>
 
-        {/* Project Status Card */}
         <Col xs={24} lg={24}>
           <Card hoverable title="Project Status" style={{ marginTop: '16px' }} onClick={() => navigate('/projects/list')}>
             <Row gutter={16}>
@@ -124,15 +120,9 @@ const ResponsableDashboard = () => {
           </Card>
         </Col>
 
-
-        
-
         <Col xs={24}>
           <Divider />
         </Col>
-
-
-        
       </Row>
     </div>
   );

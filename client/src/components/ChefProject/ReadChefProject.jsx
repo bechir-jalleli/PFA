@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Typography, Button, Space, notification, Modal, Card, Input } from 'antd';
+import { Table, Typography, Button, Space, notification, Modal, Input } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import UpdateChefProject from './UpdateChefProject';
 import DeleteChefProject from './DeleteChefProject';
@@ -22,6 +22,8 @@ const ReadChefProject = () => {
   const [searchText, setSearchText] = useState('');
 
   const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
+  const { token } = theme.useToken();
 
   const fetchData = async () => {
     try {
@@ -98,7 +100,7 @@ const ReadChefProject = () => {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <Space>
+        <>
           <Button
             icon={<EyeOutlined />}
             onClick={() => navigate(`/chef-projects/info/${record._id}`)}
@@ -113,26 +115,17 @@ const ReadChefProject = () => {
           <DeleteChefProject id={record._id} onDeleteSuccess={handleDeleteSuccess}>
             <Button icon={<DeleteOutlined />} danger />
           </DeleteChefProject>
-        </Space>
+        </>
       ),
     },
   ];
 
-  const { isDarkMode } = useTheme();
-  const { token } = theme.useToken();
-
-  const cardStyle = {
-    marginBottom: token.marginMD,
-    boxShadow: token.boxShadow,
-    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
-  };
-
   return (
-    <Card style={cardStyle}>
+    <>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={4}>Chef Projects</Title>
-          <Button 
+          <Title level={4}>List des Chef Projects</Title>
+          <Button
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => setCreateModalVisible(true)}
@@ -149,10 +142,10 @@ const ReadChefProject = () => {
           onChange={(e) => handleSearch(e.target.value)}
           style={{ marginBottom: 16 }}
         />
-        <Table
-          columns={columns}
-          dataSource={filteredData}
-          rowKey="_id"
+        <Table 
+          dataSource={filteredData} 
+          columns={columns} 
+          rowKey="_id" 
           loading={loading}
           pagination={{ pageSize: 10 }}
           scroll={{ x: 'max-content' }}
@@ -163,7 +156,7 @@ const ReadChefProject = () => {
           onCancel={() => setCreateModalVisible(false)}
           footer={null}
         >
-          <CreateChefProject 
+          <CreateChefProject
             onCreateSuccess={handleCreateSuccess}
           />
         </Modal>
@@ -177,14 +170,14 @@ const ReadChefProject = () => {
           footer={null}
         >
           {selectedId && (
-            <UpdateChefProject 
+            <UpdateChefProject
               id={selectedId}
               onUpdateSuccess={handleUpdateSuccess}
             />
           )}
         </Modal>
       </Space>
-    </Card>
+    </>
   );
 };
 

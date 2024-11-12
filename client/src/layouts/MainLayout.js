@@ -79,13 +79,13 @@ const SiteLayout = styled(Layout)`
 `;
 
 const ContentContainer = styled(Content)`
-  margin: 80px 24px 24px;
+  margin: 80px 0px 24px;
   padding: 24px;
   position: relative;
   z-index: 1;
 
   @media (max-width: 768px) {
-    margin: 64px 12px 12px;
+    margin: 64px 0px 12px;
     padding: 12px;
   }
 `;

@@ -161,7 +161,7 @@ const AdminDashboard = () => {
           </Col>
 
           <Col xs={24}>
-            <GlassCard isDarkMode={isDarkMode}>
+            <GlassCard isDarkMode={isDarkMode} onClick={() => navigate('/projects/list')}>
               <StatTitle isDarkMode={isDarkMode}>Project Status Overview</StatTitle>
               <Row gutter={24}>
                 <Col xs={24} md={8}>

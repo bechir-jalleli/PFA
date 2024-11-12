@@ -5,6 +5,7 @@ import ReadSousOrganisation from './ReadSousOrganisations';
 import { useTheme } from '../../Context/ThemeContext';
 
 const { Title, Paragraph } = Typography;
+
 function SousOrganisationDashboard() {
   const { isDarkMode } = useTheme();
   const { token } = theme.useToken();
@@ -48,42 +49,41 @@ function SousOrganisationDashboard() {
 
   return (
     <div style={pageStyle}>
-    <Space align="center" style={{ marginBottom: token.marginLG }}>
-      <ApartmentOutlined style={iconStyle} />
-      <Title level={2} style={{ margin: 0, color: token.colorText }}>
-        Sous-Organisation Dashboard
-      </Title>
-    </Space>
+      <Space align="center" style={{ marginBottom: token.marginLG }}>
+        <ApartmentOutlined style={iconStyle} />
+        <Title level={2} style={{ margin: 0, color: token.colorText }}>
+          Sous-Organisation Dashboard
+        </Title>
+      </Space>
 
-    <Row gutter={[16, 16]}>
-      <Col xs={24} sm={8}>
-        <Card style={cardStyle}>
-          <Statistic title="Total Sub-Organizations" value={15} prefix={<BranchesOutlined />} />
-        </Card>
-      </Col>
-      <Col xs={24} sm={8}>
-        <Card style={cardStyle}>
-          <Statistic title="Departments" value={30} prefix={<ApartmentOutlined />} />
-        </Card>
-      </Col>
-      <Col xs={24} sm={8}>
-        <Card style={cardStyle}>
-          <Statistic title="Employees" value={500} prefix={<TeamOutlined />} />
-        </Card>
-      </Col>
-      <Col xs={24} lg={24}>
-        <Card 
-          title="Sous-Organisation List" 
-          style={cardStyle}
-          extra={<Button type="primary" icon={<PlusOutlined />}>Add Sub-Organization</Button>}
-        >
-          <ReadSousOrganisation />
-        </Card>
-      </Col>
-      
-    </Row>
-  </div>
-  )
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={8}>
+          <Card style={cardStyle}>
+            <Statistic title="Total Sub-Organizations" value={15} prefix={<BranchesOutlined />} />
+          </Card>
+        </Col>
+        <Col xs={24} sm={8}>
+          <Card style={cardStyle}>
+            <Statistic title="Departments" value={30} prefix={<ApartmentOutlined />} />
+          </Card>
+        </Col>
+        <Col xs={24} sm={8}>
+          <Card style={cardStyle}>
+            <Statistic title="Employees" value={500} prefix={<TeamOutlined />} />
+          </Card>
+        </Col>
+        <Col xs={24} lg={24}>
+          <Card 
+            title="Sous-Organisation List" 
+            style={cardStyle}
+            extra={<Button type="primary" icon={<PlusOutlined />}>Add Sub-Organization</Button>}
+          >
+            <ReadSousOrganisation />
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  );
 }
 
-export default SousOrganisationDashboard
+export default SousOrganisationDashboard;

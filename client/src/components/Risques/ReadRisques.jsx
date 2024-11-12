@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Table, Typography, Button, Space, notification, Modal, Input } from 'antd';
+import { Table, Button, Modal, Space, Typography, notification, Input, Tag } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
-import UpdateOrganisation from './UpdateOrganisation';
-import DeleteOrganisation from './DeleteOrganisation';
-import CreateOrganisation from './CreateOrganisation';
-import { useTheme } from '../../Context/ThemeContext';
-import { theme } from 'antd';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import CreateRisque from './CreateRisque';
 
 const { Title } = Typography;
 const { Search } = Input;
 
-const ReadOrganisation = () => {
+const ReadRisques = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,13 +18,11 @@ const ReadOrganisation = () => {
   const [searchText, setSearchText] = useState('');
 
   const navigate = useNavigate();
-  const { isDarkMode } = useTheme();
-  const { token } = theme.useToken();
 
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get('http://localhost:5000/organisations', {
+      const response = await axios.get('http://localhost:5000/risks', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -38,7 +32,7 @@ const ReadOrganisation = () => {
     } catch (error) {
       notification.error({
         message: 'Error',
-        description: 'Failed to fetch organisations',
+        description: 'Failed to fetch risks',
       });
     } finally {
       setLoading(false);
@@ -60,25 +54,30 @@ const ReadOrganisation = () => {
     setSelectedId(null);
   };
 
-  const handleDeleteSuccess = () => {
-    fetchData();
-  };
-
   const handleSearch = (value) => {
     setSearchText(value);
     const filtered = data.filter(
-      (organisation) =>
-        organisation.title.toLowerCase().includes(value.toLowerCase()) ||
-        organisation.description.toLowerCase().includes(value.toLowerCase())
+      (risk) =>
+        risk.project.title.toLowerCase().includes(value.toLowerCase()) ||
+        risk.description.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredData(filtered);
   };
 
+  const getImpactColor = (impact) => {
+    const colors = {
+      Low: 'green',
+      Medium: 'orange',
+      High: 'red'
+    };
+    return colors[impact] || 'blue';
+  };
+
   const columns = [
     {
-      title: 'Title',
-      dataIndex: 'title',
-      key: 'title',
+      title: 'Project',
+      dataIndex: ['project', 'title'],
+      key: 'project',
     },
     {
       title: 'Description',
@@ -86,15 +85,17 @@ const ReadOrganisation = () => {
       key: 'description',
     },
     {
-      title: "Chiffre d'Affaire",
-      dataIndex: 'chiffreAffaire',
-      key: 'chiffreAffaire',
+      title: 'Impact',
+      dataIndex: 'impact',
+      key: 'impact',
+      render: (impact) => (
+        <Tag color={getImpactColor(impact)}>{impact}</Tag>
+      ),
     },
     {
-      title: 'Responsable',
-      dataIndex: 'responsable',
-      key: 'responsable',
-      render: (responsable) => responsable.nom,
+      title: 'Note',
+      dataIndex: 'note',
+      key: 'note',
     },
     {
       title: 'Actions',
@@ -103,18 +104,9 @@ const ReadOrganisation = () => {
         <>
           <Button
             icon={<EyeOutlined />}
-            onClick={() => navigate(`/organisations/info/${record._id}`)}
+            onClick={() => navigate(`/risks/info/${record._id}`)}
           />
-          <Button 
-            icon={<EditOutlined />} 
-            onClick={() => {
-              setSelectedId(record._id);
-              setUpdateModalVisible(true);
-            }}
-          />
-          <DeleteOrganisation id={record._id} onDeleteSuccess={handleDeleteSuccess}>
-            <Button icon={<DeleteOutlined />} danger />
-          </DeleteOrganisation>
+          
         </>
       ),
     },
@@ -124,17 +116,18 @@ const ReadOrganisation = () => {
     <>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={4}>List des Organisations</Title>
+          <Title level={4}>List des Risques</Title>
           <Button
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => setCreateModalVisible(true)}
           >
-            Create Organisation
+            Create Risk
           </Button>
         </Space>
+        
         <Search
-          placeholder="Search by title or description"
+          placeholder="Search by project or description"
           allowClear
           enterButton="Search"
           size="large"
@@ -142,6 +135,7 @@ const ReadOrganisation = () => {
           onChange={(e) => handleSearch(e.target.value)}
           style={{ marginBottom: 16 }}
         />
+
         <Table 
           dataSource={filteredData} 
           columns={columns} 
@@ -150,35 +144,20 @@ const ReadOrganisation = () => {
           pagination={{ pageSize: 10 }}
           scroll={{ x: 'max-content' }}
         />
+
         <Modal
-          title="Create Organisation"
+          title="Create Risk"
           visible={createModalVisible}
           onCancel={() => setCreateModalVisible(false)}
           footer={null}
         >
-          <CreateOrganisation
+          <CreateRisque
             onCreateSuccess={handleCreateSuccess}
           />
-        </Modal>
-        <Modal
-          title="Update Organisation"
-          visible={updateModalVisible}
-          onCancel={() => {
-            setUpdateModalVisible(false);
-            setSelectedId(null);
-          }}
-          footer={null}
-        >
-          {selectedId && (
-            <UpdateOrganisation
-              id={selectedId}
-              onUpdateSuccess={handleUpdateSuccess}
-            />
-          )}
         </Modal>
       </Space>
     </>
   );
 };
 
-export default ReadOrganisation;
+export default ReadRisques;

@@ -10,7 +10,8 @@ import {
   ApartmentOutlined, 
   DashboardOutlined,
   MenuUnfoldOutlined,
-  MenuFoldOutlined
+  MenuFoldOutlined,
+  AlertOutlined // Added for Risk icon
 } from '@ant-design/icons';
 import { useTheme } from '../Context/ThemeContext';
 
@@ -80,7 +81,13 @@ const Sidebar = ({ collapsed, onCollapse }) => {
       key: '/taches',
       icon: <CheckSquareOutlined />,
       label: 'Taches',
-      allowedRoles: ['admin', 'responsable', 'chefProject','membreEquipe'],
+      allowedRoles: ['admin', 'responsable', 'chefProject', 'membreEquipe'],
+    },
+    {
+      key: '/risks',
+      icon: <AlertOutlined />,
+      label: 'Risks',
+      allowedRoles: ['admin', 'responsable'],
     },
   ];
 
@@ -97,14 +104,13 @@ const Sidebar = ({ collapsed, onCollapse }) => {
         position: 'fixed',
         left: 0,
         top: 0,
-        
         overflow: 'auto',
         transition: 'all 0.3s',
         zIndex: 1000,
         boxShadow: '2px 0 8px 0 rgba(29,35,41,.05)',
       }}
     >
-      <div  style={{ height: '64px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div style={{ height: '64px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       </div>
       <Button
         type="text"
@@ -122,7 +128,7 @@ const Sidebar = ({ collapsed, onCollapse }) => {
         theme={isDarkMode ? 'dark' : 'light'}
         selectedKeys={[location.pathname]}
         onClick={handleMenuClick}
-        style={{ borderRight: 0  }}
+        style={{ borderRight: 0 }}
       >
         {menuItems.map(item =>
           item.allowedRoles.includes(userRole) && (

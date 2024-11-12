@@ -73,7 +73,7 @@ exports.createRisk = async (req, res) => {
 
 exports.getAllRisks = async (req, res) => {
     try {
-        const risks = await Risk.find().populate('project', 'name');
+        const risks = await Risk.find().populate('project');
         res.status(200).json(risks);
     } catch (error) {
         res.status(400).json({ message: error.message });

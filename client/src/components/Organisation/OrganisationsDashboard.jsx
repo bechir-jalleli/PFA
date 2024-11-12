@@ -61,10 +61,7 @@ const OrganisationsDashboard = () => {
   return (
     <DashboardContainer>
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
-        <Space align="center" style={{ width: '100%', justifyContent: 'center' }}>
-          <BankOutlined style={{ fontSize: 'clamp(32px, 5vw, 48px)', color: '#2196F3' }} />
-          <GradientText>Organisations Dashboard</GradientText>
-        </Space>
+        
 
         <Row gutter={[24, 24]}>
           <Col xs={24} sm={8}>

@@ -2,82 +2,102 @@ import React from 'react';
 import axios from 'axios';
 import { Form, Input, Button, notification, Space } from 'antd';
 
+const phoneNumberValidator = (_, value) => {
+  if (!value) {
+    return Promise.reject(new Error('Please input the phone number!'));
+  }
+
+  const phoneRegex = /^(?:2|9|5|\+216)[0-9]{7}$/;
+  if (!phoneRegex.test(value)) {
+    return Promise.reject(new Error('Phone number must start with 2, 9, 5, or +216 followed by 7 digits.'));
+  }
+
+  return Promise.resolve();
+};
+
 const CreateChefProject = ({ onClose, onCreateSuccess }) => {
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
     try {
-      await axios.post('http://localhost:5000/chef-projects/', values);
+      const token = localStorage.getItem('accessToken');
+      await axios.post('http://localhost:5000/chef-projects', values, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
       notification.success({
         message: 'Success',
         description: 'Chef Project created successfully',
       });
+      
       form.resetFields();
-      if (onCreateSuccess) onCreateSuccess(); 
-      if (onClose) onClose(); 
+      if (onCreateSuccess) onCreateSuccess();
+      if (onClose) onClose();
     } catch (error) {
       notification.error({
         message: 'Error',
-        description: 'Failed to create Chef Project',
+        description: 'Failed to create chef project',
       });
     }
   };
 
-  const phoneNumberValidator = (_, value) => {
-    if (!value) {
-      return Promise.reject(new Error('Please input the phone number!'));
-    }
-    
-    const phoneRegex = /^(?:2|9|5|\+216)[0-9]{7}$/;
-    if (!phoneRegex.test(value)) {
-      return Promise.reject(new Error('Phone number must start with 2, 9, 5, or +216 followed by 7 digits.'));
-    }
-  
-    return Promise.resolve();
-  };
-
   return (
-    <Form form={form} onFinish={onFinish} layout="vertical">
-      <Form.Item
-        name="nom"
-        label="Name"
+    <Form 
+      form={form} 
+      onFinish={onFinish} 
+      layout="vertical"
+      style={{ maxWidth: 600 }}
+    >
+      <Form.Item 
+        name="nom" 
+        label="Name" 
         rules={[{ required: true, message: 'Please input the name!' }]}
       >
-        <Input />
+        <Input placeholder="Enter name" />
       </Form.Item>
-      <Form.Item
-        name="prenom"
-        label="Surname"
+
+      <Form.Item 
+        name="prenom" 
+        label="Surname" 
+        rules={[{ required: true, message: 'Please input the surname!' }]}
       >
-        <Input />
+        <Input placeholder="Enter surname" />
       </Form.Item>
-      <Form.Item
-        name="email"
-        label="Email"
+
+      <Form.Item 
+        name="email" 
+        label="Email" 
         rules={[{ required: true, type: 'email', message: 'Please input a valid email!' }]}
       >
-        <Input />
+        <Input placeholder="Enter email" />
       </Form.Item>
-      <Form.Item
-        name="phone"
-        label="Phone"
+
+      <Form.Item 
+        name="phone" 
+        label="Phone" 
         rules={[{ required: true, validator: phoneNumberValidator }]}
       >
-        <Input />
+        <Input placeholder="Enter phone number" />
       </Form.Item>
-      <Form.Item
-        name="mdp"
-        label="Password"
+
+      <Form.Item 
+        name="mdp" 
+        label="Password" 
         rules={[{ required: true, message: 'Please input the password!' }]}
       >
-        <Input.Password />
+        <Input.Password placeholder="Enter password" />
       </Form.Item>
+
       <Form.Item>
         <Space>
           <Button type="primary" htmlType="submit">
             Create Chef Project
           </Button>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>
+            Cancel
+          </Button>
         </Space>
       </Form.Item>
     </Form>

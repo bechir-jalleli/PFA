@@ -78,6 +78,13 @@ import ReadTache from '../components/Tache/ReadTache';
 import TacheDetail from '../components/Tache/TacheDetail';
 import TachesDashboard from '../components/Tache/TachesDashboard';
 
+// Risque components
+import RisquesPage from '../pages/RisquesPage';
+import CreateRisque from '../components/Risques/CreateRisque'
+import ReadRisque from '../components/Risques/ReadRisques'
+import RisquesDashboard from '../components/Risques/RisquesDashboard';
+import RisqueDetail from '../components/Risques/RisqueDetail';
+
 function AppRoutes() {
   return (
     <Routes>
@@ -136,6 +143,15 @@ function AppRoutes() {
         <Route path="info/:id" element={<PrivateRoute element={OrganisationDetail} allowedRoles={['admin', 'responsable']} />} />
       </Route>
 
+{/* Risques Routes */}
+<Route path="/risks" element={<PrivateRoute element={RisquesPage} allowedRoles={['admin', 'responsable']} />}>
+  <Route index element={<Navigate to="dashboard" replace />} />
+  <Route path="dashboard" element={<PrivateRoute element={RisquesDashboard} allowedRoles={['admin', 'responsable']} />} />
+  <Route path="create" element={<PrivateRoute element={CreateRisque} allowedRoles={['admin', 'responsable']} />} />
+  <Route path="list" element={<PrivateRoute element={ReadRisque} allowedRoles={['admin', 'responsable']} />} />
+  <Route path="info/:id" element={<PrivateRoute element={RisqueDetail} allowedRoles={['admin', 'responsable']} />} />
+</Route>
+
       {/* Sous Organisation  */}
       <Route path="/sous-organisations" element={<PrivateRoute element={SousOrganisationPage} allowedRoles={['admin', 'responsable']} />}>
       <Route index element={<Navigate to="dashboard" />} /> 
@@ -159,18 +175,17 @@ function AppRoutes() {
         <Route path="info/:id" element={<PrivateRoute element={ProjectDetail} allowedRoles={['admin', 'responsable', 'chef-project']} />} />
       </Route>  
 
-      {/* Taches  */}
-      <Route>
-          <Route path="/taches" element={<PrivateRoute element={TachesPage} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />}>
-            <Route index element={<Navigate to="dashboard" />} />
-            <Route path="dashboard" element={TachesDashboard} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']}/>
-            <Route path="create" element={CreateTache } allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']}/>
-            <Route path="update/:id" element={UpdateTache} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']}/>
-            <Route path="delete/:id" element={DeleteTache} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />
-            <Route path="list" element={ReadTache} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']}/>
-            <Route path="info/:id" element={TacheDetail } allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']}/>
-          </Route>
-      </Route>
+      {/* Taches */}
+<Route path="/taches" element={<PrivateRoute element={TachesPage} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />}>
+  <Route index element={<Navigate to="dashboard" />} />
+  <Route path="dashboard" element={<PrivateRoute element={TachesDashboard} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
+  <Route path="create" element={<PrivateRoute element={CreateTache} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
+  <Route path="update/:id" element={<PrivateRoute element={UpdateTache} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
+  <Route path="delete/:id" element={<PrivateRoute element={DeleteTache} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
+  <Route path="list" element={<PrivateRoute element={ReadTache} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
+  <Route path="info/:id" element={<PrivateRoute element={TacheDetail} allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />
+</Route>
+
 
       
       <Route path="/dashboard"  element={<PrivateRoute element={Dashboard}  allowedRoles={['admin', 'responsable', 'chef-project', 'Membre']} />} />

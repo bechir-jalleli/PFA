@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal, Card, Space, Typography, notification, Input } from 'antd';
+import { Table, Typography, Button, Space, notification, Modal, Input } from 'antd';
 import { PlusOutlined, EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import UpdateProject from './UpdateProject';
 import DeleteProject from './DeleteProject';
@@ -20,7 +20,11 @@ const ReadProjects = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
+
   const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
+  const { token } = theme.useToken();
+
   const fetchProjects = async () => {
     try {
       const token = localStorage.getItem('accessToken');
@@ -69,7 +73,6 @@ const ReadProjects = () => {
         project.description.toLowerCase().includes(value.toLowerCase()) ||
         project.organisation.title.toLowerCase().includes(value.toLowerCase()) ||
         project.sousOrganisation.title.toLowerCase().includes(value.toLowerCase())
-
     );
     setFilteredProjects(filtered);
   };
@@ -111,8 +114,7 @@ const ReadProjects = () => {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-      
-        <Space>
+        <>
           <Button
             icon={<EyeOutlined />}
             onClick={() => navigate(`/project/info/${record._id}`)}
@@ -124,28 +126,19 @@ const ReadProjects = () => {
               setUpdateModalVisible(true);
             }}
           />
-          
           <DeleteProject id={record._id} onDeleteSuccess={handleDeleteSuccess}>
             <Button icon={<DeleteOutlined />} danger />
           </DeleteProject>
-        </Space>
+        </>
       ),
     },
   ];
 
-  const { isDarkMode } = useTheme();
-  const { token } = theme.useToken();
-  const cardStyle = {
-    marginBottom: token.marginMD,
-    boxShadow: token.boxShadow,
-    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
-  };
-
   return (
-    <Card style={cardStyle}>
+    <>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={4}>Projects</Title>
+          <Title level={4}>List des Projects</Title>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -177,7 +170,7 @@ const ReadProjects = () => {
           onCancel={() => setCreateModalVisible(false)}
           footer={null}
         >
-          <CreateProject 
+          <CreateProject
             onCreateSuccess={handleCreateSuccess}
           />
         </Modal>
@@ -191,14 +184,14 @@ const ReadProjects = () => {
           footer={null}
         >
           {selectedId && (
-            <UpdateProject 
+            <UpdateProject
               id={selectedId}
               onUpdateSuccess={handleUpdateSuccess}
             />
           )}
         </Modal>
       </Space>
-    </Card>
+    </>
   );
 };
 

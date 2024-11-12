@@ -1,10 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Form, Input, Button, notification ,Card} from 'antd';
+import { Form, Input, Button, notification, Card } from 'antd';
+import { useTheme } from '../../Context/ThemeContext';
 
 const UpdateResponsable = ({ id, onUpdateSuccess }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(true);
+  const { isDarkMode } = useTheme();
+
+  const cardStyle = {
+    backgroundColor: isDarkMode ? '#141414' : '#fff',
+    color: isDarkMode ? '#fff' : '#000',
+    maxWidth: '500px',
+    margin: '0 auto',
+    boxShadow: isDarkMode ? '0 4px 12px rgba(255, 255, 255, 0.1)' : '0 4px 12px rgba(0, 0, 0, 0.1)'
+  };
+
+  const formItemStyle = {
+    color: isDarkMode ? '#fff' : '#000'
+  };
 
   useEffect(() => {
     const fetchResponsable = async () => {
@@ -52,63 +66,63 @@ const UpdateResponsable = ({ id, onUpdateSuccess }) => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div style={{ color: isDarkMode ? '#fff' : '#000' }}>Loading...</div>;
   }
 
   return (
-    <Card hoverable style={{backgroundColor:'#fff',maxWidth: '500px',margin: '0 auto'}}>
-    <div style={{ maxWidth: '500px', margin: '0 auto' }}>
-    <Form 
-      form={form} 
-      onFinish={handleSubmit}
-      layout="vertical"
-      style={{ maxWidth: '400px', margin: '0 auto' }}
-    >
-      <Form.Item 
-        name="nom" 
-        label="Name"
-        rules={[{ required: true, message: 'Please input the name!' }]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item 
-        name="prenom" 
-        label="Surname"
-        rules={[{ required: true, message: 'Please input the surname!' }]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item 
-        name="email" 
-        label="Email"
-        rules={[
-          { required: true, message: 'Please input the email!' },
-          { type: 'email', message: 'Please enter a valid email!' }
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item 
-        name="phone" 
-        label="Phone"
-        rules={[{ required: true, message: 'Please input the phone number!' }]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item 
-        name="mdp" 
-        label="Password"
-        rules={[{ required: true, message: 'Please input the password!' }]}
-      >
-        <Input.Password />
-      </Form.Item>
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Update Responsable
-        </Button>
-      </Form.Item>
-    </Form>
-    </div>
+    <Card hoverable style={cardStyle}>
+      <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+        <Form 
+          form={form} 
+          onFinish={handleSubmit}
+          layout="vertical"
+          style={{ maxWidth: '400px', margin: '0 auto' }}
+        >
+          <Form.Item 
+            name="nom" 
+            label={<span style={formItemStyle}>Name</span>}
+            rules={[{ required: true, message: 'Please input the name!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item 
+            name="prenom" 
+            label={<span style={formItemStyle}>Surname</span>}
+            rules={[{ required: true, message: 'Please input the surname!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item 
+            name="email" 
+            label={<span style={formItemStyle}>Email</span>}
+            rules={[
+              { required: true, message: 'Please input the email!' },
+              { type: 'email', message: 'Please enter a valid email!' }
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item 
+            name="phone" 
+            label={<span style={formItemStyle}>Phone</span>}
+            rules={[{ required: true, message: 'Please input the phone number!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item 
+            name="mdp" 
+            label={<span style={formItemStyle}>Password</span>}
+            rules={[{ required: true, message: 'Please input the password!' }]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Update Responsable
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </Card>
   );
 };

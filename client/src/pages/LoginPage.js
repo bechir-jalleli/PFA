@@ -100,7 +100,7 @@ const LoginPage = () => {
           <Row>
             <Col xs={24} md={12} className="login-left-panel">
               <div className="login-welcome">
-                <Title level={2} className="gradient-text">Welcome to GRCWebsite</Title>
+                <Title level={2} className="gradient-text">Welcome to GRC Website</Title>
                 <img 
                   src="/image/login.svg" 
                   alt="Login Illustration" 
@@ -263,7 +263,7 @@ const LoginPage = () => {
           width: 100%;
           max-width: 300px;
           margin-bottom: 20px;
-          animation: float 3s ease-in-out infinite;
+          animation: float 7s ease-in-out infinite;
         }
 
         .login-right-panel {

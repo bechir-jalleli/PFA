@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal, Card, Space, Typography, notification, Input } from 'antd';
+import { Table, Typography, Button, Space, notification, Modal, Input } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import UpdateSousOrganisation from './UpdateSousOrganisation';
 import DeleteSousOrganisation from './DeleteSousOrganisation';
@@ -20,6 +20,10 @@ const ReadSousOrganisations = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
+
+  const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
+  const { token } = theme.useToken();
 
   const fetchSousOrganisations = useCallback(async () => {
     try {
@@ -44,7 +48,6 @@ const ReadSousOrganisations = () => {
 
   useEffect(() => {
     fetchSousOrganisations();
-
     const intervalId = setInterval(fetchSousOrganisations, 30000);
     return () => clearInterval(intervalId);
   }, [fetchSousOrganisations]);
@@ -75,8 +78,6 @@ const ReadSousOrganisations = () => {
     );
     setFilteredSousOrganisations(filtered);
   };
-
-  const navigate = useNavigate();
 
   const columns = [
     {
@@ -112,7 +113,7 @@ const ReadSousOrganisations = () => {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <Space>
+        <>
           <Button
             icon={<EyeOutlined />}
             onClick={() => navigate(`/sous-organisations/info/${record._id}`)}
@@ -130,24 +131,16 @@ const ReadSousOrganisations = () => {
           >
             <Button icon={<DeleteOutlined />} danger />
           </DeleteSousOrganisation>
-        </Space>
+        </>
       ),
     },
   ];
 
-  const { isDarkMode } = useTheme();
-  const { token } = theme.useToken();
-  const cardStyle = {
-    marginBottom: token.marginMD,
-    boxShadow: token.boxShadow,
-    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
-  };
-
   return (
-    <Card style={cardStyle}>
+    <>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={4}>Sous-Organisations</Title>
+          <Title level={4}>List des Sous-Organisations</Title>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -184,23 +177,23 @@ const ReadSousOrganisations = () => {
           />
         </Modal>
         <Modal
-              title="Update Sous-Organisation"
-              visible={updateModalVisible}
-              onCancel={() => {
-                setUpdateModalVisible(false);
-                setSelectedId(null);
-              }}
-              footer={null}
-            >
-              {selectedId && (
-                <UpdateSousOrganisation
-                  id={selectedId}
-                  onUpdateSuccess={handleUpdateSuccess}
-                />
-              )}
+          title="Update Sous-Organisation"
+          visible={updateModalVisible}
+          onCancel={() => {
+            setUpdateModalVisible(false);
+            setSelectedId(null);
+          }}
+          footer={null}
+        >
+          {selectedId && (
+            <UpdateSousOrganisation
+              id={selectedId}
+              onUpdateSuccess={handleUpdateSuccess}
+            />
+          )}
         </Modal>
       </Space>
-    </Card>
+    </>
   );
 };
 

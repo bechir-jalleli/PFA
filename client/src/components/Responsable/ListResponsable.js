@@ -100,7 +100,6 @@ const ListResponsable = () => {
             width: '10px',
             height: '10px',
             borderRadius: '50%',
-            backgroundColor: isLoggedIn ? 'green' : 'red',
           }}
         />
       ),
@@ -115,7 +114,7 @@ const ListResponsable = () => {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <Space>
+        <>
           <Button
             icon={<EyeOutlined />}
             onClick={() => navigate(`/responsables/info/${record._id}`)}
@@ -130,24 +129,20 @@ const ListResponsable = () => {
           <DeleteResponsable id={record._id} onDeleteSuccess={handleDeleteSuccess}>
             <Button icon={<DeleteOutlined />} danger />
           </DeleteResponsable>
-        </Space>
+        </>
       ),
     },
   ];
 
   const { isDarkMode } = useTheme();
   const { token } = theme.useToken();
-  const cardStyle = {
-    marginBottom: token.marginMD,
-    boxShadow: token.boxShadow,
-    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
-  };
+
 
   return (
-    <Card style={cardStyle}>
+    <>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={4}>Responsables</Title>
+          <Title level={4}>List des Responsable</Title>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -200,7 +195,7 @@ const ListResponsable = () => {
           )}
         </Modal>
       </Space>
-    </Card>
+    </>
   );
 };
 

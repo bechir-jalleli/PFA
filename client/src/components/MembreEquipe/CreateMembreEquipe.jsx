@@ -44,48 +44,60 @@ const CreateMembreEquipe = ({ onClose, onCreateSuccess }) => {
   };
 
   return (
-    <Form form={form} onFinish={onFinish} layout="vertical">
+    <Form 
+      form={form} 
+      onFinish={onFinish} 
+      layout="vertical"
+      style={{ maxWidth: 600 }}
+    >
       <Form.Item
         name="nom"
         label="Name"
         rules={[{ required: true, message: 'Please input the name!' }]}
       >
-        <Input />
+        <Input placeholder="Enter name" />
       </Form.Item>
+
       <Form.Item
         name="prenom"
         label="Surname"
         rules={[{ required: true, message: 'Please input the surname!' }]}
       >
-        <Input />
+        <Input placeholder="Enter surname" />
       </Form.Item>
+
       <Form.Item
         name="email"
         label="Email"
         rules={[{ required: true, type: 'email', message: 'Please input a valid email!' }]}
       >
-        <Input />
+        <Input placeholder="Enter email" />
       </Form.Item>
+
       <Form.Item
         name="phone"
         label="Phone"
         rules={[{ required: true, validator: phoneNumberValidator }]}
       >
-        <Input />
+        <Input placeholder="Enter phone number" />
       </Form.Item>
+
       <Form.Item
         name="mdp"
         label="Password"
         rules={[{ required: true, message: 'Please input the password!' }]}
       >
-        <Input.Password />
+        <Input.Password placeholder="Enter password" />
       </Form.Item>
+
       <Form.Item>
         <Space>
           <Button type="primary" htmlType="submit">
-            Create Membre Equipe
+            Create Team Member
           </Button>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>
+            Cancel
+          </Button>
         </Space>
       </Form.Item>
     </Form>

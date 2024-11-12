@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal, Card, Space, Typography, notification, Input, Tag } from 'antd';
+import { Table, Typography, Button, Space, notification, Modal, Input, Tag } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import UpdateTache from './UpdateTache';
 import DeleteTache from './DeleteTache';
 import CreateTache from './CreateTache';
@@ -22,6 +22,8 @@ const ReadTaches = () => {
   const [searchText, setSearchText] = useState('');
 
   const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
+  const { token } = theme.useToken();
 
   const fetchTaches = async () => {
     try {
@@ -34,7 +36,6 @@ const ReadTaches = () => {
       setTaches(response.data);
       setFilteredTaches(response.data);
     } catch (error) {
-      console.error('Error fetching tasks:', error);
       notification.error({
         message: 'Error',
         description: 'Failed to fetch tasks',
@@ -73,35 +74,29 @@ const ReadTaches = () => {
         tache.priority.toLowerCase().includes(value.toLowerCase()) ||
         (tache.projet && tache.projet.nom.toLowerCase().includes(value.toLowerCase())) ||
         (tache.membreEquipe && 
-          `${tache.membreEquipe.nom} ${tache.membreEquipe.prenom}`.toLowerCase().includes(value.toLowerCase())) 
+          `${tache.membreEquipe.nom} ${tache.membreEquipe.prenom}`.toLowerCase().includes(value.toLowerCase()))
     );
     setFilteredTaches(filtered);
   };
 
   const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
-      case 'not started':
-        return 'orange';
-      case 'in progress':
-        return 'blue';
-      case 'completed':
-        return 'green';
-      default:
-        return 'default';
-    }
+    const colors = {
+      'not started': 'orange',
+      'in progress': 'blue',
+      'completed': 'green',
+      'default': 'default'
+    };
+    return colors[status.toLowerCase()] || colors.default;
   };
 
   const getPriorityColor = (priority) => {
-    switch (priority.toLowerCase()) {
-      case 'high':
-        return 'red';
-      case 'medium':
-        return 'orange';
-      case 'low':
-        return 'green';
-      default:
-        return 'default';
-    }
+    const colors = {
+      'high': 'red',
+      'medium': 'orange',
+      'low': 'green',
+      'default': 'default'
+    };
+    return colors[priority.toLowerCase()] || colors.default;
   };
 
   const columns = [
@@ -140,9 +135,9 @@ const ReadTaches = () => {
     },
     {
       title: 'Nom de Projet',
-      dataIndex: ['project', 'tittle'],   
+      dataIndex: ['project', 'tittle'],
       key: 'project',
-      render: (text, record) => record.project?.tittle || '',  
+      render: (text, record) => record.project?.tittle || '',
     },
     {
       title: 'Start Date',
@@ -176,11 +171,11 @@ const ReadTaches = () => {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <Space>
+        <>
           <Button
             icon={<EyeOutlined />}
             onClick={() => navigate(`/taches/info/${record._id}`)}
-            />
+          />
           <Button
             icon={<EditOutlined />}
             onClick={() => {
@@ -191,24 +186,16 @@ const ReadTaches = () => {
           <DeleteTache id={record._id} onDeleteSuccess={handleDeleteSuccess}>
             <Button icon={<DeleteOutlined />} danger />
           </DeleteTache>
-        </Space>
+        </>
       ),
     },
   ];
 
-  const { isDarkMode } = useTheme();
-  const { token } = theme.useToken();
-  const cardStyle = {
-    marginBottom: token.marginMD,
-    boxShadow: token.boxShadow,
-    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
-  };
-
   return (
-    <Card style={cardStyle}>
+    <>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={4}>Tasks</Title>
+          <Title level={4}>List des Tâches</Title>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -259,7 +246,7 @@ const ReadTaches = () => {
           )}
         </Modal>
       </Space>
-    </Card>
+    </>
   );
 };
 

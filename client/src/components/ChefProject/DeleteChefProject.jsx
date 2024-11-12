@@ -5,7 +5,13 @@ import { Button, notification, Popconfirm } from 'antd';
 const DeleteChefProject = ({ id, onDeleteSuccess }) => {
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/chef-projects/${id}`);
+      const token = localStorage.getItem('accessToken');
+
+      await axios.delete(`http://localhost:5000/chef-projects/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       notification.success({
         message: 'Success',
         description: 'Chef Project deleted successfully',

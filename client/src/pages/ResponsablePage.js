@@ -33,9 +33,7 @@ const ResponsableContainer = styled.div`
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  background: ${props => props.isDarkMode ? 
-    'linear-gradient(135deg, #1a1a1a 0%, #0a192f 100%)' : 
-    'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'};
+  background: transparent 
   color: ${props => props.isDarkMode ? '#ffffff' : '#2c3e50'};
   transition: background 0.3s ease;
 `;
@@ -51,7 +49,7 @@ const GlassCard = styled.div`
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
-
+width : 100%;
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
@@ -117,11 +115,12 @@ const ResponsablePage = () => {
         ))}
 
         <ContentWrapper>
-          <Space align="center" style={{ width: '100%', justifyContent: 'center', marginBottom: '2rem' }}>
-            <TeamOutlined style={{ fontSize: '48px', color: '#2196F3' }} />
-            <GradientText>Responsable Dashboard</GradientText>
-          </Space>
-
+        <GlassCard isDarkMode={isDarkMode} style={{ padding: '2rem', margin: '0 0 2rem 0' }}>
+  <Space align="center" style={{ width: '100%', justifyContent: 'center', margin: 0 }}>
+    <TeamOutlined style={{ fontSize: '48px', color: '#2196F3' }} />
+    <GradientText style={{ margin: 0, fontSize: '2rem' }}>Responsable</GradientText>
+  </Space>
+</GlassCard>
           <GlassCard isDarkMode={isDarkMode}>
             <Outlet />
           </GlassCard>

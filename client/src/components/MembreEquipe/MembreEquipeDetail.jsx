@@ -48,7 +48,7 @@ function MembreEquipeDetail() {
   };
 
   const headerStyle = {
-    background: isDarkMode ? 'linear-gradient(135deg, #2E7D32 0%, #388E3C 100%)' : 'linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%)',
+    background: 'linear-gradient(45deg, #4E65FF , #92EFFD)',
     padding: '24px',
     borderTopLeftRadius: token.borderRadiusLG,
     borderTopRightRadius: token.borderRadiusLG,
@@ -77,7 +77,16 @@ function MembreEquipeDetail() {
       <div style={headerStyle}>
         <Row gutter={[24, 24]} align="middle">
           <Col xs={24} sm={8} md={6} lg={4}>
-            <Avatar size={120} icon={<UserOutlined />} src={membreEquipe.avatar} style={{ backgroundColor: '#ffffff', color: '#4CAF50' }} />
+            <Avatar 
+              size={120} 
+              icon={<UserOutlined />} 
+              src={membreEquipe.avatar}
+              style={{ 
+                border: '4px solid rgba(255,255,255,0.2)',
+                backgroundColor: '#ffffff',
+                color: '#00BCD4'
+              }} 
+            />
           </Col>
           <Col xs={24} sm={16} md={18} lg={20}>
             <Title level={2} style={{ color: '#ffffff', margin: 0 }}>{`${membreEquipe.prenom} ${membreEquipe.nom}`}</Title>
@@ -93,8 +102,8 @@ function MembreEquipeDetail() {
               <Statistic
                 title="Tasks"
                 value={membreEquipe.taches?.length || 0}
-                prefix={<ProjectOutlined style={{ color: '#4CAF50' }} />}
-                valueStyle={{ color: isDarkMode ? '#ffffff' : '#4CAF50' }}
+                prefix={<ProjectOutlined style={{ color: '#00BCD4' }} />}
+                valueStyle={{ color: isDarkMode ? '#ffffff' : '#00BCD4' }}
               />
             </Card>
           </Col>

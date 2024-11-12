@@ -6,37 +6,30 @@ import { Outlet } from 'react-router-dom';
 import { useTheme } from '../Context/ThemeContext';
 import styled, { keyframes, createGlobalStyle } from 'styled-components';
 
-// Global Styles
 const GlobalStyle = createGlobalStyle`
   ::-webkit-scrollbar {
     width: 8px;
   }
-
   ::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.1);
   }
-
   ::-webkit-scrollbar-thumb {
     background: linear-gradient(45deg, #2196F3, #00BCD4);
     border-radius: 4px;
   }
 `;
 
-// Animations
 const float = keyframes`
   0% { transform: translateY(0px); }
   50% { transform: translateY(-20px); }
   100% { transform: translateY(0px); }
 `;
 
-// Styled Components
-const ChefContainer = styled.div`
+const ResponsableContainer = styled.div`
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  background: ${props => props.isDarkMode ? 
-    'linear-gradient(135deg, #1a1a1a 0%, #0a192f 100%)' : 
-    'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'};
+  background: transparent;
   color: ${props => props.isDarkMode ? '#ffffff' : '#2c3e50'};
   transition: background 0.3s ease;
 `;
@@ -52,15 +45,11 @@ const GlassCard = styled.div`
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
+  width: 100%;
 
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-  }
-
-  @media (max-width: 768px) {
-    margin: 0.5rem;
-    padding: 1rem;
   }
 `;
 
@@ -72,12 +61,6 @@ const FloatingShape = styled.div`
   opacity: 0.5;
   z-index: 0;
   filter: blur(3px);
-  transition: all 0.3s ease;
-
-  &:hover {
-    opacity: 0.7;
-    filter: blur(2px);
-  }
 `;
 
 const ContentWrapper = styled.div`
@@ -85,10 +68,6 @@ const ContentWrapper = styled.div`
   z-index: 1;
   padding: 2rem;
   animation: fadeIn 0.5s ease-in;
-
-  @media (max-width: 768px) {
-    padding: 1rem;
-  }
 `;
 
 const GradientText = styled.h1`
@@ -99,10 +78,6 @@ const GradientText = styled.h1`
   font-size: 2.5rem;
   font-weight: bold;
   text-align: center;
-
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
 `;
 
 const ChefProjectPage = () => {
@@ -118,7 +93,7 @@ const ChefProjectPage = () => {
   return (
     <MainLayout>
       <GlobalStyle />
-      <ChefContainer isDarkMode={isDarkMode}>
+      <ResponsableContainer isDarkMode={isDarkMode}>
         {shapes.map((shape, index) => (
           <FloatingShape
             key={index}
@@ -137,17 +112,17 @@ const ChefProjectPage = () => {
         ))}
 
         <ContentWrapper>
-          <Space align="center" style={{ width: '100%', justifyContent: 'center', marginBottom: '2rem' }}>
-            <GradientText>Chef Project Dashboard</GradientText>
-          </Space>
-
-          <GlassCard isDarkMode={isDarkMode}>
-            <Space direction="vertical" size="large" style={{ width: '100%' }}>
-              <Outlet />
+          <GlassCard isDarkMode={isDarkMode} style={{ padding: '2rem', margin: '0 0 2rem 0' }}>
+            <Space align="center" style={{ width: '100%', justifyContent: 'center', margin: 0 }}>
+              <TeamOutlined style={{ fontSize: '48px', color: '#2196F3' }} />
+              <GradientText style={{ margin: 0, fontSize: '2rem' }}>Chef Project</GradientText>
             </Space>
           </GlassCard>
+          <GlassCard isDarkMode={isDarkMode}>
+            <Outlet />
+          </GlassCard>
         </ContentWrapper>
-      </ChefContainer>
+      </ResponsableContainer>
     </MainLayout>
   );
 };

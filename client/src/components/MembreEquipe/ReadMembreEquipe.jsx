@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Typography, Button, Space, notification, Modal, Card, Input } from 'antd';
+import { Table, Typography, Button, Space, notification, Modal, Input } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import UpdateMembreEquipe from './UpdateMembreEquipe';
 import DeleteMembreEquipe from './DeleteMembreEquipe';
@@ -22,6 +22,8 @@ const ReadMembreEquipe = () => {
   const [searchText, setSearchText] = useState('');
 
   const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
+  const { token } = theme.useToken();
 
   const fetchData = async () => {
     try {
@@ -97,7 +99,7 @@ const ReadMembreEquipe = () => {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <Space>
+        <>
           <Button
             icon={<EyeOutlined />}
             onClick={() => navigate(`/membre-equipes/info/${record._id}`)}
@@ -112,25 +114,16 @@ const ReadMembreEquipe = () => {
           <DeleteMembreEquipe id={record._id} onDeleteSuccess={handleDeleteSuccess}>
             <Button icon={<DeleteOutlined />} danger />
           </DeleteMembreEquipe>
-        </Space>
+        </>
       ),
     },
   ];
 
-  const { isDarkMode } = useTheme();
-  const { token } = theme.useToken();
-
-  const cardStyle = {
-    marginBottom: token.marginMD,
-    boxShadow: token.boxShadow,
-    backgroundColor: isDarkMode ? token.colorBgElevated : token.colorBgContainer,
-  };
-
   return (
-    <Card style={cardStyle}>
+    <>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={4}>Membre Equipes</Title>
+          <Title level={4}>List des Membre Equipes</Title>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -148,10 +141,10 @@ const ReadMembreEquipe = () => {
           onChange={(e) => handleSearch(e.target.value)}
           style={{ marginBottom: 16 }}
         />
-        <Table
-          columns={columns}
-          dataSource={filteredData}
-          rowKey="_id"
+        <Table 
+          dataSource={filteredData} 
+          columns={columns} 
+          rowKey="_id" 
           loading={loading}
           pagination={{ pageSize: 10 }}
           scroll={{ x: 'max-content' }}
@@ -162,7 +155,7 @@ const ReadMembreEquipe = () => {
           onCancel={() => setCreateModalVisible(false)}
           footer={null}
         >
-          <CreateMembreEquipe 
+          <CreateMembreEquipe
             onCreateSuccess={handleCreateSuccess}
           />
         </Modal>
@@ -176,14 +169,14 @@ const ReadMembreEquipe = () => {
           footer={null}
         >
           {selectedId && (
-            <UpdateMembreEquipe 
+            <UpdateMembreEquipe
               id={selectedId}
               onUpdateSuccess={handleUpdateSuccess}
             />
           )}
         </Modal>
       </Space>
-    </Card>
+    </>
   );
 };
 
