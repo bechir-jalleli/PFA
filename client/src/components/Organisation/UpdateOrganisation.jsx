@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Form, Input, Button, notification, InputNumber, Select } from 'antd';
+import { Form, Input, Button, notification, InputNumber, Select, Spin } from 'antd';
+import { useTheme } from '../../Context/ThemeContext';
 
 const { Option } = Select;
 
@@ -8,6 +9,7 @@ const UpdateOrganisation = ({ id, onUpdateSuccess }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(true);
   const [responsables, setResponsables] = useState([]);
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,13 +29,12 @@ const UpdateOrganisation = ({ id, onUpdateSuccess }) => {
 
         form.setFieldsValue({
           ...orgData,
-          responsable: orgData.responsable._id || orgData.responsable
+          responsable: orgData.responsable?._id || orgData.responsable
         });
       } catch (error) {
-        console.error('Error fetching data:', error);
         notification.error({
           message: 'Error',
-          description: 'Failed to fetch data',
+          description: error.response?.data?.message || 'Failed to fetch data',
         });
       } finally {
         setLoading(false);
@@ -55,16 +56,15 @@ const UpdateOrganisation = ({ id, onUpdateSuccess }) => {
       });
       if (onUpdateSuccess) onUpdateSuccess();
     } catch (error) {
-      console.error('Error updating organisation:', error);
       notification.error({
         message: 'Error',
-        description: 'Failed to update organisation',
+        description: error.response?.data?.message || 'Failed to update organisation',
       });
     }
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div style={{ textAlign: 'center', padding: '20px' }}><Spin size="large" /></div>;
   }
 
   return (
@@ -76,35 +76,51 @@ const UpdateOrganisation = ({ id, onUpdateSuccess }) => {
       >
         <Input />
       </Form.Item>
+
       <Form.Item 
         name="description" 
         label="Description"
       >
         <Input.TextArea rows={4} />
       </Form.Item>
+
       <Form.Item
         name="chiffreAffaire"
         label="Chiffre d'Affaire"
       >
         <InputNumber 
           style={{ width: '100%' }}
-          formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-          parser={value => value.replace(/\$\s?|(,*)/g, '')}
+          formatter={value => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          parser={value => value.replace(/€\s?|(,*)/g, '')}
         />
       </Form.Item>
+
       <Form.Item
         name="responsable"
         label="Responsable"
         rules={[{ required: true, message: 'Please select a responsable!' }]}
       >
-        <Select placeholder="Select a responsable">
+        <Select 
+          placeholder="Select a responsable"
+          showSearch
+          optionFilterProp="children"
+        >
           {responsables.map(resp => (
-            <Option key={resp._id} value={resp._id}>{resp.nom}</Option>
+            <Option key={resp._id} value={resp._id}>
+              {`${resp.nom} ${resp.prenom}`}
+            </Option>
           ))}
         </Select>
       </Form.Item>
+
       <Form.Item>
-        <Button type="primary" htmlType="submit">
+        <Button 
+          type="primary" 
+          htmlType="submit"
+          style={{
+            background: isDarkMode ? '#1890ff' : undefined
+          }}
+        >
           Update Organisation
         </Button>
       </Form.Item>

@@ -1,6 +1,7 @@
-import React from 'react';
-import { Typography, Space, Row, Col } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Typography, Space, Row, Col, Spin, notification } from 'antd';
 import { BankOutlined, TeamOutlined, BranchesOutlined } from '@ant-design/icons';
+import axios from 'axios';
 import ReadOrganisations from './ReadOrganisations';
 import { useTheme } from '../../Context/ThemeContext';
 import styled from 'styled-components';
@@ -9,6 +10,9 @@ const DashboardContainer = styled.div`
   padding: clamp(1rem, 3vw, 2rem);
   min-height: 100vh;
   transition: all 0.3s ease;
+  background: ${props => props.isDarkMode ? 
+    'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)' : 
+    'linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)'};
 `;
 
 const GlassCard = styled.div`
@@ -19,14 +23,18 @@ const GlassCard = styled.div`
   border-radius: 20px;
   padding: clamp(1rem, 2vw, 1.5rem);
   margin-bottom: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: ${props => props.isDarkMode ?
+    '0 8px 32px rgba(0, 0, 0, 0.3)' :
+    '0 8px 32px rgba(0, 0, 0, 0.1)'};
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: ${props => props.isDarkMode ?
+      '0 12px 40px rgba(0, 0, 0, 0.4)' :
+      '0 12px 40px rgba(0, 0, 0, 0.15)'};
   }
 `;
 
@@ -55,13 +63,58 @@ const GradientText = styled(Typography.Title)`
   text-align: center;
 `;
 
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
 const OrganisationsDashboard = () => {
   const { isDarkMode } = useTheme();
+  const [stats, setStats] = useState({
+    totalOrganisations: 0,
+    totalEmployees: 0,
+    totalDepartments: 0
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardStats = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/organisations/stats`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        setStats(response.data);
+      } catch (error) {
+        notification.error({
+          message: 'Error',
+          description: 'Failed to fetch dashboard statistics'
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardStats();
+  }, []);
+
+  if (loading) {
+    return (
+      <DashboardContainer isDarkMode={isDarkMode}>
+        <LoadingContainer>
+          <Spin size="large" />
+        </LoadingContainer>
+      </DashboardContainer>
+    );
+  }
 
   return (
-    <DashboardContainer>
+    <DashboardContainer isDarkMode={isDarkMode}>
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
-        
+        <GradientText>Organisations Overview</GradientText>
 
         <Row gutter={[24, 24]}>
           <Col xs={24} sm={8}>
@@ -69,7 +122,7 @@ const OrganisationsDashboard = () => {
               <StatTitle isDarkMode={isDarkMode}>Total Organisations</StatTitle>
               <StatValue color="#1890ff">
                 <BankOutlined style={{ fontSize: 'clamp(24px, 3vw, 32px)' }} />
-                50
+                {stats.totalOrganisations}
               </StatValue>
             </GlassCard>
           </Col>
@@ -79,7 +132,7 @@ const OrganisationsDashboard = () => {
               <StatTitle isDarkMode={isDarkMode}>Total Employees</StatTitle>
               <StatValue color="#722ed1">
                 <TeamOutlined style={{ fontSize: 'clamp(24px, 3vw, 32px)' }} />
-                1000
+                {stats.totalEmployees}
               </StatValue>
             </GlassCard>
           </Col>
@@ -89,7 +142,7 @@ const OrganisationsDashboard = () => {
               <StatTitle isDarkMode={isDarkMode}>Departments</StatTitle>
               <StatValue color="#52c41a">
                 <BranchesOutlined style={{ fontSize: 'clamp(24px, 3vw, 32px)' }} />
-                20
+                {stats.totalDepartments}
               </StatValue>
             </GlassCard>
           </Col>

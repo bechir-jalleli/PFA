@@ -6,7 +6,8 @@ const sousOrganisationSchema = new Schema({
     description: { type: String },
     chiffreAffaire: { type: Number },
     organisation: { type: Schema.Types.ObjectId, ref: 'Organisation', required: true },
-    responsable: { type: Schema.Types.ObjectId, ref: 'Responsable', required: true },
+    responsable: { type: Schema.Types.ObjectId, ref: 'Responsable', default: null ,required: true },
+
 }, { timestamps: true });
 
 const SousOrganisation = mongoose.models.SousOrganisation || mongoose.model('SousOrganisation', sousOrganisationSchema);

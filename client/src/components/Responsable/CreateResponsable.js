@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Form, Input, Button, notification, Space } from 'antd';
+import { Form, Input, Button, notification, Space, Select } from 'antd';
 
 const phoneNumberValidator = (_, value) => {
   if (!value) {
@@ -15,7 +15,7 @@ const phoneNumberValidator = (_, value) => {
   return Promise.resolve();
 };
 
-const CreateResponsable = ({ onClose, onCreateSuccess }) => {
+const CreateResponsable = ({ onClose, onCreateSuccess, organisations, sousOrganisations }) => {
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
@@ -36,7 +36,7 @@ const CreateResponsable = ({ onClose, onCreateSuccess }) => {
     } catch (error) {
       notification.error({
         message: 'Error',
-        description: 'Failed to create responsable',
+        description: error.response?.data?.error || 'Failed to create responsable',
       });
     }
   };
@@ -55,8 +55,20 @@ const CreateResponsable = ({ onClose, onCreateSuccess }) => {
       <Form.Item name="phone" label="Phone" rules={[{ required: true, validator: phoneNumberValidator }]}>
         <Input />
       </Form.Item>
-      <Form.Item name="mdp" label="Password" rules={[{ required: true, message: 'Please input the password!' }]}>
-        <Input.Password />
+      
+      <Form.Item name="organisation" label="Organisation" rules={[{ required: true, message: 'Please select an organisation!' }]}>
+        <Select>
+          {organisations?.map(org => (
+            <Select.Option key={org._id} value={org._id}>{org.title}</Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+      <Form.Item name="sousOrganisation" label="Sous Organisation" rules={[{ required: true, message: 'Please select a sous organisation!' }]}>
+        <Select>
+          {sousOrganisations?.map(sorg => (
+            <Select.Option key={sorg._id} value={sorg._id}>{sorg.title}</Select.Option>
+          ))}
+        </Select>
       </Form.Item>
       <Form.Item>
         <Space>

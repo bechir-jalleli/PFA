@@ -8,8 +8,9 @@ const tacheSchema = new Schema({
     priority: { type: String, enum: ['Low', 'Medium', 'High'], default: 'Medium' },
     startDate: { type: Date, required: true },
     endDate: { type: Date },
+
     membreEquipe: { type: Schema.Types.ObjectId, ref: 'MembreEquipe', required: true },
-    project: { type: Schema.Types.ObjectId, ref: 'Project', required: true }
+    project: { type: Schema.Types.ObjectId, ref: 'Project', required: true },
 }, { timestamps: true });
 
 const Tache = mongoose.models.Tache || mongoose.model('Tache', tacheSchema);

@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Form, Input, Button, notification, Space } from 'antd';
+import { Form, Input, Button, notification, Space, Select } from 'antd';
+
+const { Option } = Select;
 
 const phoneNumberValidator = (_, value) => {
   if (!value) {
@@ -17,29 +19,58 @@ const phoneNumberValidator = (_, value) => {
 
 const CreateMembreEquipe = ({ onClose, onCreateSuccess }) => {
   const [form] = Form.useForm();
+  const [chefProjects, setChefProjects] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchChefProjects = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get('http://localhost:5000/chef-projects', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        setChefProjects(response.data);
+      } catch (error) {
+        notification.error({
+          message: 'Error',
+          description: 'Failed to fetch chef projects',
+        });
+      }
+    };
+
+    fetchChefProjects();
+  }, []);
 
   const onFinish = async (values) => {
+    setLoading(true);
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.post('http://localhost:5000/membre-equipes', values, {
+      const response = await axios.post('http://localhost:5000/membre-equipes', {
+        ...values,
+        role: 'membre',
+      }, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      console.log('Create response:', response);
+
       notification.success({
         message: 'Success',
         description: 'Membre equipe created successfully',
       });
+      
       form.resetFields();
       if (onCreateSuccess) onCreateSuccess();
       if (onClose) onClose();
     } catch (error) {
-      console.error('Create error:', error);
       notification.error({
         message: 'Error',
-        description: 'Failed to create membre equipe',
+        description: error.response?.data?.error || 'Failed to create membre equipe',
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,17 +113,33 @@ const CreateMembreEquipe = ({ onClose, onCreateSuccess }) => {
         <Input placeholder="Enter phone number" />
       </Form.Item>
 
+      
+
       <Form.Item
-        name="mdp"
-        label="Password"
-        rules={[{ required: true, message: 'Please input the password!' }]}
+        name="salary"
+        label="Salary"
+        rules={[{ required: true, message: 'Please input the salary!' }]}
       >
-        <Input.Password placeholder="Enter password" />
+        <Input type="number" placeholder="Enter salary" />
+      </Form.Item>
+
+      <Form.Item
+        name="chefProject"
+        label="Chef Project"
+        rules={[{ required: true, message: 'Please select a chef project!' }]}
+      >
+        <Select placeholder="Select chef project">
+          {chefProjects.map(chef => (
+            <Option key={chef._id} value={chef._id}>
+              {`${chef.nom} ${chef.prenom}`}
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
 
       <Form.Item>
         <Space>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={loading}>
             Create Team Member
           </Button>
           <Button onClick={onClose}>

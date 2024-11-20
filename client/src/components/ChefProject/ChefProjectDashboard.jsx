@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Space, Typography, List, Avatar, Progress } from 'antd';
-import { TeamOutlined, ProjectOutlined, ClockCircleOutlined, CheckCircleOutlined, 
-  WarningOutlined, FileOutlined, DashboardOutlined } from '@ant-design/icons';
+import { Row, Col, Space, Typography, List, Avatar, Progress, message } from 'antd';
+import { 
+  TeamOutlined, ProjectOutlined, ClockCircleOutlined, CheckCircleOutlined, 
+  WarningOutlined, FileOutlined, DashboardOutlined 
+} from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import LoadingDots from '../Loading';
 import styled from 'styled-components';
 import { useTheme } from '../../Context/ThemeContext';
+import axios from 'axios';
 
 const DashboardContainer = styled.div`
   padding: clamp(1rem, 3vw, 2rem);
@@ -65,15 +68,32 @@ const CustomProgress = styled(Progress)`
 
 const ChefProjectDashboard = () => {
   const [loading, setLoading] = useState(true);
+  const [projects, setProjects] = useState([]);
+  const [projectProgress, setProjectProgress] = useState([]);
+  const [recentActivities, setRecentActivities] = useState([]);
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
 
-  const dummyData = {
-    // ... (keep your existing dummy data)
+  const fetchDashboardData = async () => {
+    try {
+      const [projectsRes, progressRes, activitiesRes] = await Promise.all([
+        axios.get('/api/projects'),
+        axios.get('/api/projects/progress'),
+        axios.get('/api/activities'),
+      ]);
+
+      setProjects(projectsRes.data);
+      setProjectProgress(progressRes.data);
+      setRecentActivities(activitiesRes.data);
+    } catch (error) {
+      message.error('Failed to load dashboard data');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    setTimeout(() => setLoading(false), 1000);
+    fetchDashboardData();
   }, []);
 
   if (loading) return <LoadingDots />;
@@ -92,17 +112,17 @@ const ChefProjectDashboard = () => {
               <StatTitle isDarkMode={isDarkMode}>Total Projects</StatTitle>
               <StatValue color="#1890ff">
                 <ProjectOutlined style={{ fontSize: 'clamp(24px, 3vw, 32px)' }} />
-                {dummyData.totalProjects}
+                {projects.length}
               </StatValue>
             </GlassCard>
           </Col>
 
-          {/* Similar structure for other stat cards */}
+          {/* Add other stat cards if needed */}
 
           <Col xs={24} lg={16}>
             <GlassCard isDarkMode={isDarkMode}>
               <StatTitle isDarkMode={isDarkMode}>Project Progress</StatTitle>
-              {dummyData.projectProgress.map((project, index) => (
+              {projectProgress.map((project, index) => (
                 <div key={index} style={{ marginBottom: 16 }}>
                   <Space style={{ marginBottom: 8 }}>
                     <ProjectOutlined />
@@ -119,7 +139,7 @@ const ChefProjectDashboard = () => {
               <StatTitle isDarkMode={isDarkMode}>Recent Activities</StatTitle>
               <List
                 itemLayout="horizontal"
-                dataSource={dummyData.recentActivities}
+                dataSource={recentActivities}
                 renderItem={(item) => (
                   <List.Item>
                     <List.Item.Meta

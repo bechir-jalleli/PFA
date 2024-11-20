@@ -36,10 +36,9 @@ const ReadChefProject = () => {
       setData(response.data);
       setFilteredData(response.data);
     } catch (error) {
-      console.error('Error fetching Chef Projects:', error);
       notification.error({
         message: 'Error',
-        description: 'Failed to fetch Chef Projects',
+        description: error.response?.data?.message || 'Failed to fetch Chef Projects',
       });
     } finally {
       setLoading(false);
@@ -97,10 +96,41 @@ const ReadChefProject = () => {
       key: 'phone',
     },
     {
+      title: 'Salary',
+      dataIndex: 'salary',
+      key: 'salary',
+    },
+    {
+      title: 'Responsable',
+      dataIndex: ['responsable', 'nom'],
+      key: 'responsable',
+      render: (_, record) => (
+        <span>{record.responsable ? `${record.responsable.nom} ${record.responsable.prenom}` : 'N/A'}</span>
+      ),
+    },
+    {
+      title: 'Active',
+      key: 'Active',
+      render: (_, record) => (
+        <Space>
+          <span
+            style={{
+              display: 'inline-block',
+              width: '10px',
+              height: '10px',
+              borderRadius: '50%',
+              backgroundColor: record.isLoggedIn ? 'green' : 'red', 
+            }}
+          />
+        
+        </Space>
+      ),
+    },
+    {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <>
+        <Space>
           <Button
             icon={<EyeOutlined />}
             onClick={() => navigate(`/chef-projects/info/${record._id}`)}
@@ -115,69 +145,73 @@ const ReadChefProject = () => {
           <DeleteChefProject id={record._id} onDeleteSuccess={handleDeleteSuccess}>
             <Button icon={<DeleteOutlined />} danger />
           </DeleteChefProject>
-        </>
+        </Space>
       ),
     },
   ];
 
   return (
-    <>
-      <Space direction="vertical" style={{ width: '100%' }}>
-        <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={4}>List des Chef Projects</Title>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => setCreateModalVisible(true)}
-          >
-            Create Chef Project
-          </Button>
-        </Space>
-        <Search
-          placeholder="Search by nom or prénom"
-          allowClear
-          enterButton="Search"
-          size="large"
-          onSearch={handleSearch}
-          onChange={(e) => handleSearch(e.target.value)}
-          style={{ marginBottom: 16 }}
-        />
-        <Table 
-          dataSource={filteredData} 
-          columns={columns} 
-          rowKey="_id" 
-          loading={loading}
-          pagination={{ pageSize: 10 }}
-          scroll={{ x: 'max-content' }}
-        />
-        <Modal
-          title="Create Chef Project"
-          visible={createModalVisible}
-          onCancel={() => setCreateModalVisible(false)}
-          footer={null}
+    <Space direction="vertical" style={{ width: '100%' }}>
+      <Space style={{ justifyContent: 'space-between', width: '100%' }}>
+        <Title level={4}>List des Chef Projects</Title>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => setCreateModalVisible(true)}
         >
-          <CreateChefProject
-            onCreateSuccess={handleCreateSuccess}
-          />
-        </Modal>
-        <Modal
-          title="Update Chef Project"
-          visible={updateModalVisible}
-          onCancel={() => {
-            setUpdateModalVisible(false);
-            setSelectedId(null);
-          }}
-          footer={null}
-        >
-          {selectedId && (
-            <UpdateChefProject
-              id={selectedId}
-              onUpdateSuccess={handleUpdateSuccess}
-            />
-          )}
-        </Modal>
+          Create Chef Project
+        </Button>
       </Space>
-    </>
+      
+      <Search
+        placeholder="Search by nom or prénom"
+        allowClear
+        enterButton="Search"
+        size="large"
+        onSearch={handleSearch}
+        onChange={(e) => handleSearch(e.target.value)}
+        style={{ marginBottom: 16 }}
+      />
+      
+      <Table 
+        dataSource={filteredData} 
+        columns={columns} 
+        rowKey="_id" 
+        loading={loading}
+        pagination={{ pageSize: 10 }}
+        scroll={{ x: 'max-content' }}
+      />
+      
+      <Modal
+        title="Create Chef Project"
+        visible={createModalVisible}
+        onCancel={() => setCreateModalVisible(false)}
+        footer={null}
+      >
+        <CreateChefProject
+          onCreateSuccess={handleCreateSuccess}
+          onClose={() => setCreateModalVisible(false)}
+        />
+      </Modal>
+      
+      <Modal
+        title="Update Chef Project"
+        visible={updateModalVisible}
+        onCancel={() => {
+          setUpdateModalVisible(false);
+          setSelectedId(null);
+        }}
+        footer={null}
+      >
+        {selectedId && (
+          <UpdateChefProject
+            id={selectedId}
+            onUpdateSuccess={handleUpdateSuccess}
+            onClose={() => setUpdateModalVisible(false)}
+          />
+        )}
+      </Modal>
+    </Space>
   );
 };
 

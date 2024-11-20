@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal, Card, Space, Typography, notification, Input } from 'antd';
+import { Table, Button, Modal, Space, Typography, notification, Input } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import UpdateResponsable from './UpdateResponsable';
 import DeleteResponsable from './DeleteResponsable';
@@ -100,15 +100,10 @@ const ListResponsable = () => {
             width: '10px',
             height: '10px',
             borderRadius: '50%',
+            backgroundColor: isLoggedIn ? 'green' : 'red', 
           }}
         />
       ),
-    },
-    {
-      title: 'Number of Projects',
-      dataIndex: 'projects',
-      key: 'projects',
-      render: (projects) => projects.length,
     },
     {
       title: 'Actions',
@@ -134,15 +129,13 @@ const ListResponsable = () => {
     },
   ];
 
-  const { isDarkMode } = useTheme();
-  const { token } = theme.useToken();
 
 
   return (
     <>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={4}>List des Responsable</Title>
+          <Title level={4}>List des Responsables</Title>
           <Button
             type="primary"
             icon={<PlusOutlined />}

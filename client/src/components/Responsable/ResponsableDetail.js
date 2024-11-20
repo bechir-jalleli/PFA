@@ -156,7 +156,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <MainLayout>
+   
       <PageWrapper isDarkMode={isDarkMode}>
         <StyledCard isDarkMode={isDarkMode} bodyStyle={{ padding: 0 }}>
           <ProfileHeader isDarkMode={isDarkMode}>
@@ -232,7 +232,6 @@ const ProfilePage = () => {
           </div>
         </StyledCard>
       </PageWrapper>
-    </MainLayout>
   );
 };
 

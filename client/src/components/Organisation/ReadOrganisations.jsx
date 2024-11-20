@@ -6,7 +6,6 @@ import UpdateOrganisation from './UpdateOrganisation';
 import DeleteOrganisation from './DeleteOrganisation';
 import CreateOrganisation from './CreateOrganisation';
 import { useTheme } from '../../Context/ThemeContext';
-import { theme } from 'antd';
 import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
@@ -23,7 +22,6 @@ const ReadOrganisation = () => {
 
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
-  const { token } = theme.useToken();
 
   const fetchData = async () => {
     try {
@@ -49,27 +47,12 @@ const ReadOrganisation = () => {
     fetchData();
   }, []);
 
-  const handleCreateSuccess = () => {
-    fetchData();
-    setCreateModalVisible(false);
-  };
-
-  const handleUpdateSuccess = () => {
-    fetchData();
-    setUpdateModalVisible(false);
-    setSelectedId(null);
-  };
-
-  const handleDeleteSuccess = () => {
-    fetchData();
-  };
-
   const handleSearch = (value) => {
     setSearchText(value);
     const filtered = data.filter(
       (organisation) =>
         organisation.title.toLowerCase().includes(value.toLowerCase()) ||
-        organisation.description.toLowerCase().includes(value.toLowerCase())
+        (organisation.description && organisation.description.toLowerCase().includes(value.toLowerCase()))
     );
     setFilteredData(filtered);
   };
@@ -89,18 +72,19 @@ const ReadOrganisation = () => {
       title: "Chiffre d'Affaire",
       dataIndex: 'chiffreAffaire',
       key: 'chiffreAffaire',
+      render: (value) => value ? `€${value.toLocaleString()}` : '-'
     },
     {
       title: 'Responsable',
       dataIndex: 'responsable',
       key: 'responsable',
-      render: (responsable) => responsable.nom,
+      render: (responsable) => responsable ? `${responsable.nom} ${responsable.prenom}` : '-',
     },
     {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <>
+        <Space>
           <Button
             icon={<EyeOutlined />}
             onClick={() => navigate(`/organisations/info/${record._id}`)}
@@ -112,72 +96,82 @@ const ReadOrganisation = () => {
               setUpdateModalVisible(true);
             }}
           />
-          <DeleteOrganisation id={record._id} onDeleteSuccess={handleDeleteSuccess}>
-            <Button icon={<DeleteOutlined />} danger />
-          </DeleteOrganisation>
-        </>
+          <DeleteOrganisation 
+            id={record._id} 
+            onDeleteSuccess={fetchData}
+          />
+        </Space>
       ),
     },
   ];
 
   return (
-    <>
-      <Space direction="vertical" style={{ width: '100%' }}>
-        <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={4}>List des Organisations</Title>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => setCreateModalVisible(true)}
-          >
-            Create Organisation
-          </Button>
-        </Space>
-        <Search
-          placeholder="Search by title or description"
-          allowClear
-          enterButton="Search"
-          size="large"
-          onSearch={handleSearch}
-          onChange={(e) => handleSearch(e.target.value)}
-          style={{ marginBottom: 16 }}
-        />
-        <Table 
-          dataSource={filteredData} 
-          columns={columns} 
-          rowKey="_id" 
-          loading={loading}
-          pagination={{ pageSize: 10 }}
-          scroll={{ x: 'max-content' }}
-        />
-        <Modal
-          title="Create Organisation"
-          visible={createModalVisible}
-          onCancel={() => setCreateModalVisible(false)}
-          footer={null}
+    <Space direction="vertical" style={{ width: '100%' }}>
+      <Space style={{ justifyContent: 'space-between', width: '100%' }}>
+        <Title level={4}>List des Organisations</Title>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => setCreateModalVisible(true)}
         >
-          <CreateOrganisation
-            onCreateSuccess={handleCreateSuccess}
-          />
-        </Modal>
-        <Modal
-          title="Update Organisation"
-          visible={updateModalVisible}
-          onCancel={() => {
-            setUpdateModalVisible(false);
-            setSelectedId(null);
-          }}
-          footer={null}
-        >
-          {selectedId && (
-            <UpdateOrganisation
-              id={selectedId}
-              onUpdateSuccess={handleUpdateSuccess}
-            />
-          )}
-        </Modal>
+          Create Organisation
+        </Button>
       </Space>
-    </>
+      
+      <Search
+        placeholder="Search by title or description"
+        allowClear
+        enterButton="Search"
+        size="large"
+        onSearch={handleSearch}
+        onChange={(e) => handleSearch(e.target.value)}
+        style={{ marginBottom: 16 }}
+      />
+
+      <Table 
+        dataSource={filteredData} 
+        columns={columns} 
+        rowKey="_id" 
+        loading={loading}
+        pagination={{ pageSize: 10 }}
+        scroll={{ x: 'max-content' }}
+      />
+
+      <Modal
+        title="Create Organisation"
+        open={createModalVisible}
+        onCancel={() => setCreateModalVisible(false)}
+        footer={null}
+      >
+        <CreateOrganisation
+          onCreateSuccess={() => {
+            fetchData();
+            setCreateModalVisible(false);
+          }}
+        />
+      </Modal>
+
+      <Modal
+        title="Update Organisation"
+        open={updateModalVisible}
+        onCancel={() => {
+          setUpdateModalVisible(false);
+          setSelectedId(null);
+        }}
+        footer={null}
+      >
+        {selectedId && (
+          <UpdateOrganisation
+            id={selectedId}
+            onUpdateSuccess={() => {
+              fetchData();
+              setUpdateModalVisible(false);
+              setSelectedId(null);
+            }}
+          />
+        )}
+      </Modal>
+    </Space>
   );
 };
 

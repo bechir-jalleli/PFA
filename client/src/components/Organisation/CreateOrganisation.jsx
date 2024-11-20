@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Form, Input, Select, Button, notification, Space, InputNumber } from 'antd';
+import { useTheme } from '../../Context/ThemeContext';
 
 const { Option } = Select;
 
 const CreateOrganisation = ({ onClose, onCreateSuccess }) => {
   const [form] = Form.useForm();
   const [responsables, setResponsables] = useState([]);
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     const fetchResponsables = async () => {
@@ -47,7 +49,7 @@ const CreateOrganisation = ({ onClose, onCreateSuccess }) => {
     } catch (error) {
       notification.error({
         message: 'Error',
-        description: 'Failed to create organisation',
+        description: error.response?.data?.message || 'Failed to create organisation',
       });
     }
   };
@@ -61,36 +63,52 @@ const CreateOrganisation = ({ onClose, onCreateSuccess }) => {
       >
         <Input />
       </Form.Item>
+
       <Form.Item
         name="description"
         label="Description"
       >
         <Input.TextArea rows={4} />
       </Form.Item>
+
       <Form.Item
         name="chiffreAffaire"
         label="Chiffre d'Affaire"
       >
         <InputNumber 
           style={{ width: '100%' }}
-          formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-          parser={value => value.replace(/\$\s?|(,*)/g, '')}
+          formatter={value => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          parser={value => value.replace(/€\s?|(,*)/g, '')}
         />
       </Form.Item>
+
       <Form.Item
         name="responsable"
         label="Responsable"
         rules={[{ required: true, message: 'Please select a responsable!' }]}
       >
-        <Select placeholder="Select a responsable">
+        <Select 
+          placeholder="Select a responsable"
+          showSearch
+          optionFilterProp="children"
+        >
           {responsables.map(resp => (
-            <Option key={resp._id} value={resp._id}>{resp.nom}  {resp.prenom}</Option>
+            <Option key={resp._id} value={resp._id}>
+              {`${resp.nom} ${resp.prenom}`}
+            </Option>
           ))}
         </Select>
       </Form.Item>
+
       <Form.Item>
         <Space>
-          <Button type="primary" htmlType="submit">
+          <Button 
+            type="primary" 
+            htmlType="submit"
+            style={{
+              background: isDarkMode ? '#1890ff' : undefined
+            }}
+          >
             Create Organisation
           </Button>
           <Button onClick={onClose}>Cancel</Button>

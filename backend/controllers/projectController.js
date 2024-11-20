@@ -1,42 +1,81 @@
 const Project = require('../models/project');
 const MembreEquipe = require('../models/membreEquipe');
+const handleError = require('../utils/handleError');
 
 exports.createProject = async (req, res) => {
-    const { title, description, organisation, sousOrganisation, chefProject, responsable, startDate, endDate, budget, revenue, status } = req.body;
-  
-    if (!title || !status) {
-      return res.status(400).json({ error: 'Title and Status are required' });
-    }
-  
-    try {
-      const project = new Project({
-        title,
-    description,
-    chefProject,
-    startDate,
-    endDate,
-    budget,
-    revenue,
-    status
-      });
-  
-      const createdProject = await project.save();
-      res.status(201).json(createdProject);
-    } catch (error) {
-        console.log( 'Error creating project: ' + error.message )
-      res.status(400).json({ error: 'Error creating project: ' + error.message });
+    const { 
+        title, 
+        description, 
+        chefProject, 
+        startDate, 
+        endDate, 
+        budget, 
+        revenue, 
+        status, 
+        taches 
+    } = req.body;
 
+    if (!title) {
+        return res.status(400).json({ error: 'Title is required' });
     }
-  };
+    if (!status) {
+        return res.status(400).json({ error: 'Status is required' });
+    }
+    if (!chefProject) {
+        return res.status(400).json({ error: 'ChefProject ID is required' });
+    }
+
+    try {
+        // Fetch the ChefProject to get the associated Responsable ID
+        const chef = await ChefProject.findById(chefProject).populate('responsable');
+        if (!chef) {
+            return res.status(404).json({ error: 'ChefProject not found' });
+        }
+        const responsableId = chef.responsable?._id;
+        if (!responsableId) {
+            return res.status(404).json({ error: 'Associated Responsable not found' });
+        }
+
+        // Create the project
+        const project = new Project({
+            title,
+            description,
+            chefProject,
+            startDate,
+            endDate,
+            budget,
+            revenue,
+            status,
+            taches,
+        });
+
+        const createdProject = await project.save();
+
+        const responsable = await Responsable.findById(responsableId);
+        responsable.projects.push(createdProject._id);
+        await responsable.save();
+
+        chef.project = createdProject._id; 
+        await chef.save();
+
+        res.status(201).json({
+            message: 'Project created successfully',
+            project: createdProject,
+        });
+    } catch (error) {
+        console.error('Error creating project:', error.message);
+        res.status(400).json({ error: 'Error creating project: ' + error.message });
+    }
+};
+
 
 exports.getAllProjects = async (req, res) => {
     try {
         const projects = await Project.find()
-            .populate('organisation', 'title')
-            .populate('sousOrganisation', 'title')
             .populate('chefProject', 'nom prenom')
-            .populate('responsable', 'nom prenom');
-
+            .populate('taches', 'title')
+            .populate('risks', 'riskName');
+        
         const projectsWithDetails = await Promise.all(projects.map(async (project) => {
             const nbMembreEquipe = await MembreEquipe.countDocuments({ _id: { $in: project.membreEquipe } });
             return {
@@ -57,10 +96,9 @@ exports.getProjectById = async (req, res) => {
 
     try {
         const project = await Project.findById(id)
-            .populate('organisation', 'name')
-            .populate('sousOrganisation', 'name')
             .populate('chefProject', 'nom prenom')
-            .populate('responsable', 'nom prenom');
+            .populate('taches', 'title')
+            .populate('risks', 'riskName');
 
         if (!project) {
             return handleError(res, 404, 'Project not found');
@@ -84,10 +122,9 @@ exports.updateProject = async (req, res) => {
 
     try {
         const project = await Project.findByIdAndUpdate(id, updateFields, { new: true })
-            .populate('organisation', 'name')
-            .populate('sousOrganisation', 'name')
             .populate('chefProject', 'nom prenom')
-            .populate('responsable', 'nom prenom');
+            .populate('taches', 'title')
+            .populate('risks', 'riskName');
 
         if (!project) {
             return handleError(res, 404, 'Project not found');

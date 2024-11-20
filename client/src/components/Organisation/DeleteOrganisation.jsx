@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Button, notification, Popconfirm } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const DeleteOrganisation = ({ id, onDeleteSuccess }) => {
   const handleDelete = async () => {
@@ -19,21 +20,25 @@ const DeleteOrganisation = ({ id, onDeleteSuccess }) => {
     } catch (error) {
       notification.error({
         message: 'Error',
-        description: 'Failed to delete organisation',
+        description: error.response?.data?.message || 'Failed to delete organisation',
       });
     }
   };
 
   return (
     <Popconfirm
-      title="Are you sure you want to delete this organisation?"
+      title="Delete Organisation"
+      description="Are you sure you want to delete this organisation?"
       onConfirm={handleDelete}
       okText="Yes"
       cancelText="No"
+      okButtonProps={{ danger: true }}
     >
-      <Button type="primary" danger>
-        Delete
-      </Button>
+      <Button 
+        icon={<DeleteOutlined />}
+        danger
+        type="primary"
+      />
     </Popconfirm>
   );
 };

@@ -85,7 +85,6 @@ exports.createAdmin = async (req, res) => {
 
             const totalEmployees = chefProjectCount + responsableCount + membreEquipeCount;
 
-            // Corrected summation of active users
             const activeChefProjects = await ChefProject.countDocuments({ isLoggedIn: true });
             const activeResponsables = await Responsable.countDocuments({ isLoggedIn: true });
             const activeMembreEquipes = await MembreEquipe.countDocuments({ isLoggedIn: true });

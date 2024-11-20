@@ -9,9 +9,9 @@ const handleError = (res, status, message) => {
 };
 
 exports.createSousOrganisation = async (req, res) => {
-    const { title, description, organisation, responsable, chiffreAffaire } = req.body;
+    const { title, description, organisation, chiffreAffaire , responsable } = req.body;
 
-    if (!title || !organisation || !responsable || !chiffreAffaire) {
+    if (!title || !organisation || !chiffreAffaire) {
         return handleError(res, 400, 'Title, organisation, responsable, and chiffreAffaire are required');
     }
 
@@ -19,9 +19,9 @@ exports.createSousOrganisation = async (req, res) => {
         const sousOrganisation = new SousOrganisation({ 
             title, 
             description, 
-            organisation, 
-            responsable, 
-            chiffreAffaire 
+            organisation,  
+            chiffreAffaire ,
+            responsable
         });
         const createdSousOrganisation = await sousOrganisation.save();
         res.status(201).json(createdSousOrganisation);
@@ -34,8 +34,9 @@ exports.getAllSousOrganisations = async (req, res) => {
         const sousOrganisations = await SousOrganisation.find({})
             .populate('organisation', 'title')
             .populate('responsable', 'nom prenom')
-            .populate('projects');
-        res.status(200).json(sousOrganisations);
+                    res.status(200).json(sousOrganisations);
+                    console.log(sousOrganisations);
+
     } catch (error) {
         handleError(res, 400, 'Error fetching sous-organisations: ' + error.message);
     }
@@ -46,7 +47,7 @@ exports.getSousOrganisationById = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const sousOrganisation = await SousOrganisation.findById(id).populate('organisation').populate('responsable').populate('projects');
+        const sousOrganisation = await SousOrganisation.findById(id).populate('organisation').populate('responsable');
         
         if (sousOrganisation) {
             const nbProject = await Project.countDocuments({ sousOrganisation: id });
@@ -76,7 +77,6 @@ exports.updateSousOrganisation = async (req, res) => {
         const updatedSousOrganisation = await SousOrganisation.findByIdAndUpdate(id, updates, { new: true })
             .populate('organisation')
             .populate('responsable')
-            .populate('projects');
 
         if (updatedSousOrganisation) {
             res.status(200).json(updatedSousOrganisation);

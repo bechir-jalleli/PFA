@@ -11,7 +11,6 @@ router.get('/', organisationController.getAllOrganisations);
 router.get('/:id', organisationController.getOrganisationById);
 router.put('/:id', organisationController.updateOrganisation);
 router.delete('/:id', organisationController.deleteOrganisation);
-router.get('/detail/:id', organisationController.organisationDetails);
 
 module.exports = router;
     

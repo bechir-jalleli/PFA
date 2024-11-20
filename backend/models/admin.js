@@ -7,7 +7,7 @@ const adminSchema = new Schema({
     email: { type: String, unique: true, default: 'admin@gmail.com' },
     phone: { type: String },
     mdp: { type: String, default: 'admin' },
-    role: { type: String, default: 'admin' },
+    role: { type: String, default: 'admin' ,immutable: true },
 }, { timestamps: true });
 
 const Admin = mongoose.model('Admin', adminSchema);

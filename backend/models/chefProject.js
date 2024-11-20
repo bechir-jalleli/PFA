@@ -7,14 +7,14 @@ const chefProjectSchema = new Schema({
     email: { type: String, required: true, unique: true },
     phone: { type: String },
     mdp: { type: String, required: true },
-    role: { type: String, default: 'chef' },
+    role: { type: String, default: 'chef' ,immutable: true},
     lastLogin: { type: Date },
     isLoggedIn: { type: Boolean, default: false },
+    salary: { type: Number },
+
+    project: { type: Schema.Types.ObjectId, ref: 'Project'},
     responsable: { type: Schema.Types.ObjectId, ref: 'Responsable' },
     membresEquipe: [{ type: Schema.Types.ObjectId, ref: 'MembreEquipe' }],
-    taches: [{ type: Schema.Types.ObjectId, ref: 'Tache' }],
-    salary: { type: Number },
-    project: { type: Schema.Types.ObjectId, ref: 'Project', unique: true } 
 }, { timestamps: true });
 
 const ChefProject = mongoose.models.ChefProject || mongoose.model('ChefProject', chefProjectSchema);

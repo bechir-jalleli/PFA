@@ -41,7 +41,6 @@ const Loading = () => {
   );
 };
 
-// Inject the keyframe animation directly into the document's style
 const bounceAnimation = `
   @keyframes bounce {
     0%, 80%, 100% {
@@ -55,7 +54,6 @@ const bounceAnimation = `
   }
 `;
 
-// Adding the keyframe to the document's head
 const styleSheet = document.styleSheets[0];
 styleSheet.insertRule(bounceAnimation, styleSheet.cssRules.length);
 
